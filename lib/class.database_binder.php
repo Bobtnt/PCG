@@ -1,11 +1,11 @@
 <?php
 /**
- * $LastChangedDate: 2009-02-10 15:49:57 +0100 (mar., 10 févr. 2009) $
- * $LastChangedRevision: 13 $
- * $LastChangedBy: cjanssens $
- * $Id: class.database_binder.phtml 13 2009-02-10 14:49:57Z cjanssens $
+ * This file is a part of php class generator (PCG) apps.
+ * 
+ * licence: Cecill http://www.cecill.info/licences/Licence_CeCILL_V1.1-US.html 
+ * author: Cyril Janssens
+ * $id: $
  */
-  
 /**
  * Database connector for database opl lib
  * maintain connection for all database connector 
