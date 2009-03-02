@@ -80,7 +80,19 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('}');
 	}
 	
-	
+	private function _build(){
+		$this->level = 1;
+		$this->_append('/**');
+		$this->_append(' * '.$this->object->getName().' builder.');
+		$this->_append(' */');
+		$this->_append('public static function build(){');
+		$this->level = 2;
+		$this->_append('}');
+		
+		$this->level = 1;
+		$this->_append('}');
+		
+	}
 	
 	
 }
