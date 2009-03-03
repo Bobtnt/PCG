@@ -4,7 +4,7 @@
  * 
  * licence: Cecill http://www.cecill.info/licences/Licence_CeCILL_V1.1-US.html 
  * author: Cyril Janssens
- * $Id: $
+ * $Id$
  */
 
 class phpGenObjectManager extends configObjectAbstract {
