@@ -9,6 +9,7 @@
 class phpGenObject extends configObjectAbstract {
 	
 	private $name;
+	private $tableName;
 	private $properties = array();
 	
 	
@@ -16,6 +17,44 @@ class phpGenObject extends configObjectAbstract {
 		$this->properties[$property] = $defaultValue;
 		return $this;
 	}
+	
+	public function getProperty($propertyName){
+		return $this->properties[$propertyName];
+	}
+	
+	public function getProperties(){
+		return $this->properties;
+	}
+	
+	public function getPrimaryKeyName(){
+		foreach ($this->properties as $name => $params) {
+			if($params['primary']){
+				$primary = $name;
+				break;
+			}
+		}
+		return $primary;
+	}
+	
+	public function getCode(){
+		return $this->code;
+	}	
+	
+	public function getName(){
+		return $this->name;
+	}
+	public function setName($name){
+		$this->name = $name;
+		return $this;
+	}
+	public function getTableName(){
+		return $this->tableName;
+	}
+	public function setTableName($name){
+		$this->tableName = $name;
+		return $this;
+	}
+	
 	
 	public function generate(){
 		$this->code = '';
@@ -29,20 +68,9 @@ class phpGenObject extends configObjectAbstract {
 		return $this->code;
 	}
 	
-	public function getCode(){
-		return $this->code;
-	}
-	
-	
-	public function getName(){
-		return $this->name;
-	}
-	public function setName($name){
-		$this->name = $name;
-		return $this;
-	}
 	
 	private function _header(){
+		$this->_append('<?php');
 		$this->_append('/**');
 		$this->_append(' * '.$this->name.' object');
 		$this->_append(' **/');
@@ -78,7 +106,15 @@ class phpGenObject extends configObjectAbstract {
 	}
 	
 	private function _getterAndSetter(){
-		$this->level = 1; //set Indentation level to 1
+		$this->level = 1;
+		$this->_append('/**');
+		$this->_append(' * Check function. Unused for the moment.');
+		$this->_append(' */');
+		$this->_append('static function check(){');
+		$this->level = 2;
+		$this->_append('return $this;');
+		$this->level = 1;
+		$this->_append('}');
 		$this->_append();
 		$this->_append('/******************************');
 		$this->_append(' * GETTER AND SETTER');
@@ -120,14 +156,11 @@ class phpGenObject extends configObjectAbstract {
 		}
 	}
 	
+	
+	
 	private function _constructor(){
 		#get primary key
-		foreach ($this->properties as $name => $params) {
-			if($params['primary']){
-				$primary = $name;
-				break;
-			}
-		}
+		$primary = $this->getPrimaryKeyName();
 		$inputVar = '$'.$this->name.'_'.$primary.'';
 		$this->level = 1;
 		$this->_append('/**');
@@ -161,6 +194,7 @@ class phpGenObject extends configObjectAbstract {
 			$this->level = 2;
 			$this->_append('$this->'.$name.'Modified = false;');
 		}
+		$this->level = 1;
 		$this->_append('}');
 	}
 	
@@ -184,6 +218,7 @@ class phpGenObject extends configObjectAbstract {
 	private function _footer(){
 		$this->level = 0;
 		$this->_append('}');
+		$this->_append('?>');
 	}
 	
 	

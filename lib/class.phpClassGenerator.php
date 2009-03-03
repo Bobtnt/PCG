@@ -68,7 +68,7 @@ class phpClassGenerator {
 //		Zend_Debug::dump($infos);
 		$objectKey = key(self::$objects);
 		self::$objects[$objectKey]['object']->setName($objectName);
-		
+		self::$objects[$objectKey]['object']->setTableName($tableName);
 		
 		$nb = count($infos['cols']);
 		for ($a = 0 ; $a < $nb ; $a++) {
@@ -84,6 +84,7 @@ class phpClassGenerator {
 																array(
 																'default' => $infos['metadata'][$column]['DEFAULT'],
 																'type' => $infos['metadata'][$column]['DATA_TYPE'],
+																'fieldName' => $column,
 																'primary' => ($primary == $column ? true:false)
 																));				
 			}
@@ -93,7 +94,7 @@ class phpClassGenerator {
 			//Set object wich will be manipulate by the manager
 			self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
 		}
-		
+		Zend_Debug::dump(self::$objects[$objectKey]['object']->generate());
 		Zend_Debug::dump(self::$objects[$objectKey]['objectManager']->generate());
 		
 	}
