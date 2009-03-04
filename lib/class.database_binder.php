@@ -48,7 +48,7 @@ class database_binder {
 			$databaseName = self::DATABASE_NAME;
 		}
 		
-		$config = new Zend_Config_Ini('../etc/config.ini', $databaseName);
+		$config = new Zend_Config_Ini('etc/config.ini', $databaseName);
 		
 		//Check for existing connction for selected database
 		if(!array_key_exists($databaseName, self::$db)){

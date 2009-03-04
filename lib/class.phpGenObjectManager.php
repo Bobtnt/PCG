@@ -141,6 +141,7 @@ class phpGenObjectManager extends configObjectAbstract {
 		$fields = $this->object->getProperties();
 		$primary = $this->object->getPrimaryKeyName();
 		$getPrimaryKeyFunction = phpClassGenerator::formatPropertyName('get_'.$primary); 
+		$setPrimaryKeyFunction = phpClassGenerator::formatPropertyName('set_'.$primary); 
 		#CASE UPDATE ROW
 		$this->_append('if($'.$this->object->getName().'->'.$getPrimaryKeyFunction.'()){');
 		$this->level = 3;
@@ -189,7 +190,7 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append(') VALUES (');
 		$this->_append($listFieldsValue);
 		$this->_append(')");');
-		#TODO: set primary key id in $$this->object->getName() object
+		$this->_append('$'.$this->object->getName().'->'.$setPrimaryKeyFunction.'(self::$db->getInsertId());');
 		$this->level = 2;
 		$this->_append('}');		
 		$this->level = 1;
