@@ -69,8 +69,9 @@ class phpClassGenerator extends configObjectAbstract {
 		$table = new blankTable(array('name' => $tableName, 'db' => self::$db));
 		$infos = $table->info();
 		$primary = $infos['primary'][1];
+		
 		if(!$primary){
-			//CANNOT Create Object without Pirmary Key
+			//CANNOT Create Object without Primary Key
 			return false;
 		}
 		
@@ -83,10 +84,10 @@ class phpClassGenerator extends configObjectAbstract {
 								 'object' => new phpGenObject(),
 								 'objectManager' => new phpGenObjectManager());
 		
-		$objectKey = key(self::$objects);
+		$objectKey = (count(self::$objects) - 1);
 		self::$objects[$objectKey]['object']->setName($objectName);
 		self::$objects[$objectKey]['object']->setTableName($tableName);
-		
+		$oneLocalfieldAtLeast = false;
 		$nb = count($infos['cols']);
 		for ($a = 0 ; $a < $nb ; $a++) {
 			$propertyName = null;
@@ -95,6 +96,7 @@ class phpClassGenerator extends configObjectAbstract {
 			$localField = false;
 			$localField = preg_match('#^'.$objectName.'_#', $column);
 			if($localField){
+				$oneLocalfieldAtLeast = true;
 				$propertyName = ereg_replace('^('.$objectName.'_)', '', $column);
 				$propertyName = self::formatPropertyName($propertyName);
 				self::$objects[$objectKey]['object']->addProperty($propertyName, 
@@ -108,9 +110,16 @@ class phpClassGenerator extends configObjectAbstract {
 			else{
 				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column);
 			}
+						
 			//Set object wich will be manipulate by the manager
 			self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
 		}
+		if(!$oneLocalfieldAtLeast){
+			//no local field on table. do not create object
+			//may be a n,m link table
+			return false;	 
+		}
+		
 		$strObject = self::$objects[$objectKey]['object']->generate();
 		$strObjectManager = self::$objects[$objectKey]['objectManager']->generate();
 		self::make($strObject, $strObjectManager, $objectName);

@@ -157,6 +157,8 @@ class phpGenObjectManager extends configObjectAbstract {
 				$this->level = 3;
 				$this->_append('}');
 				$i++;	
+			}else{
+				$primaryKeyField = $params['fieldName'];
 			}
 		}
 		$this->_append('if(count($_update) > 0){');
@@ -166,6 +168,7 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('$update .= ($a === 0 ? "" : ",").$_update[$a];');
 		$this->level = 4;
 		$this->_append('}');
+		$this->_append('$update .= " WHERE '.$primaryKeyField.' = ".$'.$this->object->getName().'->'.$getPrimaryKeyFunction.'();');
 		$this->_append('self::$db->query($update);');
 		$this->level = 3;
 		$this->_append('}');

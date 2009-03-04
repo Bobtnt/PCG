@@ -114,7 +114,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('/**');
 		$this->_append(' * Check function. Unused for the moment.');
 		$this->_append(' */');
-		$this->_append('static function check(){');
+		$this->_append('public function check(){');
 		$this->level = 2;
 		$this->_append('return $this;');
 		$this->level = 1;
@@ -218,7 +218,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append(' *');
 		$this->_append(' * @return bool');
 		$this->_append(' **/');
-		$this->_append('private function getModifier($propertyName){');
+		$this->_append('public function getModifier($propertyName){');
 		$this->level = 2;
 		$this->_append('return $this->modifed[$propertyName];');
 		$this->level = 1;
