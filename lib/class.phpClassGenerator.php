@@ -34,7 +34,7 @@ class phpClassGenerator extends configObjectAbstract {
 	/**
 	 * list all database table's
 	 *
-	 * @return phpClassGenerator
+	 * @return array
 	 */
 	static function listTable(){
 		$results = self::$db->fetchAll("SHOW TABLES");
@@ -44,18 +44,36 @@ class phpClassGenerator extends configObjectAbstract {
 		}
 		self::$tables = $_tables;
 		return $_tables;
-		//return $this;
 	}
+	
 	/**
-	 * Create object and object manager 
+	 * Make all object form database
+	 * make sur have load listTable before
+	 *
+	 */
+	static function makeAllObjects(){
+		$nb = count(self::$tables);
+		for ($a = 0 ; $a < $nb ; $a++) {
+			self::createObjects(self::$tables[$a]['name']);
+		}		
+	}
+	
+	/**
+	 * Create object and object manager in out folder 
 	 *
 	 * @param string $tableName
 	 * @param [string] $objectName
+	 * @return bool
 	 */
 	static function createObjects($tableName, $objectName=null){
 		$table = new blankTable(array('name' => $tableName, 'db' => self::$db));
 		$infos = $table->info();
 		$primary = $infos['primary'][1];
+		if(!$primary){
+			//CANNOT Create Object without Pirmary Key
+			return false;
+		}
+		
 		
 		if(!$objectName){
 			$objectName = $tableName;
@@ -65,7 +83,6 @@ class phpClassGenerator extends configObjectAbstract {
 								 'object' => new phpGenObject(),
 								 'objectManager' => new phpGenObjectManager());
 		
-//		Zend_Debug::dump($infos);
 		$objectKey = key(self::$objects);
 		self::$objects[$objectKey]['object']->setName($objectName);
 		self::$objects[$objectKey]['object']->setTableName($tableName);
@@ -97,6 +114,7 @@ class phpClassGenerator extends configObjectAbstract {
 		$strObject = self::$objects[$objectKey]['object']->generate();
 		$strObjectManager = self::$objects[$objectKey]['objectManager']->generate();
 		self::make($strObject, $strObjectManager, $objectName);
+		return true;
 	}
 	
 	static function make($strObject, $strObjectManager, $objectName){
