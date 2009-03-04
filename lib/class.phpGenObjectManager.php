@@ -42,8 +42,8 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('class '.$this->name.' {');
 		$this->_append();
 		$this->level = 1;
-		$this->_append('private $db; //DATABASE CONNECTOR');
-		$this->_append('private $'.$this->object->getName().'; //USED OBJECT');
+		$this->_append('private static $db; //DATABASE CONNECTOR');
+		$this->_append('private static $'.$this->object->getName().'; //USED OBJECT');
 		$this->_append();
 	}
 	
@@ -144,13 +144,30 @@ class phpGenObjectManager extends configObjectAbstract {
 		#CASE UPDATE ROW
 		$this->_append('if($'.$this->object->getName().'->'.$getPrimaryKeyFunction.'()){');
 		$this->level = 3;
-		$this->_append('#self::$db->query("UPDATE '.$this->object->getTableName().' SET ');
-		
+		$this->_append('$update = "UPDATE '.$this->object->getTableName().' SET ";');
+		$this->_append('$_update = array();');
+		$i=0;
 		foreach ($fields as $propertyName => $params){					
 			if(!$params['primary']){
-				
+				$this->level = 3;
+				$this->_append('if($'.$this->object->getName().'->getModifier(\''.$propertyName.'\')){');
+				$this->level = 4;
+				$this->_append('$_update[] = "'.$params['fieldName'].' = \'".$'.$this->object->getName().'->'. phpClassGenerator::formatPropertyName('get_'.$propertyName).'()."\'";');
+				$this->level = 3;
+				$this->_append('}');
+				$i++;	
 			}
 		}
+		$this->_append('if(count($_update) > 0){');
+		$this->level = 4;
+		$this->_append('for($a=0; $a < count($_update);$a++){');
+		$this->level = 5;
+		$this->_append('$update .= ($a === 0 ? "" : ",").$_update[$a];');
+		$this->level = 4;
+		$this->_append('}');
+		$this->_append('self::$db->query($update);');
+		$this->level = 3;
+		$this->_append('}');
 		$this->level = 2;
 		$this->_append('}');
 		#CASE NEW ROW
@@ -172,6 +189,7 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append(') VALUES (');
 		$this->_append($listFieldsValue);
 		$this->_append(')");');
+		#TODO: set primary key id in $$this->object->getName() object
 		$this->level = 2;
 		$this->_append('}');		
 		$this->level = 1;

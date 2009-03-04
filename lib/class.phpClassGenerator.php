@@ -12,7 +12,7 @@
  * 
  * </code>
  */
-class phpClassGenerator {
+class phpClassGenerator extends configObjectAbstract {
 	/**
 	 * @var Zend_Db_Adapter_Pdo_Mysql
 	 */
@@ -94,10 +94,20 @@ class phpClassGenerator {
 			//Set object wich will be manipulate by the manager
 			self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
 		}
-		Zend_Debug::dump(self::$objects[$objectKey]['object']->generate());
-		Zend_Debug::dump(self::$objects[$objectKey]['objectManager']->generate());
-		
+		$strObject = self::$objects[$objectKey]['object']->generate();
+		$strObjectManager = self::$objects[$objectKey]['objectManager']->generate();
+		self::make($strObject, $strObjectManager, $objectName);
 	}
+	
+	static function make($strObject, $strObjectManager, $objectName){
+		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'.php', "x+");
+		fwrite($f, $strObject);
+		fclose($f);
+		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_manager.php', "x+");
+		fwrite($f, $strObjectManager);
+		fclose($f);
+	}
+	
 	
 	/**
 	 * Format property name with field name

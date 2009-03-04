@@ -62,7 +62,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_properties();
 		$this->_constructor();
 		$this->_save();
-		$this->_resetModifier();
+		$this->_modifier();
 		$this->_getterAndSetter();
 		$this->_footer();
 		return $this->code;
@@ -80,8 +80,10 @@ class phpGenObject extends configObjectAbstract {
 	
 	private function _properties(){
 		$this->level = 1; //set Indentation level to 1
+		$i=0;
+		$modified = 'private $modified = array(';
 		foreach ($this->properties as $name => $params) {
-			$code = 'private '.$name;
+			$code = 'private $'.$name;
 			if($params['default']){
 				if($params['type'] == 'int'){
 					$code .= ' = '.$params['default'].';';
@@ -98,10 +100,12 @@ class phpGenObject extends configObjectAbstract {
 			}
 			if($params['primary']){
 				$code .= ' //this is the primary key';
-			}			
+			}
 			$this->_append($code);
-			$this->_append('private '.$name.'Modified = false;');
+			$modified .= ($i === 0 ? '' : ',')."'".$name."' => false";
+			$i++;
 		}
+		$this->_append($modified.');');
 		$this->_append();
 	}
 	
@@ -148,15 +152,13 @@ class phpGenObject extends configObjectAbstract {
 			else{
 				$this->_append('$this->'.$name.' = $'.$name.';');
 			}
-			$this->_append('$this->'.$name.'Modified = true;');
+			$this->_append('$this->setModifier(\''.$name.'\');');
 			$this->_append('return $this;');
 			$this->level = 1;
 			$this->_append('}');
 			
 		}
 	}
-	
-	
 	
 	private function _constructor(){
 		#get primary key
@@ -182,7 +184,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('}');
 	}
 	
-	private function _resetModifier(){
+	private function _modifier(){
 		$this->level = 1;
 		$this->_append('/**');
 		$this->_append(' * Reset all modifier');
@@ -192,10 +194,37 @@ class phpGenObject extends configObjectAbstract {
 		foreach ($this->properties as $name => $params) {
 			$params; //Just for ZCA
 			$this->level = 2;
-			$this->_append('$this->'.$name.'Modified = false;');
+			$this->_append('$this->modifed[\''.$name.'\'] = false;');
 		}
 		$this->level = 1;
 		$this->_append('}');
+		
+		$this->level = 1;
+		$this->_append('/**');
+		$this->_append(' * set modifier');
+		$this->_append(' *');
+		$this->_append(' * @return '.$this->getName());
+		$this->_append(' **/');
+		$this->_append('private function setModifier($propertyName, $modified=true){');
+		$this->level = 2;
+		$this->_append('$this->modifed[$propertyName] = $modified;');
+		$this->_append('return $this;');
+		$this->level = 1;
+		$this->_append('}');
+		
+		$this->level = 1;
+		$this->_append('/**');
+		$this->_append(' * get modifier');
+		$this->_append(' *');
+		$this->_append(' * @return bool');
+		$this->_append(' **/');
+		$this->_append('private function getModifier($propertyName){');
+		$this->level = 2;
+		$this->_append('return $this->modifed[$propertyName];');
+		$this->level = 1;
+		$this->_append('}');
+		
+		
 	}
 	
 	private function _save(){
