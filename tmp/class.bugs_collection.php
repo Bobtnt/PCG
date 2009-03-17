@@ -24,21 +24,35 @@ class bugs_collection implements IteratorAggregate {
 	 */	
 	public function add(bugs $bugs, $mode=1){
 		$existFlag = false;
-		foreach ($this as $innerBugs){
+		//set context object
+		$bugs->setBugsContextObject($this);
+		foreach ($this as $key => $innerBugs){
 			//check for existing bugs
 			if($innerBugs->getId() == $bugs->getId()){
 				$existFlag = true;
+				$existKey = $key;
 				break;
 			}
 		}
 		if($existFlag && $mode == self::MODE_APPEND){
-			
+			// do nothing
 		}
 		else if($existFlag && $mode == self::MODE_REPLACE){
-			
+			//replace
+			$this->_set($existKey, $bugs);
 		}
-		
+		else if(!$existFlag && ($mode == self::MODE_APPEND || $mode == self::MODE_APPEND)){
+			//simply add
+			$this->_add($bugs);
+		}
+		else{
+			//what ??!
+			return false;
+		}
+		return $this;
 	}
+
+	
 	public function remove(){
 		
 	}
@@ -57,7 +71,7 @@ class bugs_collection implements IteratorAggregate {
 	 *
 	 * @param string $query
 	 * @param [integer] $mode bugs_collection::MODE_APPEND [default], bugs_collection::MODE_REPLACE
-	 * @return 
+	 * @return bugs_collection
 	 */
 	public function select($query, $mode=1){
 		$bugsIds = bugs_manager::select($query);
@@ -71,6 +85,31 @@ class bugs_collection implements IteratorAggregate {
 	
 	public function filter(){
 		
+	}
+	
+	
+	/**
+	 * Set bugs for local collection
+	 *
+	 * @access private
+	 * @param integer $key
+	 * @param bugs $bugs
+	 * @return bugs_collection
+	 */
+	private function _set($key, bugs $bugs){
+		$this->bug_items[$key] = $bugs;
+		return $this;
+	}
+	/**
+	 * add bugs for local collection 
+	 *
+	 * @access private
+	 * @param bugs $bugs
+	 * @return bugs_collection
+	 */
+	private function _add(bugs $bugs) {
+		$this->bug_items[] = $bugs;
+		return $this;
 	}
 	
 

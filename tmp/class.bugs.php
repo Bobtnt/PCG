@@ -11,21 +11,25 @@ class bugs {
 	private $updateDate;
 	private $priority = 'low';
 	private $modified = array('id' => false,'subject' => false,'description' => false,'createDate' => false,'updateDate' => false,'priority' => false);
-	
-	private $context;
+	 
+	private $context; //context object, generaly collection object
 	
 	
 	/**
 	 * bugs object constructor
 	 * Build bugs with $bugs_id or create new bugs without $bugs_id
 	 *
-	 * @param integer $bugs_id
+	 * @param [integer] $bugs_id
+	 * @param [object] $context
 	 */
-	function __construct($bugs_id=null){
+	function __construct($bugs_id=null, $context=null){
 		bugs_manager::factory($this);
 		if($bugs_id){
 			$this->setId($bugs_id);
 			bugs_manager::build($this);
+		}
+		if($context){
+			$this->context = $context;
 		}
 	}
 	/**
@@ -65,7 +69,7 @@ class bugs {
 	 *
 	 * @return bool
 	 **/
-	private function getModifier($propertyName){
+	public function getModifier($propertyName){
 		return $this->modifed[$propertyName];
 	}
 	/**
@@ -83,14 +87,14 @@ class bugs {
 	 * @return bugs->id
 	 **/
 	public function getId(){
-		return $this->id;
+		return (int)$this->id;
 	}
 	/**
 	 * @param $id
 	 * @return bugs
 	 **/
 	public function setId($id){
-		$this->id = $id;
+		$this->id =(int) $id;
 		$this->setModifier('id');
 		return $this;
 	}
@@ -168,6 +172,10 @@ class bugs {
 		$this->priority = addslashes($priority);
 		$this->setModifier('priority');
 		return $this;
+	}
+	
+	public function setBugsContextObject($context){
+		$this->context = $context;
 	}
 }
 ?>

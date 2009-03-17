@@ -46,8 +46,10 @@ class bugs_manager {
 		if(!$bugs){
 			$bugs = self::$bugs;
 		}
-		self::$db->query("SELECT * FROM bugs WHERE bugs_id = ".$bugs->getId());
-		$results = self::$db->fetchArray();
+		$ressource = self::$db->query("SELECT * FROM bugs WHERE bugs_id = ".$bugs->getId());
+		$results = $ressource->fetchAll();
+		$results = $results[0];
+		//$results = self::$db->fetchArray();
 		$bugs->setSubject($results["bugs_subject"])
 		->setDescription($results["bugs_description"])
 		->setCreateDate($results["bugs_create_date"])
@@ -88,8 +90,9 @@ class bugs_manager {
 				for($a=0; $a < count($_update);$a++){
 					$update .= ($a === 0 ? "" : ",").$_update[$a];
 				}
+				$update .= " WHERE bugs_id = ".$bugs->getId();
 				self::$db->query($update);
-			}
+			}			
 		}
 		else{
 			self::$db->query("INSERT INTO bugs (
@@ -97,7 +100,7 @@ class bugs_manager {
 			) VALUES (
 			'".$bugs->getSubject()."','".$bugs->getDescription()."','".$bugs->getCreateDate()."','".$bugs->getUpdateDate()."','".$bugs->getPriority()."'
 			)");
-			
+			self::$bugs->setId(self::$db->lastInsertId());
 		}
 	}
 	/**
@@ -109,11 +112,12 @@ class bugs_manager {
 	 */
 	public static function select($sql){
 		self::factory();
-		self::$db->query($sql);
+		$ressource = self::$db->query($sql);
 		$bugsIds = array();
-		while($results = self::$db->fetchArray()){
-			$bugsIds[] = $results['bugs_id'];
-		}
+//		while($results = self::$db->fetchArray()){
+//			$bugsIds[] = $results['bugs_id'];
+//		}
+		$bugsIds = $ressource->fetchAll();
 		return $bugsIds;
 	}
 	
