@@ -114,10 +114,14 @@ class bugs_manager {
 		self::factory();
 		$ressource = self::$db->query($sql);
 		$bugsIds = array();
+		$_tmp = array();
 //		while($results = self::$db->fetchArray()){
 //			$bugsIds[] = $results['bugs_id'];
 //		}
-		$bugsIds = $ressource->fetchAll();
+		$_tmp = $ressource->fetchAll();
+		for ($a = 0 ; $a < count($_tmp) ; $a++) {
+			$bugsIds[] = $_tmp[$a]['bugs_id'];
+		}		
 		return $bugsIds;
 	}
 	

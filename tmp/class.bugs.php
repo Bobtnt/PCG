@@ -76,7 +76,7 @@ class bugs {
 	 * Check function. Unused for the moment.
 	 */
 	static function check(){
-		return $this;
+		return true;
 	}
 	
 	/******************************

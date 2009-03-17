@@ -26,6 +26,7 @@ class bugs_collection implements IteratorAggregate {
 		$existFlag = false;
 		//set context object
 		$bugs->setBugsContextObject($this);
+//		Zend_Debug::dump(__CLASS__.' '.$bugs->getId());
 		foreach ($this as $key => $innerBugs){
 			//check for existing bugs
 			if($innerBugs->getId() == $bugs->getId()){
