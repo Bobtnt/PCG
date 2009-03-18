@@ -33,6 +33,23 @@ class bugs {
 		}
 	}
 	/**
+	 * magic call method
+	 * call context method if reconized
+	 *
+	 * @param string $method
+	 * @param array $arguments
+	 */
+	public function __call($method, $arguments){
+		switch($method){
+			case "remove":
+				if(is_object($this->context)){
+					$this->context->remove($this);
+				}
+			break;
+		}
+	}
+	
+	/**
 	 * Save bugs
 	 *
 	 * @return bugs
