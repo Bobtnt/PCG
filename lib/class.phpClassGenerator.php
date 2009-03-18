@@ -82,7 +82,8 @@ class phpClassGenerator extends configObjectAbstract {
 		
 		self::$objects[] = array('objectName' => $objectName,
 								 'object' => new phpGenObject(),
-								 'objectManager' => new phpGenObjectManager());
+								 'objectManager' => new phpGenObjectManager(),
+								 'objectCollection' => new phpGenObjectCollection());
 		
 		$objectKey = (count(self::$objects) - 1);
 		self::$objects[$objectKey]['object']->setName($objectName);
@@ -113,6 +114,7 @@ class phpClassGenerator extends configObjectAbstract {
 						
 			//Set object wich will be manipulate by the manager
 			self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
+			self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
 		}
 		if(!$oneLocalfieldAtLeast){
 			//no local field on table. do not create object
@@ -122,16 +124,20 @@ class phpClassGenerator extends configObjectAbstract {
 		
 		$strObject = self::$objects[$objectKey]['object']->generate();
 		$strObjectManager = self::$objects[$objectKey]['objectManager']->generate();
-		self::make($strObject, $strObjectManager, $objectName);
+		$strObjectCollection = self::$objects[$objectKey]['objectCollection']->generate();
+		self::make($strObject, $strObjectManager, $strObjectCollection, $objectName);
 		return true;
 	}
 	
-	static function make($strObject, $strObjectManager, $objectName){
+	static function make($strObject, $strObjectManager, $strObjectCollection, $objectName){
 		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'.php', "x+");
 		fwrite($f, $strObject);
 		fclose($f);
 		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_manager.php', "x+");
 		fwrite($f, $strObjectManager);
+		fclose($f);
+		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_collection.php', "x+");
+		fwrite($f, $strObjectCollection);
 		fclose($f);
 	}
 	

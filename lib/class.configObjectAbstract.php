@@ -17,12 +17,27 @@ abstract class configObjectAbstract {
 	const DB_CALLER = 'database_binder::factory()';
 	const OUTPUT_FOLDER = 'out';
 		
-	protected $level=0;
+	protected $level=0; // deprecated
 	protected $code;
+	protected $internalLevel=0;
+	
 	
 	protected function _append($code=''){
-		$indentedCode = str_repeat(self::TAB,$this->level).$code;
+		
+		if(preg_match('#\}$#', trim($code))){
+			$this->internalLevel--;
+		}		
+		
+		$indentedCode = str_repeat(self::TAB,$this->internalLevel).$code;
 		$this->code .= $indentedCode.self::NL;
+		
+		if(preg_match('#\{$#', trim($code))){
+			$this->internalLevel++;
+		}
+		
+		
+		
+		
 	}
 	
 	

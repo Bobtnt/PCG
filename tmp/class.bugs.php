@@ -190,7 +190,9 @@ class bugs {
 		$this->setModifier('priority');
 		return $this;
 	}
-	
+	/**
+	 * setter for $context
+	 */
 	public function setBugsContextObject($context){
 		$this->context = $context;
 	}

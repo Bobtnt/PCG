@@ -13,8 +13,7 @@
 class bugs_collection implements IteratorAggregate {
 
 	const MODE_APPEND = 1;
-	const MODE_REPLACE = 2;
-	
+	const MODE_REPLACE = 2;	
 	
 	private $bug_items = array();
 

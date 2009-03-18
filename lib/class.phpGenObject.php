@@ -61,6 +61,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_header();
 		$this->_properties();
 		$this->_constructor();
+		$this->_call();
 		$this->_save();
 		$this->_modifier();
 		$this->_getterAndSetter();
@@ -79,7 +80,6 @@ class phpGenObject extends configObjectAbstract {
 	}
 	
 	private function _properties(){
-		$this->level = 1; //set Indentation level to 1
 		$i=0;
 		$modified = 'private $modified = array(';
 		foreach ($this->properties as $name => $params) {
@@ -107,17 +107,16 @@ class phpGenObject extends configObjectAbstract {
 		}
 		$this->_append($modified.');');
 		$this->_append();
+		$this->_append('private $context; //context object, generaly collection object');
+		$this->_append();
 	}
 	
 	private function _getterAndSetter(){
-		$this->level = 1;
 		$this->_append('/**');
 		$this->_append(' * Check function. Unused for the moment.');
 		$this->_append(' */');
 		$this->_append('public function check(){');
-		$this->level = 2;
-		$this->_append('return $this;');
-		$this->level = 1;
+		$this->_append('return true;');
 		$this->_append('}');
 		$this->_append();
 		$this->_append('/******************************');
@@ -130,14 +129,12 @@ class phpGenObject extends configObjectAbstract {
 			$this->_append(' * @return '.$this->name.'->'.$name);
 			$this->_append(' **/');
 			$this->_append('public function '.phpClassGenerator::formatPropertyName('get_'.$name).'(){');
-			$this->level = 2;
 			if($params['type'] != 'int' &&  $params['type'] != 'timestamp' && $params['type'] != 'date'){
 				$this->_append('return stripslashes($this->'.$name.');');
 			}
 			else{
-				$this->_append('return $this->'.$name.';');
+				$this->_append('return '.(($params['type'] == 'int') ? '(int)' : '').'$this->'.$name.';');
 			}
-			$this->level = 1;
 			$this->_append('}');
 			#SETTER
 			$this->_append('/**');
@@ -145,16 +142,14 @@ class phpGenObject extends configObjectAbstract {
 			$this->_append(' * @return '.$this->name);
 			$this->_append(' **/');
 			$this->_append('public function '.phpClassGenerator::formatPropertyName('set_'.$name).'($'.$name.'){');
-			$this->level = 2;
 			if($params['type'] != 'int' &&  $params['type'] != 'timestamp' && $params['type'] != 'date'){
 				$this->_append('$this->'.$name.' = addslashes($'.$name.');');
 			}
 			else{
-				$this->_append('$this->'.$name.' = $'.$name.';');
+				$this->_append('$this->'.$name.' = '.(($params['type'] == 'int') ? '(int)' : '').' $'.$name.';');
 			}
 			$this->_append('$this->setModifier(\''.$name.'\');');
 			$this->_append('return $this;');
-			$this->level = 1;
 			$this->_append('}');
 			
 		}
@@ -164,28 +159,26 @@ class phpGenObject extends configObjectAbstract {
 		#get primary key
 		$primary = $this->getPrimaryKeyName();
 		$inputVar = '$'.$this->name.'_'.$primary.'';
-		$this->level = 1;
 		$this->_append('/**');
 		$this->_append(' * '.$this->name.' object constructor');
 		$this->_append(' * Build '.$this->name.' with '.$inputVar.' or create new '.$this->name.' without '.$inputVar);
 		$this->_append(' *');
-		$this->_append(' * @param integer '.$inputVar);
+		$this->_append(' * @param [integer] '.$inputVar);
+		$this->_append(' * @param [object] $context');
 		$this->_append(' */');
-		$this->_append('function __construct('.$inputVar.'=null){');
-		$this->level = 2;
+		$this->_append('function __construct('.$inputVar.'=null, $context=null){');
 		$this->_append($this->name.'_manager::factory($this);');
 		$this->_append('if('.$inputVar.'){');
-		$this->level = 3;
 		$this->_append('$this->'.phpClassGenerator::formatPropertyName('set_'.$primary).'('.$inputVar.');');
 		$this->_append($this->name.'_manager::build($this);');
-		$this->level = 2;
 		$this->_append('}');
-		$this->level = 1;
+		$this->_append('if($context){');
+		$this->_append('$this->context = $context;');
+		$this->_append('}');
 		$this->_append('}');
 	}
 	
 	private function _modifier(){
-		$this->level = 1;
 		$this->_append('/**');
 		$this->_append(' * Reset all modifier');
 		$this->_append(' * You may not use this function');
@@ -193,59 +186,68 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('private function resetModifier(){');
 		foreach ($this->properties as $name => $params) {
 			$params; //Just for ZCA
-			$this->level = 2;
 			$this->_append('$this->modifed[\''.$name.'\'] = false;');
 		}
-		$this->level = 1;
 		$this->_append('}');
-		
-		$this->level = 1;
 		$this->_append('/**');
 		$this->_append(' * set modifier');
 		$this->_append(' *');
 		$this->_append(' * @return '.$this->getName());
 		$this->_append(' **/');
 		$this->_append('private function setModifier($propertyName, $modified=true){');
-		$this->level = 2;
 		$this->_append('$this->modifed[$propertyName] = $modified;');
 		$this->_append('return $this;');
-		$this->level = 1;
 		$this->_append('}');
-		
-		$this->level = 1;
 		$this->_append('/**');
 		$this->_append(' * get modifier');
 		$this->_append(' *');
 		$this->_append(' * @return bool');
 		$this->_append(' **/');
 		$this->_append('public function getModifier($propertyName){');
-		$this->level = 2;
 		$this->_append('return $this->modifed[$propertyName];');
-		$this->level = 1;
 		$this->_append('}');
-		
-		
 	}
 	
 	private function _save(){
-		$this->level = 1;
 		$this->_append('/**');
 		$this->_append(' * Save '.$this->name);
 		$this->_append(' *');
 		$this->_append(' * @return '.$this->name);
 		$this->_append(' **/');
 		$this->_append('public function save(){');
-		$this->level = 2;
 		$this->_append($this->name.'_manager::using($this);');
 		$this->_append($this->name.'_manager::save();');
 		$this->_append('$this->resetModifier();');
 		$this->_append('return $this;');
-		$this->level = 1;
+		$this->_append('}');
+	}
+	
+	private function _call(){
+		$this->_append('/**');
+		$this->_append(' * magic call method');
+		$this->_append(' * call context method if reconized');
+		$this->_append(' *');
+		$this->_append(' * @param string $method');
+		$this->_append(' * @param array $arguments');
+		$this->_append(' */');
+		$this->_append('public function __call($method, $arguments){');
+		$this->_append('switch($method){');
+		$this->_append('case "remove":');
+		$this->_append('if(is_object($this->context)){');
+		$this->_append('$this->context->remove($this);');
+		$this->_append('}');
+		$this->_append('break;');
+		$this->_append('}');
 		$this->_append('}');
 	}
 	
 	private function _footer(){
-		$this->level = 0;
+		$this->_append('/**');
+		$this->_append(' * setter for $context');
+		$this->_append(' */');
+		$this->_append('public function setContextObject($context){');
+		$this->_append('$this->context = $context;');
+		$this->_append('}');		
 		$this->_append('}');
 		$this->_append('?>');
 	}
