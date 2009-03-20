@@ -186,7 +186,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('private function resetModifier(){');
 		foreach ($this->properties as $name => $params) {
 			$params; //Just for ZCA
-			$this->_append('$this->modifed[\''.$name.'\'] = false;');
+			$this->_append('$this->modified[\''.$name.'\'] = false;');
 		}
 		$this->_append('}');
 		$this->_append('/**');
@@ -195,7 +195,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append(' * @return '.$this->getName());
 		$this->_append(' **/');
 		$this->_append('private function setModifier($propertyName, $modified=true){');
-		$this->_append('$this->modifed[$propertyName] = $modified;');
+		$this->_append('$this->modified[$propertyName] = $modified;');
 		$this->_append('return $this;');
 		$this->_append('}');
 		$this->_append('/**');
@@ -204,7 +204,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append(' * @return bool');
 		$this->_append(' **/');
 		$this->_append('public function getModifier($propertyName){');
-		$this->_append('return $this->modifed[$propertyName];');
+		$this->_append('return $this->modified[$propertyName];');
 		$this->_append('}');
 	}
 	
@@ -231,13 +231,16 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append(' * @param array $arguments');
 		$this->_append(' */');
 		$this->_append('public function __call($method, $arguments){');
+		$this->_append('$arguments; //Just for code analyzer');
 		$this->_append('switch($method){');
 		$this->_append('case "remove":');
 		$this->_append('if(is_object($this->context)){');
 		$this->_append('$this->context->remove($this);');
+		$this->_append('return $this->context;');
 		$this->_append('}');
 		$this->_append('break;');
 		$this->_append('}');
+		$this->_append('throw new Exception("try to access to an unknown method");');
 		$this->_append('}');
 	}
 	
@@ -250,6 +253,46 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('}');		
 		$this->_append('}');
 		$this->_append('?>');
+	}
+	
+	private function _relationshipProperties(){
+		#1,n or 1,1 relation
+		$this->_append('/**');
+		$this->_append(' * relationship with category');
+		$this->_append(' * @var category');
+		$this->_append(' */');
+		$this->_append('private $_category; ');
+	}
+	
+	private function _relationshipGetter(){
+		#1,n or 1,1 relation
+		$this->_append('/**');
+		$this->_append('* magic get method');
+		$this->_append('* used to construct relationship between objects');
+		$this->_append('*');
+		$this->_append('* @param string $name');
+		$this->_append('*/');
+		$this->_append('public function __get($name){');
+		$this->_append('if($name == \'category\'){');
+		$this->_append('if(!$this->_category){');
+		$this->_append('#n, m mode');
+		$this->_append('//$name == \'category_collection\'');
+		$this->_append('//$this->_category = new category_collection();');
+		$this->_append('//$this->_category->select(\'select category_id from category where\')');
+		$this->_append('#1, n mode');
+		$this->_append('$categoryId = $this->getCategoryId();');
+		$this->_append('$this->_category = new category($categoryId);');
+		$this->_append('}');
+		$this->_append('elseif(is_object($this->_category)){');
+		$this->_append('if($this->_category->getId() != $this->getCategoryId()){');
+		$this->_append('$categoryId = $this->getCategoryId();');
+		$this->_append('$this->_category = new category($categoryId);');
+		$this->_append('}');
+		$this->_append('}');
+		$this->_append('return $this->_category;');
+		$this->_append('}');
+		$this->_append('throw new Exception("try to access to an unknown property");');
+		$this->_append('}');
 	}
 	
 	

@@ -42,6 +42,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 	
 	public function generate(){
 		$this->_header();
+		$this->_call();
 		$this->_addRemoveCount();
 		$this->_getSelectFilter();
 		$this->_save();
@@ -70,6 +71,19 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('	');
 		$this->_append('private $items = array();');
 		$this->_append('');
+	}
+	
+	private function _call(){
+		$this->_append('public function __call($name, $arguments){');
+		$this->_append('switch ($name) {');
+		$this->_append('case \'fill\':');
+		$this->_append('$query = (array_key_exists(0, $arguments) ? $arguments[0] : NULL);');
+		$this->_append('$mode = (array_key_exists(1, $arguments) ? $arguments[1] : 1);');
+		$this->_append('return $this->select($query, $mode);');
+		$this->_append('break;');
+		$this->_append('}');
+		$this->_append('throw new Exception("try to access to an unknown method");');
+		$this->_append('}');
 	}
 	
 	private function _addRemoveCount(){

@@ -99,28 +99,29 @@ class phpClassGenerator extends configObjectAbstract {
 			if($localField){
 				$oneLocalfieldAtLeast = true;
 				$propertyName = ereg_replace('^('.$objectName.'_)', '', $column);
-				$propertyName = self::formatPropertyName($propertyName);
-				self::$objects[$objectKey]['object']->addProperty($propertyName, 
-																array(
-																'default' => $infos['metadata'][$column]['DEFAULT'],
-																'type' => $infos['metadata'][$column]['DATA_TYPE'],
-																'fieldName' => $column,
-																'primary' => ($primary == $column ? true:false)
-																));				
+				$propertyName = self::formatPropertyName($propertyName);			
 			}
 			else{
+				$propertyName = self::formatPropertyName($column);
 				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column);
 			}
-						
-			//Set object wich will be manipulate by the manager
-			self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
-			self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
+			self::$objects[$objectKey]['object']->addProperty($propertyName, 
+															array(
+															'default' => $infos['metadata'][$column]['DEFAULT'],
+															'type' => $infos['metadata'][$column]['DATA_TYPE'],
+															'fieldName' => $column,
+															'primary' => ($primary == $column ? true:false)
+															));	
 		}
 		if(!$oneLocalfieldAtLeast){
 			//no local field on table. do not create object
 			//may be a n,m link table
 			return false;	 
 		}
+		//Set object wich will be manipulate by the manager
+		self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
+		//set object wich will be manipulate by the colection
+		self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
 		
 		$strObject = self::$objects[$objectKey]['object']->generate();
 		$strObjectManager = self::$objects[$objectKey]['objectManager']->generate();
