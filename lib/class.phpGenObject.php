@@ -258,11 +258,26 @@ class phpGenObject extends configObjectAbstract {
 	}
 	
 	private function _relationshipProperties(){
-		#1,n or 1,1 relation
+		#1:n or 1:1 
+		if($this->_1n_relation_searcher()){
+			return '1:n';
+		}
+		elseif($this->_nm_relation_searcher()){
+			//No 1,1 relation found ?
+			//Now check for 1,1 relation
+			return 'n:m';
+		}
+		return false;
+	}
+	
+	private function _nm_relation_searcher(){
 		$relation = phpClassGenerator::$relatedField;
 		$nb = count($relation);
 		for ($a = 0 ; $a < $nb ; $a++){
 			$relationFound = false; 
+			if(array_key_exists('relationType', phpClassGenerator::$relatedField[$a]) && phpClassGenerator::$relatedField[$a]['relationType'] != 'n:m'){
+				continue;
+			}
 			//check if the relation regards current object
 			if($relation[$a]['object'] == $this->getName()){
 				//search related object:
@@ -282,8 +297,9 @@ class phpGenObject extends configObjectAbstract {
 //								Zend_Debug::Dump($infos);
 //								Zend_Debug::Dump($objectList[$b]['object']->getName());
 								$relatedObjectName = $objectList[$b]['object']->getName();
-								phpClassGenerator::$relatedField[$a]['relatedObject'] = $objectList[$b]['object'];
+								phpClassGenerator::$relatedField[$a]['relatedObject'] = $relatedObjectName;
 								phpClassGenerator::$relatedField[$a]['relatedPropertyName'] = $propertyName;
+								phpClassGenerator::$relatedField[$a]['relationType'] = '1:n';
 								$relationFound = true;
 								break;
 							}
@@ -302,13 +318,69 @@ class phpGenObject extends configObjectAbstract {
 				$this->_append(' * relationship with '.$relatedObjectName);
 				$this->_append(' * @var '.$relatedObjectName);
 				$this->_append(' */');
-				$this->_append('private $_'.$relatedObjectName.';');
-			}			
+				$this->_append('private $_'.$relatedObjectName.';'); 
+			}
 		}
+		return $relationFound;
 	}
 	
+	private function _1n_relation_searcher(){
+		$relation = phpClassGenerator::$relatedField;
+		$nb = count($relation);
+		for ($a = 0 ; $a < $nb ; $a++){
+			$relationFound = false; 
+			if(array_key_exists('relationType', phpClassGenerator::$relatedField[$a]) && phpClassGenerator::$relatedField[$a]['relationType'] != '1:n'){
+				continue;
+			}
+			//check if the relation regards current object
+			if($relation[$a]['object'] == $this->getName()){
+				//search related object:
+				//in relation we have src table, field and object
+				//now we searching in all other object->table the primary field matching the src.table.field 
+				$objectList = phpClassGenerator::$objects;
+				$nb2 = count($objectList);
+				//Zend_Debug::Dump($relation[$a]);
+				for ($b = 0 ; $b < $nb2 ; $b++){
+					//we remowe the current object from search area because the self relationship are not yet supported
+					if($objectList[$b]['object']->getName() != $this->getName()){
+						foreach ($objectList[$b]['object']->properties as $propertyName => $infos){
+							//if object->properties->infos->fieldname == relation->fieldname &&
+							// object->properties->infos->fieldname->primary == true
+							if($infos['fieldName'] == $relation[$a]['toField']  && $infos['primary']){
+								//THIS FIELD MATCH !!!
+//								Zend_Debug::Dump($infos);
+//								Zend_Debug::Dump($objectList[$b]['object']->getName());
+								$relatedObjectName = $objectList[$b]['object']->getName();
+								phpClassGenerator::$relatedField[$a]['relatedObject'] = $relatedObjectName;
+								phpClassGenerator::$relatedField[$a]['relatedPropertyName'] = $propertyName;
+								phpClassGenerator::$relatedField[$a]['relationType'] = '1:n';
+								$relationFound = true;
+								break;
+							}
+						}
+						if($relationFound){
+							break;
+						}
+					}
+					if($relationFound){
+						break;
+					}
+				}
+			}
+			if($relationFound){
+				$this->_append('/**');
+				$this->_append(' * relationship with '.$relatedObjectName);
+				$this->_append(' * @var '.$relatedObjectName);
+				$this->_append(' */');
+				$this->_append('private $_'.$relatedObjectName.';'); 
+			}
+		}
+		return $relationFound;
+	}
+	
+	
 	private function _relationshipGetter(){
-		#1,n or 1,1 relation
+		
 		$this->_append('/**');
 		$this->_append('* magic get method');
 		$this->_append('* used to construct relationship between objects');
@@ -320,30 +392,39 @@ class phpGenObject extends configObjectAbstract {
 		$relation = phpClassGenerator::$relatedField;
 		$nb = count($relation);
 		for ($a = 0 ; $a < $nb ; $a++){
-			$relatedObjectName = $relation[$a]['relatedObject']->getName();
-			$primaryFieldName = $relation[$a]['toField'];
-			$primaryVarName = phpClassGenerator::formatPropertyName($primaryFieldName);
-			$primaryGetterName = phpClassGenerator::formatPropertyName('get_'.$primaryFieldName);
-			$relatedPropertyGetterName = phpClassGenerator::formatPropertyName('get_'.$relation[$a]['relatedPropertyName']);
-
-			$this->_append('if($name == \''.$relatedObjectName.'\'){');
-			$this->_append('if(!$this->_'.$relatedObjectName.'){');
-	//		$this->_append('#n, m mode');
-	//		$this->_append('//$name == \'category_collection\'');
-	//		$this->_append('//$this->_category = new category_collection();');
-	//		$this->_append('//$this->_category->select(\'select category_id from category where\')');
-			$this->_append('#1, n mode');
-			$this->_append('$'.$primaryVarName.' = $this->'.$primaryGetterName.'();');
-			$this->_append('$this->_'.$relatedObjectName.' = new '.$relatedObjectName.'($'.$primaryVarName.');');
-			$this->_append('}');
-			$this->_append('elseif(is_object($this->_'.$relatedObjectName.')){');
-			$this->_append('if($this->_'.$relatedObjectName.'->'.$relatedPropertyGetterName.'() != $this->'.$primaryGetterName.'()){');
-			$this->_append('$'.$primaryVarName.' = $this->'.$primaryGetterName.'();');
-			$this->_append('$this->_'.$relatedObjectName.' = new '.$relatedObjectName.'($'.$primaryVarName.');');
-			$this->_append('}');
-			$this->_append('}');
-			$this->_append('return $this->_'.$relatedObjectName.';');
-			$this->_append('}');
+			//Zend_Debug::Dump($relation[$a]);
+			#1,n or 1,1 relation
+			if($relation[$a]['object'] == $this->getName()){
+				if($relation[$a]['relationType'] == '1:n'){
+					$relatedObjectName = $relation[$a]['relatedObject'];
+					$primaryFieldName = $relation[$a]['toField'];
+					$primaryVarName = phpClassGenerator::formatPropertyName($primaryFieldName);
+					$primaryGetterName = phpClassGenerator::formatPropertyName('get_'.$primaryFieldName);
+					$relatedPropertyGetterName = phpClassGenerator::formatPropertyName('get_'.$relation[$a]['relatedPropertyName']);
+		
+					$this->_append('if($name == \''.$relatedObjectName.'\'){');
+					$this->_append('if(!$this->_'.$relatedObjectName.'){');
+			//		$this->_append('#n, m mode');
+			//		$this->_append('//$name == \'category_collection\'');
+			//		$this->_append('//$this->_category = new category_collection();');
+			//		$this->_append('//$this->_category->select(\'select category_id from category where\')');
+					$this->_append('#1, n mode');
+					$this->_append('$'.$primaryVarName.' = $this->'.$primaryGetterName.'();');
+					$this->_append('$this->_'.$relatedObjectName.' = new '.$relatedObjectName.'($'.$primaryVarName.');');
+					$this->_append('}');
+					$this->_append('elseif(is_object($this->_'.$relatedObjectName.')){');
+					$this->_append('if($this->_'.$relatedObjectName.'->'.$relatedPropertyGetterName.'() != $this->'.$primaryGetterName.'()){');
+					$this->_append('$'.$primaryVarName.' = $this->'.$primaryGetterName.'();');
+					$this->_append('$this->_'.$relatedObjectName.' = new '.$relatedObjectName.'($'.$primaryVarName.');');
+					$this->_append('}');
+					$this->_append('}');
+					$this->_append('return $this->_'.$relatedObjectName.';');
+					$this->_append('}');
+				}
+				elseif ($relation[$a]['relationType'] == 'n:m'){
+					
+				}
+			}
 		}
 		$this->_append('throw new Exception("Try to access to an unknown property");');
 		$this->_append('}');

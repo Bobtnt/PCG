@@ -69,11 +69,16 @@ class phpClassGenerator extends configObjectAbstract {
 		$table = new blankTable(array('name' => $tableName, 'db' => self::$db));
 		$infos = $table->info();
 		$primary = $infos['primary'][1];
+		$mnFlag = false;
+		//check for relation table
+		if(preg_match('#(.+)_has_(.+)#', $tableName)){
+			$mnFlag = true;
+		}
 		
 		if(!$primary){
 			//CANNOT Create Object without Primary Key
 			return false;
-		}		
+		}
 		
 		if(!$objectName){
 			$objectName = $tableName;
@@ -89,6 +94,11 @@ class phpClassGenerator extends configObjectAbstract {
 		self::$objects[$objectKey]['object']->setTableName($tableName);
 		$oneLocalfieldAtLeast = false;
 		$nb = count($infos['cols']);
+		
+		
+		
+		
+		
 		for ($a = 0 ; $a < $nb ; $a++) {
 			$propertyName = null;
 			$column = $infos['cols'][$a];
@@ -102,8 +112,9 @@ class phpClassGenerator extends configObjectAbstract {
 			}
 			else{
 				$propertyName = self::formatPropertyName($column);
-				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName);
+				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName, 'relationType' => ($mnFlag ? 'n:m': '1:n'));
 			}
+			Zend_Debug::Dump($propertyName);
 			self::$objects[$objectKey]['object']->addProperty($propertyName, 
 															array(
 															'default' => $infos['metadata'][$column]['DEFAULT'],
@@ -112,17 +123,17 @@ class phpClassGenerator extends configObjectAbstract {
 															'primary' => ($primary == $column ? true:false)
 															));	
 		}
-		if(!$oneLocalfieldAtLeast){
+		//if(!$oneLocalfieldAtLeast){
 			//no local field on table. do not create object
 			//may be a n,m link table
-			return false;	 
-		}
-		else{
-			//Set object wich will be manipulate by the manager
-			self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
-			//set object wich will be manipulate by the colection
-			self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
-		}
+			//return false;	 
+		//}
+		//else{
+		//Set object wich will be manipulate by the manager
+		self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
+		//set object wich will be manipulate by the colection
+		self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
+		//}
 		return true;
 	}
 	
@@ -137,13 +148,13 @@ class phpClassGenerator extends configObjectAbstract {
 	}
 	
 	static function make($strObject, $strObjectManager, $strObjectCollection, $objectName){
-		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'.php', "x+");
+		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'.php', "w+");
 		fwrite($f, $strObject);
 		fclose($f);
-		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_manager.php', "x+");
+		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_manager.php', "w+");
 		fwrite($f, $strObjectManager);
 		fclose($f);
-		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_collection.php', "x+");
+		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_collection.php', "w+");
 		fwrite($f, $strObjectCollection);
 		fclose($f);
 	}
