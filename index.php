@@ -12,6 +12,9 @@ function __autoload($className){
 	if(is_file('lib/class.'.$className.'.php')){
 		require_once 'lib/class.'.$className.'.php';
 	}
+	elseif(is_file('out/class.'.$className.'.php')){
+		require_once 'out/class.'.$className.'.php';
+	}
 	elseif($className == 'Zend_Loader'){
 		require_once 'Zend/Loader.php';
 	}
@@ -23,10 +26,14 @@ function __autoload($className){
 phpClassGenerator::factory();
 phpClassGenerator::listTable();
 phpClassGenerator::makeAllObjects();
+phpClassGenerator::makeAll();
 
-Zend_Debug::dump(phpClassGenerator::$relatedField);
 //$tables = phpClassGenerator::listTable();
-//phpClassGenerator::createObjects($tables[0]['name']);
+////Zend_Debug::dump($tables);
+//phpClassGenerator::createObjects("bug");
+//Zend_Debug::dump(phpClassGenerator::$relatedField);
+
+
 
 
 

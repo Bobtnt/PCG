@@ -73,8 +73,7 @@ class phpClassGenerator extends configObjectAbstract {
 		if(!$primary){
 			//CANNOT Create Object without Primary Key
 			return false;
-		}
-		
+		}		
 		
 		if(!$objectName){
 			$objectName = $tableName;
@@ -103,7 +102,7 @@ class phpClassGenerator extends configObjectAbstract {
 			}
 			else{
 				$propertyName = self::formatPropertyName($column);
-				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column);
+				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName);
 			}
 			self::$objects[$objectKey]['object']->addProperty($propertyName, 
 															array(
@@ -118,16 +117,23 @@ class phpClassGenerator extends configObjectAbstract {
 			//may be a n,m link table
 			return false;	 
 		}
-		//Set object wich will be manipulate by the manager
-		self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
-		//set object wich will be manipulate by the colection
-		self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
-		
-		$strObject = self::$objects[$objectKey]['object']->generate();
-		$strObjectManager = self::$objects[$objectKey]['objectManager']->generate();
-		$strObjectCollection = self::$objects[$objectKey]['objectCollection']->generate();
-		self::make($strObject, $strObjectManager, $strObjectCollection, $objectName);
+		else{
+			//Set object wich will be manipulate by the manager
+			self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
+			//set object wich will be manipulate by the colection
+			self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
+		}
 		return true;
+	}
+	
+	static function makeAll(){
+		foreach (self::$objects as $object) {
+			$objectName = $object['object']->getName();
+			$strObject = $object['object']->generate();
+			$strObjectManager = $object['objectManager']->generate();
+			$strObjectCollection = $object['objectCollection']->generate();
+			self::make($strObject, $strObjectManager, $strObjectCollection, $objectName);
+		}
 	}
 	
 	static function make($strObject, $strObjectManager, $strObjectCollection, $objectName){
