@@ -71,9 +71,11 @@ class phpClassGenerator extends configObjectAbstract {
 		$primary = $infos['primary'][1];
 		$flag['nm'] = false;
 		$flag['11'] = false;
+		$flag['make'] = true;
 		
 		//check for relation table
 		if(preg_match('#(.+)_has_(.+)#', $tableName)){
+			$flag['make'] = false;
 			//its relation table. Now determine what relation type is it.
 			//if all columns are primary, its a n:m table
 			if(count($infos['cols']) == count($infos['primary'])){
@@ -92,16 +94,15 @@ class phpClassGenerator extends configObjectAbstract {
 		if(!$objectName){
 			$objectName = $tableName;
 		}
-		
 		self::$objects[] = array('objectName' => $objectName,
 								 'object' => new phpGenObject(),
 								 'objectManager' => new phpGenObjectManager(),
-								 'objectCollection' => new phpGenObjectCollection());
+								 'objectCollection' => new phpGenObjectCollection(),
+								 'make' => $flag['make']);
 		
 		$objectKey = (count(self::$objects) - 1);
 		self::$objects[$objectKey]['object']->setName($objectName);
 		self::$objects[$objectKey]['object']->setTableName($tableName);
-		//$oneLocalfieldAtLeast = false;
 		$nb = count($infos['cols']);
 		for ($a = 0 ; $a < $nb ; $a++) {
 			$propertyName = null;
@@ -121,12 +122,21 @@ class phpClassGenerator extends configObjectAbstract {
 				}
 				elseif($flag['11']){
 					$relation = '1:1';
+					$_o = self::getObjectByTableName($tableName);
+					$_o->addProperty($propertyName, 
+										array(
+										'default' => $infos['metadata'][$column]['DEFAULT'],
+										'type' => $infos['metadata'][$column]['DATA_TYPE'],
+										'fieldName' => $column,
+										'primary' => ($primary == $column ? true:false)
+										));	
 				}
 				else{
 					$relation = '1:n';
 				}
 				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName, 'relationType' => $relation);
 			}
+			
 			self::$objects[$objectKey]['object']->addProperty($propertyName, 
 															array(
 															'default' => $infos['metadata'][$column]['DEFAULT'],
@@ -135,18 +145,34 @@ class phpClassGenerator extends configObjectAbstract {
 															'primary' => ($primary == $column ? true:false)
 															));	
 		}
-		//if(!$oneLocalfieldAtLeast){
-			//no local field on table. do not create object
-			//may be a n,m link table
-			//return false;	 
-		//}
-		//else{
+		
 		//Set object wich will be manipulate by the manager
 		self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
 		//set object wich will be manipulate by the colection
 		self::$objects[$objectKey]['objectCollection']->setObject(self::$objects[$objectKey]['object']);
-		//}
 		return true;
+	}
+
+	static function getObjectByName($name){
+		$findKey = false;
+		foreach (self::$objects as $key => $subArray) {
+			if($subArray['objectName'] == $name){
+				$findKey = $key;
+				break;
+			}
+		}
+		return $findKey !== 0 ? self::$objects[$findKey]['object'] : false;
+	}
+	
+	static function getObjectByTableName($tableName){
+		$findKey = false;
+		foreach (self::$objects as $key => $subArray) {
+			if($subArray['object']->getTableName() == $tableName){
+				$findKey = $key;
+				break;
+			}
+		}
+		return $findKey !== 0 ? self::$objects[$findKey]['object'] : false;
 	}
 	
 	static function makeAll(){
@@ -155,7 +181,9 @@ class phpClassGenerator extends configObjectAbstract {
 			$strObject = $object['object']->generate();
 			$strObjectManager = $object['objectManager']->generate();
 			$strObjectCollection = $object['objectCollection']->generate();
-			self::make($strObject, $strObjectManager, $strObjectCollection, $objectName);
+			if($object['make']){
+				self::make($strObject, $strObjectManager, $strObjectCollection, $objectName);
+			}
 		}
 	}
 	

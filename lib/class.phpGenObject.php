@@ -455,11 +455,11 @@ class phpGenObject extends configObjectAbstract {
 						$this->_append('}');
 						$this->_append('return $this->_'.$relatedObjectName.';');
 						$this->_append('}');
-						
-						Zend_Debug::Dump($relation[$a]);
-						Zend_Debug::Dump($relation);
-						Zend_Debug::Dump(phpClassGenerator::$objects);
-						exit();
+//						
+//						Zend_Debug::Dump($relation[$a]);
+//						Zend_Debug::Dump($relation);
+//						Zend_Debug::Dump(phpClassGenerator::$objects);
+//						exit();
 					}
 					else{
 						
