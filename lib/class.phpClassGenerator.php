@@ -69,10 +69,19 @@ class phpClassGenerator extends configObjectAbstract {
 		$table = new blankTable(array('name' => $tableName, 'db' => self::$db));
 		$infos = $table->info();
 		$primary = $infos['primary'][1];
-		$mnFlag = false;
+		$flag['nm'] = false;
+		$flag['11'] = false;
+		
 		//check for relation table
 		if(preg_match('#(.+)_has_(.+)#', $tableName)){
-			$mnFlag = true;
+			//its relation table. Now determine what relation type is it.
+			//if all columns are primary, its a n:m table
+			if(count($infos['cols']) == count($infos['primary'])){
+				$flag['nm'] = true;
+			}
+			else{
+				$flag['11'] = true;
+			}
 		}
 		
 		if(!$primary){
@@ -92,13 +101,8 @@ class phpClassGenerator extends configObjectAbstract {
 		$objectKey = (count(self::$objects) - 1);
 		self::$objects[$objectKey]['object']->setName($objectName);
 		self::$objects[$objectKey]['object']->setTableName($tableName);
-		$oneLocalfieldAtLeast = false;
+		//$oneLocalfieldAtLeast = false;
 		$nb = count($infos['cols']);
-		
-		
-		
-		
-		
 		for ($a = 0 ; $a < $nb ; $a++) {
 			$propertyName = null;
 			$column = $infos['cols'][$a];
@@ -106,15 +110,23 @@ class phpClassGenerator extends configObjectAbstract {
 			$localField = false;
 			$localField = preg_match('#^'.$objectName.'_#', $column);
 			if($localField){
-				$oneLocalfieldAtLeast = true;
+				//$oneLocalfieldAtLeast = true;
 				$propertyName = ereg_replace('^('.$objectName.'_)', '', $column);
 				$propertyName = self::formatPropertyName($propertyName);			
 			}
 			else{
 				$propertyName = self::formatPropertyName($column);
-				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName, 'relationType' => ($mnFlag ? 'n:m': '1:n'));
+				if($flag['nm']){
+					$relation = 'n:m';
+				}
+				elseif($flag['11']){
+					$relation = '1:1';
+				}
+				else{
+					$relation = '1:n';
+				}
+				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName, 'relationType' => $relation);
 			}
-			Zend_Debug::Dump($propertyName);
 			self::$objects[$objectKey]['object']->addProperty($propertyName, 
 															array(
 															'default' => $infos['metadata'][$column]['DEFAULT'],
