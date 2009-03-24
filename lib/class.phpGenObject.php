@@ -434,23 +434,20 @@ class phpGenObject extends configObjectAbstract {
 						$relatedObjectName = $relation[$a]['relatedObject'];
 						$propertyName = $relation[$a]['relatedPropertyName']; 					// _property
 						$calledPropertyName = substr($relation[$a]['relatedPropertyName'],1); 	// property
-						$primaryFieldName = $this->getPrimaryKeyName();							// id
-						$primaryVarName = phpClassGenerator::formatPropertyName($primaryFieldName); //id :-)
-						$primaryGetterName = phpClassGenerator::formatPropertyName('get_'.$primaryFieldName); // getId
+						$relatedObject = phpClassGenerator::getObjectByName($relatedObjectName);
+						$relatedPropertyGetterName = phpClassGenerator::formatPropertyName('get_'.$relatedObject->getPrimaryKeyName());
 						
-						//$relatedPropertyGetterName = phpClassGenerator::formatPropertyName('get_'.$relation[$a]['relatedPropertyName']);
 						
 						$this->_append('if($name == \''.$calledPropertyName.'\'){');
 						$this->_append('if(!$this->'.$propertyName.'){');
 						$this->_append('#1:1 mode');						
-						$this->_append('$'.$primaryVarName.' = $this->'.$primaryGetterName.'();');
-						
-						$this->_append('$this->'.$propertyName.' = new '.$relatedObjectName.'($'.$primaryVarName.');');
+						$this->_append('$'.$calledPropertyName.' = $this->'.$calledPropertyName.';');
+						$this->_append('$this->'.$propertyName.' = new '.$relatedObjectName.'($'.$calledPropertyName.');');
 						$this->_append('}');
-						$this->_append('elseif(is_object($this->_'.$relatedObjectName.')){');
-						$this->_append('if($this->_'.$relatedObjectName.'->'.$relatedPropertyGetterName.'() != $this->'.$primaryGetterName.'()){');
-						$this->_append('$'.$primaryVarName.' = $this->'.$primaryGetterName.'();');
-						$this->_append('$this->_'.$relatedObjectName.' = new '.$relatedObjectName.'($'.$primaryVarName.');');
+						$this->_append('elseif(is_object($this->'.$propertyName.')){');
+						$this->_append('if($this->'.$propertyName.'->'.$relatedPropertyGetterName.'() != $this->'.$calledPropertyName.'()){');
+						$this->_append('$'.$calledPropertyName.' = $this->'.$calledPropertyName.';');
+						$this->_append('$this->'.$propertyName.' = new '.$relatedObjectName.'($'.$calledPropertyName.');');
 						$this->_append('}');
 						$this->_append('}');
 						$this->_append('return $this->_'.$relatedObjectName.';');
@@ -460,9 +457,6 @@ class phpGenObject extends configObjectAbstract {
 //						Zend_Debug::Dump($relation);
 //						Zend_Debug::Dump(phpClassGenerator::$objects);
 //						exit();
-					}
-					else{
-						
 					}
 				}					
 			}

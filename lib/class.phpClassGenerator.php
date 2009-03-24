@@ -72,9 +72,9 @@ class phpClassGenerator extends configObjectAbstract {
 		$flag['nm'] = false;
 		$flag['11'] = false;
 		$flag['make'] = true;
-		
+		$matches = array();
 		//check for relation table
-		if(preg_match('#(.+)_has_(.+)#', $tableName)){
+		if(preg_match('#(.+)_has_(.+)#', $tableName, $matches)){
 			$flag['make'] = false;
 			//its relation table. Now determine what relation type is it.
 			//if all columns are primary, its a n:m table
@@ -83,6 +83,8 @@ class phpClassGenerator extends configObjectAbstract {
 			}
 			else{
 				$flag['11'] = true;
+				$srcTable = $matches[1];
+				$linkedTable = $matches[2];
 			}
 		}
 		
@@ -122,7 +124,7 @@ class phpClassGenerator extends configObjectAbstract {
 				}
 				elseif($flag['11']){
 					$relation = '1:1';
-					$_o = self::getObjectByTableName($tableName);
+					$_o = self::getObjectByTableName($linkedTable);
 					$_o->addProperty($propertyName, 
 										array(
 										'default' => $infos['metadata'][$column]['DEFAULT'],
