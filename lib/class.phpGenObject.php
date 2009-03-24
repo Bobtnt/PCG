@@ -173,6 +173,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('if('.$inputVar.'){');
 		$this->_append('$this->'.phpClassGenerator::formatPropertyName('set_'.$primary).'('.$inputVar.');');
 		$this->_append($this->name.'_manager::build($this);');
+		$this->_append('$this->resetModifier();');
 		$this->_append('}');
 		$this->_append('if($context){');
 		$this->_append('$this->context = $context;');
@@ -331,7 +332,6 @@ class phpGenObject extends configObjectAbstract {
 						phpClassGenerator::$relatedField[$a]['relatedObject'] = $linkedObject->getName();
 						phpClassGenerator::$relatedField[$a]['relatedPropertyName'] = null;
 						phpClassGenerator::$relatedField[$a]['relationType'] = '1:1';
-						
 					}
 					//else is the linked object
 					else{
@@ -450,7 +450,7 @@ class phpGenObject extends configObjectAbstract {
 						$this->_append('$this->'.$propertyName.' = new '.$relatedObjectName.'($'.$calledPropertyName.');');
 						$this->_append('}');
 						$this->_append('}');
-						$this->_append('return $this->_'.$relatedObjectName.';');
+						$this->_append('return $this->'.$propertyName.';');
 						$this->_append('}');
 //						
 //						Zend_Debug::Dump($relation[$a]);

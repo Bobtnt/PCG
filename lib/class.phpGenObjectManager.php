@@ -110,7 +110,38 @@ class phpGenObjectManager extends configObjectAbstract {
 		$_tmp = $this->object->getProperty($primary);
 		$fieldName = $_tmp["fieldName"];
 		$fields = $this->object->getProperties();
-		$this->_append('$ressource = self::$db->query("SELECT * FROM '.$this->tableName.' WHERE '.$fieldName.' = ".$'.$this->baseName.'->'.$this->primaryGetter.'());');
+		$this->_append('$ressource = self::$db->query("SELECT * FROM '.$this->tableName.' ');
+		
+		//add relation in build fonction 
+		
+		$relation = phpClassGenerator::$relatedField;
+		$nb = count($relation);
+		for ($a = 0 ; $a < $nb ; $a++){
+			if(array_key_exists('relationType', phpClassGenerator::$relatedField[$a]) && phpClassGenerator::$relatedField[$a]['relationType'] == '1:1'){
+				//in this mode the're one direct column linked and all other int column are object of linked table (srctable)_has_(linkedtable)
+				$matches = array();
+				preg_match("#(.+)_has_(.+)#",$relation[$a]['fromTable'], $matches);
+				$srcTable = $matches[1];
+				$linkedTable = $matches[2];
+				//search which objects match with table name
+				foreach (phpClassGenerator::$objects as $objects) {
+					if($objects['object']->getTableName() == $srcTable){
+						$srcObject =  $objects['object'];
+					}
+					if($objects['object']->getTableName() == $linkedTable){
+						$linkedObject =  $objects['object'];
+					}					
+				}
+				//check if we are in scr object else do nothing
+				if($srcObject->getName() == $this->object->getName()){
+					//now match if the field is the foreign key
+					if(preg_match('#^'.$srcTable.'#',$relation[$a]['toField'])){
+						$this->_append('NATURAL LEFT OUTER JOIN '.$relation[$a]['fromTable'].' ');
+					}
+				}
+			}
+		}
+		$this->_append('WHERE '.$fieldName.' = ".$'.$this->baseName.'->'.$this->primaryGetter.'());');
 		//$this->_append('$results = self::$db->fetchArray();');
 		$this->_append('$results = $ressource->fetchAll();');
 		$this->_append('$results = $results[0];');

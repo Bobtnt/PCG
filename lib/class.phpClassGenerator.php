@@ -59,7 +59,7 @@ class phpClassGenerator extends configObjectAbstract {
 	}
 	
 	/**
-	 * Create object and object manager in out folder 
+	 * Create objects form table in out folder 
 	 *
 	 * @param string $tableName
 	 * @param [string] $objectName
@@ -124,6 +124,8 @@ class phpClassGenerator extends configObjectAbstract {
 				}
 				elseif($flag['11']){
 					$relation = '1:1';
+					//if not pk
+					if($column != $primary){
 					$_o = self::getObjectByTableName($linkedTable);
 					$_o->addProperty($propertyName, 
 										array(
@@ -132,6 +134,7 @@ class phpClassGenerator extends configObjectAbstract {
 										'fieldName' => $column,
 										'primary' => ($primary == $column ? true:false)
 										));	
+					}
 				}
 				else{
 					$relation = '1:n';
