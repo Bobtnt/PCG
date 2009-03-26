@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Lun 23 Mars 2009 à 18:18
+-- Généré le : Jeu 26 Mars 2009 à 12:01
 -- Version du serveur: 5.1.30
 -- Version de PHP: 5.2.8
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `bug` (
   `bug_priority` enum('low','high','medium') NOT NULL,
   `category_id` int(11) NOT NULL DEFAULT '3',
   PRIMARY KEY (`bug_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=177 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=183 ;
 
 --
 -- Contenu de la table `bug`
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `bug` (
 INSERT INTO `bug` (`bug_id`, `bug_subject`, `bug_description`, `bug_priority`, `category_id`) VALUES
 (1, 'Migrer statut Flux ', 'desc test 1814', 'low', 3),
 (2, 'rapport entreprise rapport ', 'desc test 1916', 'low', 3),
-(3, 'entreprise Accès sites ', 'desc test 1001', 'low', 3),
+(3, 'entreprise Accès sites ', 'tutututu', 'low', 3),
 (4, 'rapport Modification Accès ', 'desc test 1715', 'low', 3),
 (5, 'Création nom de domaine Création ', 'desc test 399', 'low', 3),
 (6, 'statut Technique provenant ', 'desc test 1500', 'low', 1),
@@ -214,7 +214,13 @@ INSERT INTO `bug` (`bug_id`, `bug_subject`, `bug_description`, `bug_priority`, `
 (173, 'Modification bug Gestion ', 'desc test 649', 'low', 3),
 (174, 'table Migrer statut ', 'desc test 1809', 'low', 3),
 (175, 'entreprise Mettre à jour Mettre à jour ', 'desc test 1204', 'low', 3),
-(176, 'Modification entreprise Technique ', 'desc test 1376', 'low', 3);
+(176, 'Modification entreprise Technique ', 'desc test 1376', 'low', 3),
+(177, 'new bug', 'My description !', '', 3),
+(178, 'new bug', 'My description !', '', 3),
+(179, 'new bug', 'My description !', '', 3),
+(180, 'new bug', 'My description !', '', 3),
+(181, 'new bug', 'My description !', '', 3),
+(182, 'new bug', 'My description !', '', 3);
 
 -- --------------------------------------------------------
 
@@ -234,6 +240,12 @@ CREATE TABLE IF NOT EXISTS `bug_has_user` (
 -- Contenu de la table `bug_has_user`
 --
 
+INSERT INTO `bug_has_user` (`bug_id`, `reported_by`, `created_by`, `verified_by`) VALUES
+(3, 2, 3, 4),
+(179, 1, 3, 2),
+(180, 1, 3, 2),
+(181, 1, 3, 2),
+(182, 1, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -259,6 +271,47 @@ INSERT INTO `category` (`category_id`, `category_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `groups`
+--
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `groups_id` int(1) NOT NULL AUTO_INCREMENT,
+  `groups_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`groups_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `groups`
+--
+
+INSERT INTO `groups` (`groups_id`, `groups_name`) VALUES
+(1, 'group 1'),
+(2, 'group 2');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `groups_has_user`
+--
+
+CREATE TABLE IF NOT EXISTS `groups_has_user` (
+  `groups_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`groups_id`,`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED;
+
+--
+-- Contenu de la table `groups_has_user`
+--
+
+INSERT INTO `groups_has_user` (`groups_id`, `user_id`) VALUES
+(1, 1),
+(1, 2),
+(2, 3);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `user`
 --
 
@@ -267,9 +320,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_short_name` varchar(255) NOT NULL,
   `user_full_name` varchar(255) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Contenu de la table `user`
 --
 
+INSERT INTO `user` (`user_id`, `user_short_name`, `user_full_name`) VALUES
+(1, 'toto', 'Totochelli'),
+(2, 'tutu', 'Turlututu'),
+(3, 'titi', 'Titirominet'),
+(4, 'tata', 'Tantine');
