@@ -113,7 +113,6 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('$ressource = self::$db->query("SELECT * FROM '.$this->tableName.' ');
 		
 		//add relation in build fonction 
-		
 		$relation = phpClassGenerator::$relatedField;
 		$nb = count($relation);
 		for ($a = 0 ; $a < $nb ; $a++){
@@ -174,16 +173,54 @@ class phpGenObjectManager extends configObjectAbstract {
 		$setPrimaryKeyFunction = $this->primarySetter; 
 		#CASE UPDATE ROW
 		$this->_append('if($'.$this->baseName.'->'.$getPrimaryKeyFunction.'()){');
-		$this->_append('$update = "UPDATE '.$this->tableName.' SET ";');
+		//add relation in save fonction 
+		$relation = phpClassGenerator::$relatedField;
+		$nb = count($relation);
+		$related11tables = array();
+		for ($a = 0 ; $a < $nb ; $a++){
+			if(array_key_exists('relationType', phpClassGenerator::$relatedField[$a]) && phpClassGenerator::$relatedField[$a]['relationType'] == '1:1'){
+				//in this mode the're one direct column linked and all other int column are object of linked table (srctable)_has_(linkedtable)
+				$matches = array();
+				preg_match("#(.+)_has_(.+)#",$relation[$a]['fromTable'], $matches);
+				$srcTable = $matches[1];
+				$linkedTable = $matches[2];
+				//search which objects match with table name
+				foreach (phpClassGenerator::$objects as $objects) {
+					if($objects['object']->getTableName() == $srcTable){
+						$srcObject =  $objects['object'];
+					}
+					if($objects['object']->getTableName() == $linkedTable){
+						$linkedObject =  $objects['object'];
+					}					
+				}
+				//check if we are in scr object else do nothing
+				if($srcObject->getName() == $this->object->getName()){
+					//now match if the field is the foreign key
+					//if(preg_match('#^'.$srcTable.'#',$relation[$a]['toField'])){
+					// add table name in key, for unique naming
+					
+					$related11tables[$relation[$a]['fromTable']][] = $relation[$a];
+					//}
+				}
+			}
+		}
+		
+		$this->_append('$update = "UPDATE '.$this->tableName.' ');
+		foreach ($related11tables as $tableName => $foreignFields) {
+			$this->_append(','.$tableName);;
+		}
+			
+		$this->_append(' SET ";');
 		$this->_append('$_update = array();');
 		$i=0;
-		foreach ($fields as $propertyName => $params){					
+		foreach ($fields as $propertyName => $params){
 			if(!$params['primary']){
 				$this->_append('if($'.$this->baseName.'->getModifier(\''.$propertyName.'\')){');
 				$this->_append('$_update[] = "'.$params['fieldName'].' = \'".$'.$this->baseName.'->'. phpClassGenerator::formatPropertyName('get_'.$propertyName).'()."\'";');
 				$this->_append('}');
 				$i++;	
-			}else{
+			}
+			else{
 				$primaryKeyField = $params['fieldName'];
 			}
 		}
@@ -191,7 +228,12 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('for($a=0; $a < count($_update);$a++){');
 		$this->_append('$update .= ($a === 0 ? "" : ",").$_update[$a];');
 		$this->_append('}');
-		$this->_append('$update .= " WHERE '.$primaryKeyField.' = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'();');
+		$this->_append('$update .= " WHERE '.$this->tableName.'.'.$primaryKeyField.' = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'();');
+		
+		foreach ($related11tables as $tableName => $foreignFields) {
+			$this->_append('$update .= " AND '.$tableName.'.'.$primaryKeyField.' = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'();');
+		}
+		
 		$this->_append('self::$db->query($update);');
 		$this->_append('}');
 		$this->_append('}');
@@ -201,7 +243,7 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('else{');
 		$i=0;
 		foreach ($fields as $propertyName => $params){					
-			if(!$params['primary']){
+			if(!$params['primary'] && !$params['foreignField']){
 				$listFields .= ($i === 0 ? '' : ',').$params['fieldName'];
 				$listFieldsValue .= ($i === 0 ? '' : ',');
 				$listFieldsValue .= "'\".$".$this->baseName."->".phpClassGenerator::formatPropertyName('get_'.$propertyName)."().\"'";
@@ -213,7 +255,36 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append(') VALUES (');
 		$this->_append($listFieldsValue);
 		$this->_append(')");');
+		
 		$this->_append('self::$'.$this->baseName.'->'.$setPrimaryKeyFunction.'(self::$db->lastInsertId());');
+		//now INSERT for 1:1 relationship
+		$i=0;
+		foreach ($related11tables as $tableName => $foreignFields) {
+			if($i === 0){
+				$listForeignFields = '';
+				$listForeignFieldsValue = '';
+			}
+			$this->_append('self::$db->query("INSERT INTO '.$tableName.' (');
+			$nb = count($foreignFields);
+			for ($a = 0 ; $a < $nb ; $a++) {
+				$listForeignFields .= ($a === 0 ? '' : ',').$foreignFields[$a]['toField'];
+				if($foreignFields[$a]['relatedPropertyName']){
+					$listForeignFieldsValue .= ($a === 0 ? '' : ',')."'\".$".$this->baseName."->".phpClassGenerator::formatPropertyName('get_'.$foreignFields[$a]['toField'])."().\"'";
+				}
+				else{
+					$listForeignFieldsValue .= ($a === 0 ? '' : ',')."'\".$".$this->baseName."->".$getPrimaryKeyFunction."().\"'";
+				}
+			}
+			$this->_append($listForeignFields.') VALUES ('.$listForeignFieldsValue.')');
+			$this->_append('");');
+			$i++;
+			if(count($tableName) == $i){
+				$i=0;
+			}
+		}
+		
+		
+		
 		$this->_append('}');		
 		$this->_append('}');
 	}

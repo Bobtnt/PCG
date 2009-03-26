@@ -81,6 +81,7 @@ class phpClassGenerator extends configObjectAbstract {
 			if(count($infos['cols']) == count($infos['primary'])){
 				$flag['nm'] = true;
 			}
+			//else it's 1:1 relation
 			else{
 				$flag['11'] = true;
 				$srcTable = $matches[1];
@@ -126,14 +127,16 @@ class phpClassGenerator extends configObjectAbstract {
 					$relation = '1:1';
 					//if not pk
 					if($column != $primary){
-					$_o = self::getObjectByTableName($linkedTable);
-					$_o->addProperty($propertyName, 
-										array(
-										'default' => $infos['metadata'][$column]['DEFAULT'],
-										'type' => $infos['metadata'][$column]['DATA_TYPE'],
-										'fieldName' => $column,
-										'primary' => ($primary == $column ? true:false)
-										));	
+						// catch the foreign object and add this 1:1 relationship property
+						$_o = self::getObjectByTableName($linkedTable);
+						$_o->addProperty($propertyName, 
+											array(
+											'default' => $infos['metadata'][$column]['DEFAULT'],
+											'type' => $infos['metadata'][$column]['DATA_TYPE'],
+											'fieldName' => $column,
+											'primary' => ($primary == $column ? true:false),
+											'foreignField' => true 
+											));	
 					}
 				}
 				else{
@@ -141,13 +144,13 @@ class phpClassGenerator extends configObjectAbstract {
 				}
 				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName, 'relationType' => $relation);
 			}
-			
 			self::$objects[$objectKey]['object']->addProperty($propertyName, 
 															array(
 															'default' => $infos['metadata'][$column]['DEFAULT'],
 															'type' => $infos['metadata'][$column]['DATA_TYPE'],
 															'fieldName' => $column,
-															'primary' => ($primary == $column ? true:false)
+															'primary' => ($primary == $column ? true:false),
+															'foreignField' => false 
 															));	
 		}
 		

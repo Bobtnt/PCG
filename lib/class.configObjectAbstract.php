@@ -34,10 +34,8 @@ abstract class configObjectAbstract {
 		if(preg_match('#\{$#', trim($code))){
 			$this->internalLevel++;
 		}
-		
-		
-		
-		
+		//usefull for debuging
+		return $indentedCode.self::NL;
 	}
 	
 	
