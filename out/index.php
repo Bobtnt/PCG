@@ -145,12 +145,16 @@ $bug->setSubject('new bug')->setDescription('My description !')->setReportedBy(1
 $newbugid = $bug->getId();
 Zend_Debug::Dump($bug->reportedBy->getId());
 unset($bug);
+
+
 $bug = new bug($newbugid);
 Zend_Debug::Dump($bug->reportedBy->getId());
 echo '<hr>';
 
 $group = new groups(1);
-Zend_Debug::Dump($group);
+
+Zend_Debug::Dump($group->users);
+
 
 
 
