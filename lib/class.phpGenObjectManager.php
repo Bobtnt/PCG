@@ -56,11 +56,11 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('/**');
 		$this->_append(' * '.$this->name.' manager object');
 		$this->_append(' **/');
-		$this->_append('class '.$this->name.' {');
+		$this->_append('class '.$this->name.' '.(phpClassGenerator::$userZendLoader ? 'extends '.$this->name.'_custom' : '').' {');
 		$this->_append();
 		$this->_append('private static $db; //DATABASE CONNECTOR');
 		$this->_append('private static $'.$this->baseName.'; //USED OBJECT');
-		$this->_append('private static $context; //context of bugs object');
+		$this->_append('private static $context; //context of object');
 		$this->_append();
 	}
 	
@@ -128,7 +128,7 @@ class phpGenObjectManager extends configObjectAbstract {
 						$srcObject =  $objects['object'];
 					}
 					if($objects['object']->getTableName() == $linkedTable){
-						$linkedObject =  $objects['object'];
+						$linkedObject = $objects['object'];
 					}					
 				}
 				//check if we are in scr object else do nothing

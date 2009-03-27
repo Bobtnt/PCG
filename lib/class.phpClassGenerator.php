@@ -21,6 +21,8 @@ class phpClassGenerator extends configObjectAbstract {
 	static $objects = array();
 	static $relatedField = array();
 	
+	static $userZendLoader = false;
+	
 	/**
 	 * initialize database connection
 	 *
@@ -190,23 +192,71 @@ class phpClassGenerator extends configObjectAbstract {
 			$strObjectManager = $object['objectManager']->generate();
 			$strObjectCollection = $object['objectCollection']->generate();
 			if($object['make']){
-				self::make($strObject, $strObjectManager, $strObjectCollection, $objectName);
+				self::make($strObject, $strObjectManager, $strObjectCollection, $objectName, true);
 			}
 		}
 	}
 	
 	static function make($strObject, $strObjectManager, $strObjectCollection, $objectName){
-		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'.php', "w+");
-		fwrite($f, $strObject);
-		fclose($f);
-		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_manager.php', "w+");
-		fwrite($f, $strObjectManager);
-		fclose($f);
-		$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_collection.php', "w+");
-		fwrite($f, $strObjectCollection);
-		fclose($f);
+		$userZendLoader = self::$userZendLoader;
+		if(!$userZendLoader){
+			$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'.php', "w+");
+			fwrite($f, $strObject);
+			fclose($f);
+			$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_manager.php', "w+");
+			fwrite($f, $strObjectManager);
+			fclose($f);
+			$f = fopen(self::OUTPUT_FOLDER.'/class.'.$objectName.'_collection.php', "w+");
+			fwrite($f, $strObjectCollection);
+			fclose($f);
+		}
+		else{
+			@mkdir(self::OUTPUT_FOLDER.'/'.$objectName);
+			$f = fopen(self::OUTPUT_FOLDER.'/'.$objectName.'.php', "w+");
+			fwrite($f, $strObject);
+			fclose($f);
+			$f = fopen(self::OUTPUT_FOLDER.'/'.$objectName.'/manager.php', "w+");
+			fwrite($f, $strObjectManager);
+			fclose($f);
+			$f = fopen(self::OUTPUT_FOLDER.'/'.$objectName.'/collection.php', "w+");
+			fwrite($f, $strObjectCollection);
+			fclose($f);
+			self::genCustomFiles($objectName);
+		}
 	}
 	
+	
+	static function genCustomFiles($objectName){
+		@mkdir(self::OUTPUT_FOLDER.'/'.$objectName.'/manager');
+		@mkdir(self::OUTPUT_FOLDER.'/'.$objectName.'/collection');
+		$str = '<?php 
+		abstract class '.$objectName.'_custom {
+			//add your own code here
+		}
+		?>';
+		$f = fopen(self::OUTPUT_FOLDER.'/'.$objectName.'/custom.php', "w+");
+		fwrite($f, $str);
+		fclose($f);
+		
+		$str = '<?php
+		abstract class '.$objectName.'_manager_custom {
+			//add your own code here
+		}
+		?>';
+		$f = fopen(self::OUTPUT_FOLDER.'/'.$objectName.'/manager/custom.php', "w+");
+		fwrite($f, $str);
+		fclose($f);
+		
+		$str = '<?php
+		abstract class '.$objectName.'_collection_custom {
+			//add your own code here
+		}
+		?>';
+		$f = fopen(self::OUTPUT_FOLDER.'/'.$objectName.'/collection/custom.php', "w+");
+		fwrite($f, $str);
+		fclose($f);
+		
+	}
 	
 	/**
 	 * Format property name with field name

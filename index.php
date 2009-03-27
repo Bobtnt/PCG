@@ -23,6 +23,8 @@ function __autoload($className){
 	}
 }
 
+phpClassGenerator::$userZendLoader = true;
+
 phpClassGenerator::factory();
 phpClassGenerator::listTable();
 phpClassGenerator::makeAllObjects();

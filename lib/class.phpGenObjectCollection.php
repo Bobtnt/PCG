@@ -64,7 +64,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append(' * $pattern = "description NOT LIKE some words";');
 		$this->_append(' * $pattern = "id LIKE 123" ;');
 		$this->_append(' */');
-		$this->_append('class '.$this->name.' implements IteratorAggregate {');
+		$this->_append('class '.$this->name.' '.(phpClassGenerator::$userZendLoader ? "extends ".$this->name."_custom" : "").' implements IteratorAggregate {');
 		$this->_append('');
 		$this->_append('const MODE_APPEND = 1;');
 		$this->_append('const MODE_REPLACE = 2;	');
