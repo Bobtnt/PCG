@@ -153,7 +153,26 @@ echo '<hr>';
 
 $group = new groups(1);
 
-Zend_Debug::Dump($group->users);
+echo $group->users->count();
+//Zend_Debug::Dump($group->users);
+echo '<hr>';
+$u = new user(1);
+echo $u->groups_collection->count();
+
+echo '<hr>';
+
+$g = new groups();
+
+$g->setName('Mon nouveau Group');
+$g->save();
+
+
+$uc = new user_collection();
+$uc->select("SELECT * FROM user");
+$g->user_collection = $uc;
+
+Zend_Debug::Dump($g);
+
 
 
 
