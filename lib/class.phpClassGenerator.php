@@ -54,7 +54,22 @@ class phpClassGenerator extends configObjectAbstract {
 	 *
 	 */
 	static function makeAllObjects(){
+		
 		$nb = count(self::$tables);
+		# Need to prefetch object before create this. this cause by relationship
+		for ($a = 0 ; $a < $nb ; $a++) {
+			$objectName = self::$tables[$a]['name'];
+			$tableName = self::$tables[$a]['name'];
+			$objectKey = $a;
+			self::$objects[$objectKey] = array('objectName' => $objectName,
+								 'object' => new phpGenObject(),
+								 'objectManager' => new phpGenObjectManager(),
+								 'objectCollection' => new phpGenObjectCollection(),
+								 'make' => true);
+			self::$objects[$objectKey]['object']->setName($tableName);
+			self::$objects[$objectKey]['object']->setTableName($tableName);
+		}
+		# now fill all objects
 		for ($a = 0 ; $a < $nb ; $a++) {
 			self::createObjects(self::$tables[$a]['name']);
 		}		
@@ -99,15 +114,13 @@ class phpClassGenerator extends configObjectAbstract {
 		if(!$objectName){
 			$objectName = $tableName;
 		}
-		self::$objects[] = array('objectName' => $objectName,
-								 'object' => new phpGenObject(),
-								 'objectManager' => new phpGenObjectManager(),
-								 'objectCollection' => new phpGenObjectCollection(),
-								 'make' => $flag['make']);
 		
-		$objectKey = (count(self::$objects) - 1);
+		$objectKey=false;
+		$_object = self::getObjectByTableName($tableName, $objectKey);
+		
+		self::$objects[$objectKey]['make'] = $flag['make'];
 		self::$objects[$objectKey]['object']->setName($objectName);
-		self::$objects[$objectKey]['object']->setTableName($tableName);
+		
 		$nb = count($infos['cols']);
 		for ($a = 0 ; $a < $nb ; $a++) {
 			$propertyName = null;
@@ -131,6 +144,7 @@ class phpClassGenerator extends configObjectAbstract {
 					if($column != $primary){
 						// catch the foreign object and add this 1:1 relationship property
 						$_o = self::getObjectByTableName($linkedTable);
+						
 						$_o->addProperty($propertyName, 
 											array(
 											'default' => $infos['metadata'][$column]['DEFAULT'],
@@ -174,16 +188,16 @@ class phpClassGenerator extends configObjectAbstract {
 		return $findKey !== 0 ? self::$objects[$findKey]['object'] : false;
 	}
 	
-	static function getObjectByTableName($tableName){
-		$findKey = false;
+	static function getObjectByTableName($tableName, &$findKey=false){
 		foreach (self::$objects as $key => $subArray) {
 			if($subArray['object']->getTableName() == $tableName){
 				$findKey = $key;
 				break;
 			}
 		}
-		return $findKey !== 0 ? self::$objects[$findKey]['object'] : false;
+		return $findKey !== false ? self::$objects[$findKey]['object'] : false;
 	}
+	
 	
 	static function makeAll(){
 		foreach (self::$objects as $object) {

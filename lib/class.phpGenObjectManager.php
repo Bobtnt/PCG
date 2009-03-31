@@ -177,7 +177,9 @@ class phpGenObjectManager extends configObjectAbstract {
 		$relation = phpClassGenerator::$relatedField;
 		$nb = count($relation);
 		$related11tables = array();
+		$relatedNMtables = array();
 		for ($a = 0 ; $a < $nb ; $a++){
+			# 1:1 relation
 			if(array_key_exists('relationType', phpClassGenerator::$relatedField[$a]) && phpClassGenerator::$relatedField[$a]['relationType'] == '1:1'){
 				//in this mode the're one direct column linked and all other int column are object of linked table (srctable)_has_(linkedtable)
 				$matches = array();
@@ -201,6 +203,28 @@ class phpGenObjectManager extends configObjectAbstract {
 					
 					$related11tables[$relation[$a]['fromTable']][] = $relation[$a];
 					//}
+				}
+			}
+			# N:M RELATION
+			if(array_key_exists('relationType', phpClassGenerator::$relatedField[$a]) && phpClassGenerator::$relatedField[$a]['relationType'] == 'n:m'){
+				//in this mode we must empty the lines in the relation table and refill with the new collection value
+				$matches = array();
+				preg_match("#(.+)_has_(.+)#",$relation[$a]['fromTable'], $matches);
+				$srcTable = $matches[1];
+				$linkedTable = $matches[2];
+				
+				//search which objects match with table name
+				$srcObject = phpClassGenerator::getObjectByTableName($srcTable);
+				//$linkedObject = phpClassGenerator::getObjectByTableName($linkedTable);
+				//check if we are in scr object else do nothing
+								
+				if($srcObject->getName() == $this->object->getName()){
+					if(!array_key_exists($srcObject->getName().' '.$this->object->getName(), $relatedNMtables)){
+						$primarygetterName = phpClassGenerator::formatPropertyName($srcObject->getName().'_'.$srcObject->getPrimaryKeyName());
+						$SQLemptyingTable = 'DELETE FROM '.$relation[$a]['fromTable'].' WHERE '.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().' = \'.$this->'.$primarygetterName.'()';
+						$this->_append('self::$db->query(\''.$SQLemptyingTable.');');
+						$relatedNMtables[$srcObject->getName().' '.$this->object->getName()] = true;
+					}
 				}
 			}
 		}
