@@ -1,0 +1,15 @@
+
+
+ - unzip in your apache document doc root folder. ex: c:/wamp/www
+ - create database sample
+ - load the DOC/sample.sql in this one
+ - configure your database access in etc/config.ini
+ 
+ 
+ now load http://yourserver/pcg/ -> there is no message, all is good !!
+ 
+ Now go in the out folder, all classes are avaible.
+ 
+ 
+
+ 

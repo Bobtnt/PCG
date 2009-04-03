@@ -5,10 +5,7 @@
  */
 
 
-//ini_set('include_path', '.;..;C:\opt\lib');
-ini_set('include_path', '.;..;C:\Program Files\Zend\Zend Studio for Eclipse - 6.1.0\plugins\org.zend.php.framework.resource_6.1.1.v20081231-1100\resources\ZendFramework_1.7\FrameworkLib');
-
-
+ini_set('include_path', '.;..;../lib');
 
 function __autoload($className){
 	if(is_file('./class.'.$className.'.php')){
