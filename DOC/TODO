@@ -3,12 +3,3 @@ TODO list:
 Major
 - Write doc ;-)
 
-Minor
-- use zend loader: make dir for all categories 
-	ex: object name = bugs
-	 bugs=>				bugs.php
-	 bugs_manager=>		bugs/manager.php
-	 bugs_collection=>	bugs/collection.php
-	 
-Next Release:
-- use abstract method for all adding code
