@@ -72,7 +72,7 @@ class phpClassGenerator extends configObjectAbstract {
 		# now fill all objects
 		for ($a = 0 ; $a < $nb ; $a++) {
 			self::createObjects(self::$tables[$a]['name']);
-		}		
+		}
 	}
 	
 	/**
@@ -143,9 +143,10 @@ class phpClassGenerator extends configObjectAbstract {
 					//if not pk
 					if($column != $primary){
 						// catch the foreign object and add this 1:1 relationship property
-						$_o = self::getObjectByTableName($linkedTable);
+						$_key=false;
+						self::getObjectByTableName($srcTable, $_key);
 						
-						$_o->addProperty($propertyName, 
+						self::$objects[$_key]['object']->addProperty($propertyName, 
 											array(
 											'default' => $infos['metadata'][$column]['DEFAULT'],
 											'type' => $infos['metadata'][$column]['DATA_TYPE'],
@@ -153,11 +154,13 @@ class phpClassGenerator extends configObjectAbstract {
 											'primary' => ($primary == $column ? true:false),
 											'foreignField' => true 
 											));	
+						
 					}
 				}
 				else{
 					$relation = '1:n';
 				}
+				
 				self::$relatedField[] = array('fromTable' => $tableName, 'toField' => $column, 'object' => $objectName, 'relationType' => $relation);
 			}
 			self::$objects[$objectKey]['object']->addProperty($propertyName, 
@@ -169,7 +172,6 @@ class phpClassGenerator extends configObjectAbstract {
 															'foreignField' => false 
 															));	
 		}
-		
 		//Set object wich will be manipulate by the manager
 		self::$objects[$objectKey]['objectManager']->setObject(self::$objects[$objectKey]['object']);
 		//set object wich will be manipulate by the colection

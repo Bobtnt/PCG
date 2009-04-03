@@ -219,6 +219,7 @@ class phpGenObjectManager extends configObjectAbstract {
 				//check if we are in scr object else do nothing
 								
 				if($srcObject->getName() == $this->object->getName()){
+					//unifying request
 					if(!array_key_exists($srcObject->getName().' '.$this->object->getName(), $relatedNMtables)){
 						$primarygetterName = phpClassGenerator::formatPropertyName($srcObject->getName().'_'.$srcObject->getPrimaryKeyName());
 						$SQLemptyingTable = 'DELETE FROM '.$relation[$a]['fromTable'].' WHERE '.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().' = \'.$this->'.$primarygetterName.'()';

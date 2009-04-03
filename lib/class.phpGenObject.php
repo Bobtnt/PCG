@@ -381,8 +381,8 @@ class phpGenObject extends configObjectAbstract {
 						$this->_append(' */');
 						$this->_append('private $'.$propertyName.';');
 						
-						Zend_Debug::Dump($a);
-						Zend_Debug::Dump(phpClassGenerator::$relatedField[$a]);
+//						Zend_Debug::Dump($a);
+//						Zend_Debug::Dump(phpClassGenerator::$relatedField[$a]);
 					}
 				}
 				if($linkedObject->getName() == $this->getName()){
@@ -401,8 +401,8 @@ class phpGenObject extends configObjectAbstract {
 						$this->_append(' */');
 						$this->_append('private $'.$propertyName.';');
 						
-						Zend_Debug::Dump($a);
-						Zend_Debug::Dump(phpClassGenerator::$relatedField[$a]);
+//						Zend_Debug::Dump($a);
+//						Zend_Debug::Dump(phpClassGenerator::$relatedField[$a]);
 					}
 				}
 			}
