@@ -64,6 +64,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_constructor();
 		$this->_call();
 		$this->_relationshipGetter();
+		$this->_relationshipSetter();
 		$this->_save();
 		$this->_modifier();
 		$this->_getterAndSetter();
@@ -503,7 +504,38 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('}');
 	}
 	
-	
+	private function _relationshipSetter(){
+		
+		$this->_append('/**');
+		$this->_append('* magic set method');
+		$this->_append('* used to construct relationship between objects');
+		$this->_append('*');
+		$this->_append('* @param string $name');
+		$this->_append('* @param mixed $value');
+		$this->_append('* @return '.$this->getName());
+		$this->_append('*/');
+		$this->_append('public function __set($name, $value){');
+		$relation = phpClassGenerator::$relatedField;
+		$nb = count($relation);
+		for ($a = 0 ; $a < $nb ; $a++){
+			if(phpClassGenerator::$relatedField[$a]['relationType'] == 'n:m'){
+				if($relation[$a]['srcObject'] == $this->getName()){
+//					Zend_Debug::Dump(phpClassGenerator::$relatedField[$a]);
+					$propertyName = substr(phpClassGenerator::$relatedField[$a]["relatedPropertyName"], 1);
+					$shortPropertyName = phpClassGenerator::$relatedField[$a]["relatedObject"].'s';
+					$this->_append('if($name == \''.$propertyName.'\' || $name == \''.$shortPropertyName.'\'){');
+					$this->_append('if(is_object($value)){');
+					$this->_append('$this->'.phpClassGenerator::$relatedField[$a]["relatedPropertyName"].' = $value;');
+					$this->_append('}');
+					$this->_append('return $this;');
+					$this->_append('}');
+				}
+			}
+		}
+		
+		$this->_append('throw new Exception("Try to access to an unknown property");');
+		$this->_append('}');
+	}
 }
 
 ?>

@@ -19,18 +19,18 @@ function __autoload($className){
 	}
 }
 
-//$bug = new bugs();
-//$bug->setSubject("test")->setDescription("desc test ".rand(200,2000))->save();
-//
-//$id = $bug->getId();
-//Zend_Debug::dump($id);
-//unset($bug);
-//
-//
-//$bug2 = new bugs($id);
-//$bug2->setSubject(genRandSubject())->save();
-//
-//unset($bug2);
+$bug = new bug();
+$bug->setSubject("test")->setDescription("desc test ".rand(200,2000))->save();
+
+$id = $bug->getId();
+Zend_Debug::dump($id);
+unset($bug);
+
+
+$bug2 = new bug($id);
+$bug2->setSubject('some words...')->save();
+
+unset($bug2);
 
 $bug_collection = new bug_collection();
 $bug_collection->select("select * from bug where bug_id < 90 and bug_id > 0");
@@ -162,18 +162,27 @@ echo $u->groups_collection->count();
 echo '<hr>';
 
 $g = new groups();
-
-$g->setName('Mon nouveau Group');
 $g->save();
-
+$gid = $g->getId();
+$g->setName('My new Group '.$g->getId())->save();
+Zend_Debug::Dump($g->getName());
 
 $uc = new user_collection();
 $uc->select("SELECT * FROM user");
+$i=0;
+foreach ($uc as $u) {
+	if($i == 1){
+		$u->remove();
+	}
+	$i++;
+}
+
 $g->user_collection = $uc;
+$g->save();
+unset($g);
 
-Zend_Debug::Dump($g);
-
-
+$gg = new groups($gid);
+Zend_Debug::Dump($gg->user_collection->count());
 
 
 

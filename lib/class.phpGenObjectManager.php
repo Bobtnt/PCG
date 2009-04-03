@@ -215,16 +215,30 @@ class phpGenObjectManager extends configObjectAbstract {
 				
 				//search which objects match with table name
 				$srcObject = phpClassGenerator::getObjectByTableName($srcTable);
-				//$linkedObject = phpClassGenerator::getObjectByTableName($linkedTable);
+				$linkedObject = phpClassGenerator::getObjectByTableName($linkedTable);
 				//check if we are in scr object else do nothing
 								
 				if($srcObject->getName() == $this->object->getName()){
 					//unifying request
 					if(!array_key_exists($srcObject->getName().' '.$this->object->getName(), $relatedNMtables)){
-						$primarygetterName = phpClassGenerator::formatPropertyName($srcObject->getName().'_'.$srcObject->getPrimaryKeyName());
-						$SQLemptyingTable = 'DELETE FROM '.$relation[$a]['fromTable'].' WHERE '.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().' = \'.$this->'.$primarygetterName.'()';
+						
+						$primarygetterName = phpClassGenerator::formatPropertyName('get_'.$srcObject->getPrimaryKeyName());
+						$primaryLinkedGetterName = phpClassGenerator::formatPropertyName('get_'.$linkedObject->getPrimaryKeyName());
+						$SQLemptyingTable = 'DELETE FROM '.$relation[$a]['fromTable'].' WHERE '.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().' = \'.$'.$this->baseName.'->'.$primarygetterName.'()';
 						$this->_append('self::$db->query(\''.$SQLemptyingTable.');');
 						$relatedNMtables[$srcObject->getName().' '.$this->object->getName()] = true;
+						
+						$NMinsert[] = $this->_append('$i=0;');
+						$NMinsert[] = $this->_append('$insert = \'INSERT INTO '.$relation[$a]['fromTable'].' ('.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().', '.$linkedObject->getTableName().'_'.$linkedObject->getPrimaryKeyName().') VALUES \';');
+						$NMinsert[] = $this->_append('$collection = self::$'.$this->baseName.'->'.$linkedObject->getName().'_collection;');
+						$NMinsert[] = $this->_append('foreach ($collection as $'.$linkedObject->getName().'){');
+						$NMinsert[] = $this->_append('$insert .= $i !== 0 ? "," : "";');
+						$NMinsert[] = $this->_append('$insert .= \'(\'.$'.$this->baseName.'->'.$primarygetterName.'().\',\'.$'.$linkedObject->getName().'->'.$primaryLinkedGetterName.'().\')\';');
+						$NMinsert[] = $this->_append('$i++;');
+						$NMinsert[] = $this->_append('}');
+						$NMinsert[] = $this->_append('if($i!==0){');
+						$NMinsert[] = $this->_append('self::$db->query($insert);');
+						$NMinsert[] = $this->_append('}');
 					}
 				}
 			}
@@ -307,7 +321,11 @@ class phpGenObjectManager extends configObjectAbstract {
 				$i=0;
 			}
 		}
-		
+		//N:M insert
+		$nb = count($NMinsert);
+		for ($a = 0 ; $a < $nb ; $a++) {
+			$this->_append($NMinsert[$a]);
+		}
 		
 		
 		$this->_append('}');		
