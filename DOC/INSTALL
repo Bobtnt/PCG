@@ -1,4 +1,4 @@
-
+Version: 0.5 BETA
 
  - unzip in your apache document doc root folder. ex: c:/wamp/www
  - create database sample
@@ -9,6 +9,8 @@
  now load http://yourserver/pcg/ -> there is no message, all is good !!
  
  Now go in the out folder, all classes are avaible.
+ 
+ The index.php located in out folder can be executed to test the classes with the sample database.
  
  
 
