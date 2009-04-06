@@ -11,5 +11,5 @@ ex: object name = bugs
 - Generate collection object
 - Add context object
 - 1,n relationship now supported
-- 1,1 relationship now supprted
-- n,m relationship now supprted
+- 1,1 relationship now supported
+- n,m relationship now supported
