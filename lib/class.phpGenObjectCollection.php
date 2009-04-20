@@ -40,6 +40,10 @@ class phpGenObjectCollection extends configObjectAbstract {
 		return $this;
 	}
 	
+	public function getName(){
+		return $this->name;
+	}
+	
 	public function generate(){
 		$this->_header();
 		$this->_call();
