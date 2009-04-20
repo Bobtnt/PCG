@@ -41,6 +41,10 @@ class phpGenObjectManager extends configObjectAbstract {
 		return $this;
 	}
 	
+	public function getName(){
+		return $this->name;
+	}
+	
 	public function generate(){
 		$this->_header();
 		$this->_headerFunction();

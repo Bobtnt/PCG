@@ -6,7 +6,10 @@
  * author: Cyril Janssens
  * $Id$
  */
-#ini_set('include_path', '.;C:\opt\lib');
+
+
+chdir(dirname(realpath(__FILE__)));
+
 ini_set('include_path', '.;./lib');
 
 function __autoload($className){
@@ -24,15 +27,9 @@ function __autoload($className){
 	}
 }
 
-phpClassGenerator::$userZendLoader = true;
-
-phpClassGenerator::factory();
-phpClassGenerator::listTable();
-phpClassGenerator::makeAllObjects();
-phpClassGenerator::makeAll();
-
-
-
+$render = new render();
+$render->controller();
+$render->display();
 
 
 ?>
