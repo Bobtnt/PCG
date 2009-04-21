@@ -41,7 +41,11 @@ class render extends pcgSmarty {
 		else{
 			$matches = array();
 			preg_match('#^/(.*)[/]?[\?]?#', $_SERVER['REDIRECT_URL'], $matches);
-			return $matches[1].'.tpl';
+			$page = $matches[1];
+			if(substr($page, -1, 1) == '/'){
+				$page = substr($page, 0, -1);
+			}
+			return $page.'.tpl';
 		}
 	}
 	
