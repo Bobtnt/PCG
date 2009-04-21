@@ -1,17 +1,50 @@
-Version: 0.5 BETA
+Version: 0.6
 
- - unzip in your apache document doc root folder. ex: c:/wamp/www
+ - unzip
+ - set apache document root to pcg/public/
  - create database sample
  - load the DOC/sample.sql in this one
  - configure your database access in etc/config.ini
  
+ Load http://localhost/ and click on generate button.
+ Now go in the out folder, all classes are available.
  
- now load http://yourserver/pcg/ -> there is no message, all is good !!
+ Note: 
+ This distib include Smarty. smarty need to write in smartyWorkDir/cache and smartyWorkDir/template_c.
+ Generated classes are located in out folder. 
+ Be sure that the httpd user can write in these 3 folders.
  
- Now go in the out folder, all classes are avaible.
  
  The index.php located in out folder can be executed to test the classes with the sample database.
  
+ Here, some example of apache configuration:
  
+ On Windows
+ <VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot "C:\pcg\public"
+    ServerName localhost
+    ErrorLog "logs/pcg.log"
+    CustomLog "logs/pcg-access.log" common
+	<directory "C:\pcg\public">
+		Options Indexes FollowSymLinks
+		AllowOverride all
+		Order Deny,Allow
+		Allow from all
+	</directory>
+</VirtualHost>
 
- 
+ On Linux
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot "/home/pcg/public"
+    ServerName localhost
+    ErrorLog "logs/pcg.log"
+    CustomLog "logs/pcg-access.log" common
+	<directory "/home/pcg/public">
+		Options Indexes FollowSymLinks
+		AllowOverride all
+		Order Deny,Allow
+		Allow from all
+	</directory>
+</VirtualHost>
