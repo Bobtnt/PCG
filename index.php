@@ -28,8 +28,8 @@ function __autoload($className){
 }
 
 $render = new render();
-$render->controller();
-$render->display();
+$render->controller()->display();
+
 
 
 ?>
