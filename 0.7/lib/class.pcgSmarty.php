@@ -8,7 +8,7 @@ class pcgSmarty extends smarty {
 		$this->compile_dir = 'smartyWorkDir/templates_c';
 		$this->cache_dir = 'smartyWorkDir/cache';
 		$this->debugging = false;
-		
+		$this->force_compile = true;
 		return parent::smarty();		 
 	}
 	

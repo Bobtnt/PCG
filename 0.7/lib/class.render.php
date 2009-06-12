@@ -55,11 +55,23 @@ class render extends pcgSmarty {
 		return $matches[1].'.php';
 	}
 	
+	/**
+	 * Run controller
+	 *
+	 * @return render
+	 */
 	public function controller(){
-		require_once self::CONTROLLERS_PATH.$this->controller;
+		if(is_file(self::CONTROLLERS_PATH.$this->controller)){
+			require_once self::CONTROLLERS_PATH.$this->controller;
+		}
+		return $this;
 	}
 	
 	public function display(){
+		
+		if(!is_file($this->template_dir.'/'.$this->page)){
+			$this->page = 'error/404.tpl';
+		}
 		return parent::display($this->page);
 	}
 	

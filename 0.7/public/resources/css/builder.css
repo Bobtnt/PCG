@@ -1,0 +1,63 @@
+@CHARSET "ISO-8859-1";
+@import "ui-dialog.css";
+@import "ui-widget.css";
+
+.toolsBar {
+	border-bottom: solid 1px #000000;
+	top: 0px;
+	left: 0px;
+	height: 40px;
+	width: 100%;
+	padding-left: 7px;
+	padding-top: 4px;
+}
+
+.toolsButton {
+	border: solid 1px #000055;
+	margin-right: 10px;
+	float: left;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.canvas {
+	height: 100%;
+	width: 100%;
+	border: solid 0px #FFFFFF;
+}
+
+.pcgObject {
+	
+	border: solid 1px #000000;
+	position: absolute;
+	top: 100px;
+	left: 100px;	
+	background-color: #44DD44;
+	width: -1%;
+	height: 75px;
+	padding-right: 5px;	
+}
+
+.pcgObjectHeader {
+	height: 20px;
+	width: 100%;
+	border: solid 0px #FFFFFF;
+	background-color: #B0B0B0;
+	margin: 2px;	
+}
+
+.ui-selected { 
+	border: solid 3px #F39814;
+}
+
+.svgcontainer {
+	z-index: -1;
+	
+}
+
+.objectLink {
+	border: solid 1px #000000;	
+}
+
