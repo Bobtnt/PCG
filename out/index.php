@@ -170,14 +170,19 @@ $gid = $g->getId();
 $g->setName('My new Group '.$g->getId())->save();
 Zend_Debug::Dump($g->getName());
 
-$uc = new user_collection();
-$uc->select("SELECT * FROM user");
+$otherUsers = new user_collection();
+$otherUsers->select("SELECT * FROM user");
 $i=0;
 foreach ($uc as $u) {
 	if($i == 1){
 		$u->remove();
 	}
 	$i++;
+}
+
+
+foreach ($group->user_collection as $user) {
+	echo $user->getId();
 }
 
 $g->user_collection = $uc;

@@ -1,20 +1,28 @@
-Version: 0.6
+
+
+
+Version: 0.7
+
+Requirement
+- apache rewrite mod extension
+- mysql server
+
+Intall
 
  - unzip
  - set apache document root to pcg/public/
  - create database sample
- - load the DOC/sample.sql in this one
+ - load the DOC/sample.sql mysql database
  - configure your database access in etc/config.ini
+ - Load http://localhost/ and check for failed elements
+ - when all elements are passed, delete or rename pcg/public/install.php
  
- Load http://localhost/ and click on generate button.
- Now go in the out folder, all classes are available.
  
  Note: 
  This distib include Smarty. smarty need to write in smartyWorkDir/cache and smartyWorkDir/template_c.
  Generated classes are located in out folder. 
  Be sure that the httpd user can write in these 3 folders.
- 
- 
+  
  The index.php located in out folder can be executed to test the classes with the sample database.
  
  Here, some example of apache configuration:
