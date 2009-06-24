@@ -7,7 +7,7 @@
  * $Id$
  */
 /**
- * Database connector for database opl lib
+ * Database connector
  * maintain connection for all database connector 
  *
  * @static $db array of db connector 
@@ -35,8 +35,8 @@ class database_binder {
 	/**
 	 * Unique connection to databases
 	 *
-	 * @param string $databaseName @see opl database object 
-	 * @return object database
+	 * @param string $databaseName
+	 * @return object Zend_Db_Adapter_Pdo_Mysql
 	 */
 	public static function singleton($databaseName){
 		//Check for $db initialized into array
