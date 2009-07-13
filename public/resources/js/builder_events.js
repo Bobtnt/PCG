@@ -1,28 +1,30 @@
 
 $(document).ready(function(){
 	
-	
+	//Tools bar buttons
 	$("#buttonNewObject").click(newPcgObject);
-	
-	$(".canvas").selectable({ filter: '.pcgObject' });
-	
+	$("#buttonDeleteObject").click(deleteObject);
 	$("#buttonNewRelation").click(function(){
 		$('#dialog').dialog('open');
 	});
 	
+	
+	
+	
+	
+	
+	//Global envents
+	$(".canvas").selectable({ filter: '.pcgObject' });
 	$("#dialog").dialog({
-		bgiframe: true,
+		bgiframe: false,
 		autoOpen: false,
 		height: 300,
 		modal: true,
 		buttons: {
-			'Select': function() {
-				
+			'Select': function() {				
 				var selectedValue = $("#dialog select").val();
-				newRelationObject(selectedValue);
-				
+				newRelationObject(selectedValue);				
 				$(this).dialog('close');
-				
 			},
 			Cancel: function() {
 				$(this).dialog('close');
@@ -34,3 +36,12 @@ $(document).ready(function(){
 
 	
 });
+
+
+function reloadEventTriggers(){
+	
+	//Objects actions
+	$(".pcgObjectHeader").dblclick(renameObject);
+	$(".pcgObject").resizable();
+	$(".pcgObject").draggable({ handle: '.pcgObjectHeader' }); 
+}

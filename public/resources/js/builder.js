@@ -1,21 +1,61 @@
+//Globals
+aModifiedElements = new Array();
+
+
+//Tools bar action
 newPcgObject = function(){
 	var html = '<div class="pcgObject">'
 			+  '<div class="pcgObjectHeader">'
-			+  'New object'
+			+  '<span value="New object">New object</span>'
 			+  '</div>'
 			+  '<div class="pcgObjectBody">'
 			+  'Body'
 			+  '</div>'
 			+  '</div>';
 	var jhtml = $(html);
-	jhtml.draggable({ handle: '.pcgObjectHeader'});
-	$(".canvas").append($(jhtml));
+	$(".canvas").append($(jhtml));	
+	reloadEventTriggers();
 }
 
 newRelationObject = function(type){
+}
 
-	$(".svgcontainer").drawLine(500, 500, 600, 600);
-	
+deleteObject = function(){
+}
+
+//Objects actions
+
+renameObject = function(){
+	convertIntoInput(this.firstChild);	
 }
 
 
+
+function convertIntoInput(oDOM){	
+	var mValue = $(oDOM).attr('value');
+	var html = '<input type="text" value="'+ mValue +'" />';
+	var storedDOM = new Object;	
+	storedDOM.content = $(oDOM).parent().html();
+	storedDOM.parent = $(oDOM).parent();
+	
+	var oHtml = $(html);
+	oHtml.blur(returnInputToInitialState);
+	
+	storedDOM.input = oHtml;
+	$(oDOM).parent().html(storedDOM.input);	
+		
+	aModifiedElements.push(storedDOM);	
+}
+
+returnInputToInitialState = function(){
+	for(var a in aModifiedElements){
+		var sVal = aModifiedElements[a].input.val();
+		var oHtml = $(aModifiedElements[a].content);
+		oHtml.attr('value', sVal);
+		oHtml.html(sVal);
+		var oParent = aModifiedElements[a].parent;
+		oParent.html(oHtml);
+		delete aModifiedElements[a];
+	}
+	
+}
