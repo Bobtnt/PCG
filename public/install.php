@@ -81,7 +81,6 @@ if(check_zend_framework()){
 }
 else{
 	$msgZend = '<span style="color:red">Failed</span>';
-	$finalCheck = false;
 }
 
 if($ZFavaible){
@@ -103,11 +102,13 @@ if($ZFavaible){
 	}
 	catch (Zend_Db_Adapter_Exception $e) {
 	    $msgDb = '<span style="color:red">Failed</span><br />
-	    <span>'.$e->getMessage().'</span>'; 
+	    <span>'.$e->getMessage().'</span>';
+	    $finalCheck = false; 
 	} 
 	catch (Zend_Exception $e) {
 	    $msgDb = '<span style="color:red">Failed</span><br />
 	    <span>'.$e->getMessage().'</span>'; 
+	    $finalCheck = false;
 	}
 }
 
@@ -186,7 +187,12 @@ $output .= '</table>';
 $output .= '</p>';
 
 $output .= '<p>';
-$output .= '<input type="button" value="Refresh" onclick="location.reload()" />';
+if($finalCheck){
+	$output .= '<strong>Your installation and configuration looks good. Now you can delete public/install.php file for accessing to PCG. Enjoy ;-)</strong>';
+}
+else {
+	$output .= '<input type="button" value="Refresh" onclick="location.reload()" />';
+}
 $output .= '</p>';
 
 $output .= '</body>';
