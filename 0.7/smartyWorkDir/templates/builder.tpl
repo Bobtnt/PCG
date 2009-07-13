@@ -5,11 +5,12 @@
 <title>PCG Builder</title>
 <script language="javascript" src="/resources/lib/jquery-1.3.2.min.js"></script>
 <script language="javascript" src="/resources/lib/jquery-ui-1.7.2.custom.min.js"></script>
-<script language="javascript" src="/resources/lib/jquery.svg.js"></script>
-<script language="javascript" src="/resources/lib/jquery.drawinglibrary.js"></script>
+<!-- <script language="javascript" src="/resources/lib/jquery.svg.js"></script>
+<script language="javascript" src="/resources/lib/jquery.drawinglibrary.js"></script> -->
 <script language="javascript" src="/resources/js/builder.js"></script>
 <script language="javascript" src="/resources/js/builder_events.js"></script>
 <link rel="stylesheet" href="/resources/css/builder.css" type="text/css" />
+<link rel="stylesheet" href="/resources/css/jquery-ui-1.7.2.custom.css" type="text/css" />
 </head>
 <body>
 <div class="toolsBar">
@@ -20,7 +21,7 @@
 		<a href="javascript:void(0);" id="buttonNewObject">Modify Object</a>
 	</div>
 	<div class="toolsButton">
-		<a href="javascript:void(0);" id="buttonNewObject">Delete object</a>
+		<a href="javascript:void(0);" id="buttonDeleteObject">Delete object</a>
 	</div>
 	<div class="toolsButton">
 		<a href="javascript:void(0);" id="buttonNewRelation">New Relation</a>
