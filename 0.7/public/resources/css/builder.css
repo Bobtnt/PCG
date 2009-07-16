@@ -56,10 +56,31 @@
 	height: 100%;
 	width: 100%;
 	background-color: #8a8aed;
-	
-	
 }
 
+.propertiesBlock {
+	float:left;
+	margin-left: 3px;
+	border: 0px;
+	width: 100%;
+}
+
+.propertyLeft {
+	width:90%;	
+}
+.propertyRight {
+	white-space:nowrap;
+	width:10%;
+	padding-right:5px;	
+}
+.property {
+	background-color:orange;
+	z-index: 15;	
+}
+
+.addProperty {
+	
+}
 
 .ui-selected { 
 	border: solid 3px #F39814;

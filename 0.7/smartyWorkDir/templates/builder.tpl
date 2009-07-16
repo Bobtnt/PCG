@@ -27,10 +27,7 @@
 		<a href="javascript:void(0);" id="buttonNewRelation">New Relation</a>
 	</div>
 </div>
-<div class="canvas">
-
-
-</div>
+<div class="canvas"></div>
 
 
 <div id="dialog" title="Select Relation type">

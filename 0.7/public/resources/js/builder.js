@@ -9,7 +9,10 @@ newPcgObject = function(){
 			+  '<span value="New object">New object</span>'
 			+  '</div>'
 			+  '<div class="pcgObjectBody">'
-			+  'Body'
+			+  '<table class="propertiesBlock">'
+			+  '<tr><td class="propertyLeft"><span class="property" value="id">id</span></td><td class="propertyRight">Del <a href="javascript:void(0);" class="renameProp">Ren</a></td></tr>'
+			+  '<tr><td colspan="2"><a href="javascript:void(0);" class="addProperty">Add</a></td></tr>'
+			+  '</table>'
 			+  '</div>'
 			+  '</div>';
 	var jhtml = $(html);
@@ -28,7 +31,14 @@ deleteObject = function(){
 renameObject = function(){
 	convertIntoInput(this.firstChild);	
 }
-
+renameProperty = function(){
+	var oDom = this.parentNode.previousSibling.firstChild
+	convertIntoInput(oDom);
+}
+addProperty = function(){	
+	$(this).parent().parent().before('<tr><td class="propertyLeft"><span class="property" value="New prop">New prop</span></td><td class="propertyRight">Del <a href="javascript:void(0);" class="renameProp">Ren</a></td></tr>');
+	reloadEventTriggers();
+}
 
 
 function convertIntoInput(oDOM){	
@@ -39,7 +49,9 @@ function convertIntoInput(oDOM){
 	storedDOM.parent = $(oDOM).parent();
 	
 	var oHtml = $(html);
+	//Set Event (blur and return)
 	oHtml.blur(returnInputToInitialState);
+	oHtml.keydown(function(e){if(e.keyCode == 13) {returnInputToInitialState();}});
 	
 	storedDOM.input = oHtml;
 	$(oDOM).parent().html(storedDOM.input);	
