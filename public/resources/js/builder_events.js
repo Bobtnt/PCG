@@ -12,9 +12,8 @@ $(document).ready(function(){
 	
 	
 	
-	
 	//Global envents
-	$(".canvas").selectable({ filter: '.pcgObject' });
+	//$(".canvas").selectable({ filter: '.pcgObject' });
 	$("#dialog").dialog({
 		bgiframe: false,
 		autoOpen: false,
@@ -43,5 +42,10 @@ function reloadEventTriggers(){
 	//Objects actions
 	$(".pcgObjectHeader").dblclick(renameObject);
 	$(".pcgObject").resizable();
-	$(".pcgObject").draggable({ handle: '.pcgObjectHeader' }); 
+	$(".pcgObject").draggable({ handle: '.pcgObjectHeader' });
+	$(".addProperty").click(addProperty);
+	$(".renameProp").click(renameProperty);
+	$(".propertiesBlock").sortable({revert : true, items: 'tr:not(td a .addProperty)'});
+	$(".propertiesBlock").disableSelection();
+
 }
