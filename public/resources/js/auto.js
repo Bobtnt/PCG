@@ -1,0 +1,6 @@
+
+
+newPcgObject();
+newPcgObject();
+
+$(".addPropery").click();
