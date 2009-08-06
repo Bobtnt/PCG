@@ -9,12 +9,27 @@
 	width: 100%;
 	padding-left: 7px;
 	padding-top: 4px;
+	padding-bottom: 4px;
 }
 
 .toolsButton {
 	border: solid 1px #000055;
 	margin-right: 10px;
 	float: left;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.messageBox {
+	border: solid 1px #000055;
+	margin-right: 10px;
+	position: absolute;
+	clear: both;
+	heigth: 28px;
+	width: 98%;
+	margin-bottom: 3px;
 	padding-top: 3px;
 	padding-bottom: 3px;
 	padding-left: 2px;
@@ -34,8 +49,8 @@
 	top: 100px;
 	left: 100px;	
 	background-color: #44DD44;
-	width: 100px;
-	height: 75px;
+	width: 150px;
+	height: 150px;
 	padding-right: 5px;
 	padding-left: 5px;
 	
