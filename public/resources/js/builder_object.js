@@ -103,7 +103,6 @@ pcgObject.prototype.rename = function(){
  * Add property
  */
 pcgObject.prototype.addProperty = function(){
-	//Case add prop in self
 	oPcg = getPcgInstance(this);
 	if(oPcg){
 		oProp = oPcg.addNewProp('New prop', 'auto');
@@ -131,12 +130,15 @@ pcgObject.prototype.receiveProp = function (event, ui){
 	if(oProp.type != 'PRIMARY'){
 		return this;
 	}
-	
+	$('#dialog #dialogType').val('relation')
+	$('#dialog #propType').hide();
+	$('#dialog #relationType').show();
 	$('#dialog #pcgSenderId').val(oPcgSender.id);
 	$('#dialog #pcgReceiverId').val(oPcgReceiver.id);
 	$('#dialog #propId').val(oProp.id);
+	$('#dialog').attr('title', 'Select Relation type');
+	$("#dialog span[name='dialogMessage']").html('Select property type for ' + oProp.name);
 	$("#dialog span[name='dialogMessage']").html(' Link '+ oPcgSender.name + ' with ' + oPcgReceiver.name );
-	
 	$('#dialog').dialog('open');
 	
 }
@@ -157,10 +159,14 @@ pcgObject.prototype.openChangeTypeDialog = function (){
 	oPcg = getPcgInstance(this);
 	iPropId = $(this).parent().parent().find(".property").attr('propid');
 	oProp = oPcg.properties[iPropId];
-	$("#dialogChangeType #pcgObjectId").val(oPcg.id);
-	$("#dialogChangeType #pcgPropId").val(oProp.id);
-	$("#dialogChangeType span[name='dialogMessage']").html('Select property type for ' + oPcg.name + '->' +  oProp.name)
-	$("#dialogChangeType").dialog('open');
+	$('#dialog #dialogType').val('changeType');
+	$('#dialog #propType').show();
+	$('#dialog #relationType').hide();
+	$("#dialog #pcgObjectId").val(oPcg.id);
+	$("#dialog #pcgPropId").val(oProp.id);
+	$('#dialog').attr('title', 'Select type');
+	$("#dialog span[name='dialogMessage']").html('Select property type for ' + oPcg.name + '->' +  oProp.name)
+	$("#dialog").dialog('open');
 }
 
 

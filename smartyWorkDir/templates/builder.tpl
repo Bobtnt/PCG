@@ -5,9 +5,8 @@
 <title>PCG Builder</title>
 <script language="javascript" src="/resources/lib/jquery-1.3.2.min.js"></script>
 <script language="javascript" src="/resources/lib/jquery-ui-1.7.2.custom.min.js"></script>
-<script language="javascript" src="/resources/lib/jquery.daemonize.js"></script>
-<!-- <script language="javascript" src="/resources/lib/jquery.svg.js"></script>
-<script language="javascript" src="/resources/lib/jquery.drawinglibrary.js"></script> -->
+<script language="javascript" src="/resources/lib/jquery.svg.js"></script>
+<script language="javascript" src="/resources/lib/jquery.drawinglibrary.js"></script>
 <script language="javascript" src="/resources/js/builder_events.js"></script>
 <script language="javascript" src="/resources/js/builder_object.js"></script>
 <script language="javascript" src="/resources/js/builder_object_control.js"></script>
@@ -39,25 +38,16 @@
 <div class="canvas"></div>
 
 
-<div id="dialog" title="Select Relation type">
+<div id="dialog" title="Select type">
+	<input type="hidden" id="dialogType" value="" />
+	<input type="hidden" id="pcgObjectId" value="" />
+	<input type="hidden" id="pcgPropId" value="" />
 	<input type="hidden" id="pcgSenderId" value="" />
 	<input type="hidden" id="pcgReceiverId" value="" />
 	<input type="hidden" id="propId" value="" />
 	<span name="dialogMessage"></span>
 	<p>
-	<select id="relationType">
-		<option value="1:1">1:1</option>
-		<option value="1:1">1:n</option>
-		<option value="1:1">n:m</option>
-	</select>
-	</p>
-</div>
-<div id="dialogChangeType" title="Select type">
-	<input type="hidden" id="pcgObjectId" value="" />
-	<input type="hidden" id="pcgPropId" value="" />
-	<span name="dialogMessage"></span>
-	<p>
-	<select id="type">
+	<select id="propType">
 		<option value="auto">auto</option>
 		<option value="varchar">varchar</option>
 		<option value="integer">integer</option>
@@ -65,6 +55,11 @@
 		<option value="time">time</option>
 		<option value="datetime">datetime</option>
 		<option value="enum">enum</option>
+	</select>
+	<select id="relationType">
+		<option value="1:1">1:1</option>
+		<option value="1:n">1:n</option>
+		<option value="n:m">n:m</option>
 	</select>
 	</p>
 </div>
