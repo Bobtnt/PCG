@@ -49,7 +49,7 @@
 	top: 100px;
 	left: 100px;	
 	background-color: #44DD44;
-	width: 150px;
+	width: 310px;
 	height: 150px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -81,7 +81,8 @@
 }
 
 .propertyLeft {
-	width:90%;	
+	width: 90%;	
+	white-space: nowrap;
 }
 .propertyRight {
 	white-space:nowrap;
@@ -91,6 +92,10 @@
 .property {
 	background-color:orange;
 	z-index: 15;	
+}
+
+.propertyType {
+	font-size: x-small;	
 }
 
 .addProperty {

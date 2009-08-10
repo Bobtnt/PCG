@@ -40,8 +40,9 @@
 
 
 <div id="dialog" title="Select Relation type">
-	<input type="hidden" id="linkedObjectSrc" value="" />
-	<input type="hidden" id="linkedObjectDst" value="" />
+	<input type="hidden" id="pcgSenderId" value="" />
+	<input type="hidden" id="pcgReceiverId" value="" />
+	<input type="hidden" id="propId" value="" />
 	<span name="dialogMessage"></span>
 	<p>
 	<select id="relationType">
@@ -51,6 +52,24 @@
 	</select>
 	</p>
 </div>
+<div id="dialogChangeType" title="Select type">
+	<input type="hidden" id="pcgObjectId" value="" />
+	<input type="hidden" id="pcgPropId" value="" />
+	<span name="dialogMessage"></span>
+	<p>
+	<select id="type">
+		<option value="auto">auto</option>
+		<option value="varchar">varchar</option>
+		<option value="integer">integer</option>
+		<option value="date">date</option>
+		<option value="time">time</option>
+		<option value="datetime">datetime</option>
+		<option value="enum">enum</option>
+	</select>
+	</p>
+</div>
+
+
 <div class="messageBox">
 	<span>Messages:</span>
 </div>
