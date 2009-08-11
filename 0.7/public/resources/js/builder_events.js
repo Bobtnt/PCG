@@ -4,9 +4,15 @@ $(document).ready(function(){
 	iPcgContainerGlobalCounter = 0;
 	aOpcgContainer = new Array;
 	aModifiedElements = new Array();
-	//daemon
 	
-	setInterval('pcgObjectControl()', 0.4 * 1000);	
+	iGrapherCounter = 0;
+	aGrapherContainer = new Array();
+	aGrapherDivContainer = new Array();
+	
+	
+	
+	//daemon
+//	setInterval('pcgObjectControl()', 0.4 * 1000);	
 	setInterval('reposMessagebox()', 0.5 * 1000);
 	
 	
@@ -17,8 +23,7 @@ $(document).ready(function(){
 		$('#dialog').dialog('open');
 	});
 	$("#buttonDebug").click(function(){
-			console.log(object_dump(aOpcgContainer[0]));
-			
+		pcgObjectControl();
 	});
 	//Global envents
 	//$(".canvas").selectable({ filter: '.pcgObject' });

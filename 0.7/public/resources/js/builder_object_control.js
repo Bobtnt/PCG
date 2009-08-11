@@ -9,6 +9,8 @@ pcgObjectControl = function(){
 		var aPropsList = new Array;
 		
 		//object name
+		console.log(a);
+		var iPcgId = aOpcgContainer[a].id;
 		var oPcgInstance = aOpcgContainer[a];
 		var objectName = oPcgInstance.html.find(".pcgObjectHeader span").attr('value');
 		
@@ -17,20 +19,28 @@ pcgObjectControl = function(){
 		sReturned += objectName + "<br>";
 
 		//object properties
-		oPcgInstance.html.find("td .property").each(function(i){
-			sPropName = $(this).attr('value');
-			sPropType = $(this).attr('type');
-			iPropId = $(this).attr('propid');
-			oProp = oPcgInstance.properties[iPropId];
-			if(oProp.name != sPropName){
-				oProp.name = sPropName
-			}
-			if(oProp.type != sPropType){
-				oProp.type = sPropType
-			}			
-			sReturned += '- '+ sPropName + '<br>';
-		});
+//		oPcgInstance.html.find("td .property").each(function(i){
+//			var sPropName = $(this).attr('value');
+//			var sPropType = $(this).attr('type');
+//			var iPropId = $(this).attr('propid');
+//			var oProp = oPcgInstance.properties[iPropId];
+//			if(oProp.name != sPropName){
+//				oProp.name = sPropName
+//			}
+//			if(oProp.type != sPropType){
+//				oProp.type = sPropType
+//			}
+//			sReturned += '- '+ sPropName + '<br>';
+//		});
 		
+		for(var b in aOpcgContainer[a].properties){
+			var checkedProp = aOpcgContainer[a].properties[b];
+			console.log(iPcgId + ' = ' + checkedProp.parent.id);
+			if(iPcgId != checkedProp.parent.id){
+				checkedProp.parent = aOpcgContainer[a];
+				console.log('retaked ' + iPcgId + ' = ' + checkedProp.parent.id);
+			}
+		}
 	}	
 	// Check for non unique object name
 	bDoubleName = false;
