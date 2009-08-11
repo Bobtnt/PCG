@@ -4,8 +4,8 @@
 		iPcgContainerGlobalCounter = iPcgContainerGlobalCounter + 1;
 		iPcgId = iPcgContainerGlobalCounter;
 		aOpcgContainer[iPcgId] = new pcgObject();
-		
 		aOpcgContainer[iPcgId].setId(iPcgId);
+		aOpcgContainer[iPcgId].addNewProp('id', 'PRIMARY');
 		reloadEventTriggers();
 	}
 	
@@ -73,13 +73,39 @@
 	}
 	
 	function newRelation(oSender, oReceiver, oProp, sType){
-		console.log(object_dump(sType));
 		if(sType == 'n:m'){
 			oProp1 = oSender.addNewProp(oReceiver.name + '_collection', 'collection');
 			oSender.html.find('table').prepend(oProp1.html);
 			oProp2 = oReceiver.addNewProp(oSender.name + '_collection', 'collection');
 			oReceiver.html.find('table').prepend(oProp2.html);
 			reloadEventTriggers();
+			
+			var pos1 = oProp1.html.offset();
+			var pos2 = oProp2.html.offset();
+			
+			if(pos1.left > pos2.left){
+				var coord = {x1: pos1.left, y1: pos1.top + 10 , x2: pos2.left + oProp2.html.width() ,y2: pos2.top + 10 }
+			}
+			else{
+				var coord = {x1: pos1.left + oProp1.html.width() , y1: pos1.top + 10, x2: pos2.left, y2: pos2.top + 10 }
+			}
+			
+			iGrapherCounter = iGrapherCounter + 1;
+			grapherName = 'grapher'+iGrapherCounter;
+			aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
+			aGrapherDivContainer[iGrapherCounter] = $(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherDivContainer[iGrapherCounter].css('z-index','-1');
+			$('#svgcontainer').append(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
+			aGrapherContainer[iGrapherCounter].setColor("#ddddff");
+			aGrapherContainer[iGrapherCounter].setStroke(2);
+			aGrapherContainer[iGrapherCounter].drawLine(coord.x1, coord.y1, coord.x2, coord.y2);
+			
+			oSender.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			oReceiver.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			
+			aGrapherContainer[iGrapherCounter].paint();
+
 		}
 		
 	}

@@ -5,8 +5,9 @@
 <title>PCG Builder</title>
 <script language="javascript" src="/resources/lib/jquery-1.3.2.min.js"></script>
 <script language="javascript" src="/resources/lib/jquery-ui-1.7.2.custom.min.js"></script>
-<script language="javascript" src="/resources/lib/jquery.svg.js"></script>
-<script language="javascript" src="/resources/lib/jquery.drawinglibrary.js"></script>
+<!--<script language="javascript" src="/resources/lib/jquery.svg.js"></script>-->
+<!--<script language="javascript" src="/resources/lib/jquery.drawinglibrary.js"></script>-->
+<script language="javascript" src="/resources/lib/wz_jsgraphics.js"></script>
 <script language="javascript" src="/resources/js/builder_events.js"></script>
 <script language="javascript" src="/resources/js/builder_object.js"></script>
 <script language="javascript" src="/resources/js/builder_object_control.js"></script>
@@ -35,7 +36,7 @@
 		<a href="javascript:void(0);" id="buttonDebug">debug</a>
 	</div>
 </div>
-<div class="canvas"></div>
+<div id="myCanvas" class="canvas"></div>
 
 
 <div id="dialog" title="Select type">
@@ -68,7 +69,7 @@
 <div class="messageBox">
 	<span>Messages:</span>
 </div>
-<div class="svgcontainer">
+<div class="svgcontainer" id="svgcontainer">
 </div>
 </body>
 

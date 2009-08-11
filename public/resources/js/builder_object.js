@@ -6,7 +6,7 @@
 //--------------------
 pcgObject = function(){
 	this.html = $(this.html);
-	this.addNewProp('id', 'PRIMARY');
+	//this.addNewProp('id', 'PRIMARY');
 }
 //--------------------
 //    properties
@@ -26,6 +26,9 @@ pcgObject.prototype.html = '<div><div class="pcgObject" pcgId="0">'
 			+  '</div></div>';
 pcgObject.prototype.properties = new Array;
 pcgObject.prototype.length = 0;
+pcgObject.prototype.internalFunctions = new Array;
+pcgObject.prototype.internalFunctionsArguments = new Array;
+pcgObject.prototype.internalFunctionsCounter = 0;
 //--------------------
 //    methods
 //--------------------
@@ -66,7 +69,8 @@ pcgObject.prototype.show = function(){
  */
 pcgObject.prototype.reloadUI = function(){	
 	this.html.find(".pcgObject").resizable();
-	this.html.find(".pcgObject").draggable({ handle: '.pcgObjectHeader' });	
+	this.html.find(".pcgObject").draggable({ handle: '.pcgObjectHeader' });
+	this.html.find(".pcgObject").bind('drag', this.executeBinderUI);
 	this.html.find(".propertiesBlock").sortable({
 		revert : true, 
 		items: 'tr:not(td a .addProperty)', 
@@ -74,9 +78,44 @@ pcgObject.prototype.reloadUI = function(){
 	this.html.find(".propertiesBlock").sortable('option', 'connectWith', '.propertiesBlock');
 	this.html.find(".propertiesBlock").disableSelection();
 }
+pcgObject.prototype.executeBinderUI = function(event, ui){
+	pcgInstance = getPcgInstance(this.firstChild);
+	for(var a in pcgInstance.internalFunctions){
+		var bindedFunction = pcgInstance.internalFunctions[a];
+		var arguments = pcgInstance.internalFunctionsArguments[a];
+		bindedFunction(arguments);
+		
+	}
+}
+/**
+ * 
+ */
+pcgObject.prototype.attachDrawUI = function(oPcg1, iProp1, oPcg2, iProp2,  oGrapher){
+	this.internalFunctionsCounter = this.internalFunctionsCounter + 1;
+	this.internalFunctionsArguments[this.internalFunctionsCounter] = {o1 : oPcg1, p1: iProp1, o2: oPcg2, p2: iProp2, grapher: oGrapher};
+	this.internalFunctions[this.internalFunctionsCounter] = function(arguments){
+		arguments.grapher.clear();
+		
+		var pos1 = arguments.o1.getProp(arguments.p1).html.offset();
+		var pos2 = arguments.o2.getProp(arguments.p2).html.offset();
+	
+		if(pos1.left > pos2.left){
+			var coord = {x1: pos1.left, y1: pos1.top + 10, x2: pos2.left + oProp2.html.width() ,y2: pos2.top + 10 }
+		}
+		else{
+			var coord = {x1: pos1.left + oProp1.html.width() , y1: pos1.top + 10, x2: pos2.left, y2: pos2.top + 10 }
+		}
+		arguments.grapher.drawLine(coord.x1, coord.y1, coord.x2, coord.y2);
+		arguments.grapher.paint();
+		
+	}
+}
 
+/**
+ * adding new property
+ */
 pcgObject.prototype.addNewProp = function (name, type){
-	oProp = new this.property(name, type, 'none', this);
+	oProp = new property(name, type, 'none', this);
 	this.length = this.length + 1;
 	this.properties[this.length] = oProp;
 	this.properties[this.length].id = this.length;
@@ -174,28 +213,28 @@ pcgObject.prototype.openChangeTypeDialog = function (){
 //    property object
 //--------------------
 
-pcgObject.prototype.property = function(sName, sType, sRelated, oParent){
+property = function(sName, sType, sRelated, oParent){
 	this.name = sName;
 	this.type = sType;
 	this.related = sRelated;
 	this.parent = oParent;
 }
-pcgObject.prototype.property.prototype.name = '';
-pcgObject.prototype.property.prototype.type = '';
-pcgObject.prototype.property.prototype.id = 0;
-pcgObject.prototype.property.prototype.related = '';
-pcgObject.prototype.property.prototype.parent = void(0);
-pcgObject.prototype.property.prototype.html = '';
+property.prototype.name = '';
+property.prototype.type = '';
+property.prototype.id = 0;
+property.prototype.related = '';
+property.prototype.parent = void(0);
+property.prototype.html = '';
 /**
  * remove prop in parent
  */
-pcgObject.prototype.property.prototype.remove = function (){
+property.prototype.remove = function (){
 	delete this.parent.properties[this.id];
 }
 /**
  * change prop type
  */
-pcgObject.prototype.property.prototype.changePropType = function (newType){
+property.prototype.changePropType = function (newType){
 	this.html.find('.property').attr('type', newType);
 	this.html.find('.propertyType').html(newType);
 	this.type = newType;
