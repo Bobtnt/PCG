@@ -12,7 +12,7 @@ $(document).ready(function(){
 	
 	
 	//daemon
-//	setInterval('pcgObjectControl()', 0.4 * 1000);	
+	setInterval('pcgObjectControl()', 0.4 * 1000);	
 	setInterval('reposMessagebox()', 0.5 * 1000);
 	
 	
@@ -23,7 +23,7 @@ $(document).ready(function(){
 		$('#dialog').dialog('open');
 	});
 	$("#buttonDebug").click(function(){
-		pcgObjectControl();
+		alert(aOpcgContainer[1].properties.length + ' -- '+ aOpcgContainer[2].properties.length)
 	});
 	//Global envents
 	//$(".canvas").selectable({ filter: '.pcgObject' });

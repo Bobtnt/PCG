@@ -20,12 +20,20 @@
 	
 	function reloadEventTriggers(){
 		for(var a in aOpcgContainer){ 
-			aOpcgContainer[a].show();
+			//aOpcgContainer[a].show();
+			
+			/*
 			aOpcgContainer[a].html.find(".pcgObjectHeader").dblclick(aOpcgContainer[a].rename);
 			aOpcgContainer[a].html.find(".addProperty").click(aOpcgContainer[a].addProperty);
 			aOpcgContainer[a].html.find(".renameProp").click(aOpcgContainer[a].renameProperty);
 			aOpcgContainer[a].html.find(".deleteProp").click(aOpcgContainer[a].deleteProperty);
 			aOpcgContainer[a].html.find(".changeProp").click(aOpcgContainer[a].openChangeTypeDialog);
+			*/
+			$(".pcgObject[pcgid='"+a+"'] .pcgObjectHeader").dblclick(aOpcgContainer[a].rename);
+			$(".pcgObject[pcgid='"+a+"'] .addProperty").click(aOpcgContainer[a].addProperty);
+			$(".pcgObject[pcgid='"+a+"'] .renameProp").click(aOpcgContainer[a].renameProperty);
+			$(".pcgObject[pcgid='"+a+"'] .deleteProp").click(aOpcgContainer[a].deleteProperty);
+			$(".pcgObject[pcgid='"+a+"'] .changeProp").click(aOpcgContainer[a].openChangeTypeDialog);
 		}
 	}
 	
