@@ -9,7 +9,7 @@
 <!--<script language="javascript" src="/resources/lib/jquery.drawinglibrary.js"></script>-->
 <script language="javascript" src="/resources/lib/wz_jsgraphics.js"></script>
 <script language="javascript" src="/resources/js/builder_events.js"></script>
-<script language="javascript" src="/resources/js/builder_object.js"></script>
+<script language="javascript" src="/resources/js/builder_object_sp.js"></script>
 <script language="javascript" src="/resources/js/builder_object_control.js"></script>
 <script language="javascript" src="/resources/js/builder.js"></script>
 <link rel="stylesheet" href="/resources/css/builder.css" type="text/css" />
