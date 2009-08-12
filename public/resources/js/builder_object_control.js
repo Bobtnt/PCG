@@ -9,7 +9,6 @@ pcgObjectControl = function(){
 		var aPropsList = new Array;
 		
 		//object name
-		console.log(a);
 		var iPcgId = aOpcgContainer[a].id;
 		var oPcgInstance = aOpcgContainer[a];
 		var objectName = oPcgInstance.html.find(".pcgObjectHeader span").attr('value');
@@ -33,14 +32,12 @@ pcgObjectControl = function(){
 //			sReturned += '- '+ sPropName + '<br>';
 //		});
 		
-		for(var b in aOpcgContainer[a].properties){
-			var checkedProp = aOpcgContainer[a].properties[b];
-			console.log(iPcgId + ' = ' + checkedProp.parent.id);
-			if(iPcgId != checkedProp.parent.id){
-				checkedProp.parent = aOpcgContainer[a];
-				console.log('retaked ' + iPcgId + ' = ' + checkedProp.parent.id);
-			}
-		}
+//		for(var b in aOpcgContainer[a].properties){
+//			var checkedProp = aOpcgContainer[a].properties[b];
+//			if(iPcgId != checkedProp.parent.id){
+//				checkedProp.parent = aOpcgContainer[a];
+//			}
+//		}
 	}	
 	// Check for non unique object name
 	bDoubleName = false;

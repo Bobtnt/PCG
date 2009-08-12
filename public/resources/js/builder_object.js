@@ -6,6 +6,7 @@
 //--------------------
 pcgObject = function(){
 	this.html = $(this.html);
+	this.show();
 	//this.addNewProp('id', 'PRIMARY');
 }
 //--------------------
@@ -115,17 +116,19 @@ pcgObject.prototype.attachDrawUI = function(oPcg1, iProp1, oPcg2, iProp2,  oGrap
  * adding new property
  */
 pcgObject.prototype.addNewProp = function (name, type){
-	oProp = new property(name, type, 'none', this);
-	this.length = this.length + 1;
-	this.properties[this.length] = oProp;
-	this.properties[this.length].id = this.length;
-	sName = this.properties[this.length].name;
-	sType = this.properties[this.length].type;
-	this.properties[this.length].html = '<tr><td class="propertyLeft"><span class="property" propId="'+ this.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></td><td class="propertyRight">'
+	var iPcgId = this.id; 
+	var thisInstance = aOpcgContainer[iPcgId]; 
+	var oProp = new property(name, type, 'none', thisInstance);
+	thisInstance.length = thisInstance.length + 1;
+	thisInstance.properties[thisInstance.length] = oProp;
+	thisInstance.properties[thisInstance.length].id = thisInstance.length;
+	var sName = thisInstance.properties[thisInstance.length].name;
+	var sType = thisInstance.properties[thisInstance.length].type;
+	thisInstance.properties[thisInstance.length].html = '<tr><td class="propertyLeft"><span class="property" propId="'+ thisInstance.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></td><td class="propertyRight">'
 	+ '<a href="javascript:void(0);" class="changeProp">Chg</a> <a href="javascript:void(0);" class="deleteProp">Del</a> <a href="javascript:void(0);" class="renameProp">Ren</a>'
 	+ '</td></tr>';
-	this.properties[this.length].html = $(oProp.html); 
-	return this.properties[this.length];
+	thisInstance.properties[thisInstance.length].html = $(oProp.html); 
+	return thisInstance.properties[thisInstance.length];
 }
 
 //--------------------
@@ -218,6 +221,7 @@ property = function(sName, sType, sRelated, oParent){
 	this.type = sType;
 	this.related = sRelated;
 	this.parent = oParent;
+	return this;
 }
 property.prototype.name = '';
 property.prototype.type = '';
