@@ -84,7 +84,6 @@ pcgObject = function(){
 			var bindedFunction = pcgInstance.internalFunctions[a];
 			var arguments = pcgInstance.internalFunctionsArguments[a];
 			bindedFunction(arguments);
-			
 		}
 	}
 	/**
@@ -98,14 +97,40 @@ pcgObject = function(){
 			
 			var pos1 = arguments.o1.getProp(arguments.p1).html.offset();
 			var pos2 = arguments.o2.getProp(arguments.p2).html.offset();
+			
+			var iConnector = 10;
+			var iBorder = 3;
 		
 			if(pos1.left > pos2.left){
-				var coord = {x1: pos1.left, y1: pos1.top + 10, x2: pos2.left + oProp2.html.width() ,y2: pos2.top + 10 }
+				//var coord = {x1: pos1.left, y1: pos1.top + 10, x2: pos2.left + oProp2.html.width() ,y2: pos2.top + 10 }
+				
+				var iXSpaceBetweenObj  = pos2.left + oProp2.html.width() - pos1.left;
+				var aXcoord = [ pos2.left + oProp2.html.width() + iBorder, 
+				                pos2.left + oProp2.html.width() - (iXSpaceBetweenObj / 2),
+				                pos2.left + oProp2.html.width() - (iXSpaceBetweenObj / 2),
+				                pos1.left - iBorder - iConnector ];
+				var aYcoord = [ pos2.top + 10,
+				                pos2.top + 10,
+				                pos1.top + 10,
+				                pos1.top + 10];
 			}
 			else{
-				var coord = {x1: pos1.left + oProp1.html.width() , y1: pos1.top + 10, x2: pos2.left, y2: pos2.top + 10 }
+				//var coord = {x1: pos1.left + oProp1.html.width() , y1: pos1.top + 10, x2: pos2.left, y2: pos2.top + 10 }
+				arguments.grapher.fillArc(pos1.left + oProp1.html.width() + iBorder - 7
+						, pos1.top + (10/2), 15, 15 , 270, 90);
+				var iXSpaceBetweenObj  = pos1.left + oProp2.html.width() - pos2.left;
+				var aXcoord = [ pos1.left + oProp1.html.width() + iBorder, 
+				                pos1.left + oProp1.html.width() - (iXSpaceBetweenObj / 2),
+				                pos1.left + oProp1.html.width() - (iXSpaceBetweenObj / 2),
+				                pos2.left - iBorder - iConnector ];
+				var aYcoord = [ pos1.top + 10,
+				                pos1.top + 10,
+				                pos2.top + 10,
+				                pos2.top + 10];
+				arguments.grapher.fillArc(pos2.left - iBorder - iConnector, pos2.top + (10/2), 15, 15 , 90, 270);
 			}
-			arguments.grapher.drawLine(coord.x1, coord.y1, coord.x2, coord.y2);
+			//arguments.grapher.drawLine(coord.x1, coord.y1, coord.x2, coord.y2);
+			arguments.grapher.drawPolyline(aXcoord, aYcoord);
 			arguments.grapher.paint();
 			
 		}

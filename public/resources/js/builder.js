@@ -88,16 +88,6 @@
 			oReceiver.html.find('table').prepend(oProp2.html);
 			reloadEventTriggers();
 			
-			var pos1 = oProp1.html.offset();
-			var pos2 = oProp2.html.offset();
-			
-			if(pos1.left > pos2.left){
-				var coord = {x1: pos1.left, y1: pos1.top + 10 , x2: pos2.left + oProp2.html.width() ,y2: pos2.top + 10 }
-			}
-			else{
-				var coord = {x1: pos1.left + oProp1.html.width() , y1: pos1.top + 10, x2: pos2.left, y2: pos2.top + 10 }
-			}
-			
 			iGrapherCounter = iGrapherCounter + 1;
 			grapherName = 'grapher'+iGrapherCounter;
 			aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
@@ -107,12 +97,12 @@
 			aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
 			aGrapherContainer[iGrapherCounter].setColor("#ddddff");
 			aGrapherContainer[iGrapherCounter].setStroke(2);
-			aGrapherContainer[iGrapherCounter].drawLine(coord.x1, coord.y1, coord.x2, coord.y2);
-			
+						
 			oSender.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
 			oReceiver.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
 			
-			aGrapherContainer[iGrapherCounter].paint();
+			oReceiver.executeBinderUI();
+						
 
 		}
 		
