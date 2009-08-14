@@ -74,7 +74,10 @@ pcgObject = function(){
 		this.html.find(".propertiesBlock").sortable({
 			revert : true, 
 			items: 'tr:not(td a .addProperty)', 
-			receive: this.receiveProp });
+			receive: this.receiveProp,
+			change: this.executeBinderUI,
+			update: this.executeBinderUI
+			});
 		this.html.find(".propertiesBlock").sortable('option', 'connectWith', '.propertiesBlock');
 		this.html.find(".propertiesBlock").disableSelection();
 	}

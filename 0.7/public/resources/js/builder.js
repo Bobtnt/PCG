@@ -82,29 +82,35 @@
 	
 	function newRelation(oSender, oReceiver, oProp, sType){
 		if(sType == 'n:m'){
-			oProp1 = oSender.addNewProp(oReceiver.name + '_collection', 'collection');
-			oSender.html.find('table').prepend(oProp1.html);
-			oProp2 = oReceiver.addNewProp(oSender.name + '_collection', 'collection');
-			oReceiver.html.find('table').prepend(oProp2.html);
-			reloadEventTriggers();
-			
-			iGrapherCounter = iGrapherCounter + 1;
-			grapherName = 'grapher'+iGrapherCounter;
-			aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
-			aGrapherDivContainer[iGrapherCounter] = $(aGrapherDivContainer[iGrapherCounter]);
-			aGrapherDivContainer[iGrapherCounter].css('z-index','-1');
-			$('#svgcontainer').append(aGrapherDivContainer[iGrapherCounter]);
-			aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
-			aGrapherContainer[iGrapherCounter].setColor("#ddddff");
-			aGrapherContainer[iGrapherCounter].setStroke(2);
-						
-			oSender.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
-			oReceiver.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
-			
-			oReceiver.executeBinderUI();
-						
-
+			var color = '#4FB47D';
 		}
+		else if(sType == '1:n'){
+			var color = '#DF5BA7';
+		}
+		else if('1:1'){
+			var color = '#F7DD27';
+		}
+		
+		oProp1 = oSender.addNewProp(oReceiver.name + '_collection', 'collection');
+		oSender.html.find('table').prepend(oProp1.html);
+		oProp2 = oReceiver.addNewProp(oSender.name + '_collection', 'collection');
+		oReceiver.html.find('table').prepend(oProp2.html);
+		reloadEventTriggers();
+		
+		iGrapherCounter = iGrapherCounter + 1;
+		grapherName = 'grapher'+iGrapherCounter;
+		aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
+		aGrapherDivContainer[iGrapherCounter] = $(aGrapherDivContainer[iGrapherCounter]);
+		aGrapherDivContainer[iGrapherCounter].css('z-index','-1');
+		$('#svgcontainer').append(aGrapherDivContainer[iGrapherCounter]);
+		aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
+		aGrapherContainer[iGrapherCounter].setColor(color);
+		aGrapherContainer[iGrapherCounter].setStroke(2);
+					
+		oSender.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
+		oReceiver.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
+		
+		oReceiver.executeBinderUI();
 		
 	}
 
