@@ -8,13 +8,13 @@ minimap = function() {
 			left: 760	
 	};
 	this.size = {
-			height: 200,
-			width: 150
+			height: 250,
+			width: 400
 	};
 	
 	this.mapMaxSize = {
-			height: 2000,
-			width: 1500
+			height: 2500,
+			width: 4000
 	};
 	
 	this.iObjects = 0;
