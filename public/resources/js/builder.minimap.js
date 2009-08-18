@@ -31,7 +31,6 @@ minimap = function() {
 	 * append minimap on document
 	 */
 	this.show = function(){
-		$(".accordion div:first").append(this.html);
 		this.resize();
 		this.html.css('height', this.size.height + 'px');
 		this.html.css('width', this.size.width + 'px');
