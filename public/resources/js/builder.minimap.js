@@ -1,6 +1,10 @@
-
-
-
+/**
+ * $Id: $
+ * 
+ * minimap object
+ * @class minimap
+ * @constructor
+ */
 minimap = function() {
 	
 	this.pos = {
@@ -27,11 +31,7 @@ minimap = function() {
 	 */
 	this.show = function(){
 		$(".accordion div:first").append(this.html);
-//		var space = window.innerWidth;
-//		this.pos.left = space - this.size.width - 20;
-//		this.html.css('top', this.pos.top + 'px');
-//		this.html.css('left', this.pos.left + 'px');
-		
+		this.resize();
 		this.html.css('height', this.size.height + 'px');
 		this.html.css('width', this.size.width + 'px');
 		var minimapPos = this.html.offset();
@@ -39,6 +39,15 @@ minimap = function() {
 		this.pos.left = minimapPos.left;
 		this.reloadUI();
 	};
+	
+	this.resize = function(){
+		var ratio = window.screen.availWidth / window.screen.availHeight;
+		this.mapMaxSize.width = window.screen.availWidth * 2.5;
+		this.mapMaxSize.height = this.mapMaxSize.width / ratio;
+		this.size.height = this.mapMaxSize.width / 10;
+		this.size.width = this.mapMaxSize.height / 10;
+	};
+	
 	/**
 	 * reload IU event on minimap
 	 */
