@@ -72,12 +72,15 @@ pcgObject = function(){
 	 * reload UI object event  
 	 */
 	this.reloadUI = function(){	
-		this.html.find(".pcgObject").resizable();
+		this.html.find(".pcgObject").resizable({
+			stop: this.helpers.objectResizeStop
+		});
 		this.html.find(".pcgObject").draggable({ 
 			handle: '.pcgObjectHeader', 
 			stack: { group: 'pcg', min: 50 }, 
 			start: this.helpers.objectDragStart,
-			stop: this.helpers.objectDragStop
+			stop: this.helpers.objectDragStop,
+			drag: this.helpers.objectDragging
 		});
 		this.html.find(".pcgObject").bind('drag', this.executeBinderUI);
 		this.html.find(".propertiesBlock").sortable({
@@ -305,8 +308,17 @@ pcgObject = function(){
 			var oPcg = getPcgInstance(this);
 			oPcg.helpers.setStackDown(oPcg);
 			map.moveObject(oPcg);			
+		},
+		objectDragging: function(event, ui){
+			//Nice but consume most of cpu 
+			//var oPcg = getPcgInstance(this);
+			//map.moveObject(oPcg);	
+		},
+		objectResizeStop: function(event, ui){
+			var oPcg = getPcgInstance(this);
+			oPcg.helpers.setStackDown(oPcg);
+			map.moveObject(oPcg);	
 		}
-		
 	};
 	
 	//--------------------

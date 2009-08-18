@@ -22,8 +22,8 @@
 	
 	
 	reposMessagebox = function(){
-		if($(".messageBox").css('top') != window.innerHeight - 30){
-			$(".messageBox").css('top', window.innerHeight - 30);
+		if($(".messageBox").css('top') != window.innerHeight - 45 + $(document).scrollTop() ){
+			$(".messageBox").css('top', window.innerHeight - 45 + $(document).scrollTop());
 		}
 	};
 	
