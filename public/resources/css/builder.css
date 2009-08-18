@@ -43,7 +43,7 @@
 }
 
 .pcgObject {
-	zindex:1;
+	/* z-index:1; */ 
 	border: solid 1px #000000;
 	position: absolute;
 	top: 100px;
@@ -64,6 +64,7 @@
 	background-color: #B0B0B0;
 	margin-top: 2px;	
 	margin-bottom: 2px;
+	/* z-index:2; */
 
 }
 
@@ -71,6 +72,7 @@
 	height: 100%;
 	width: 100%;
 	background-color: #8a8aed;
+	/* z-index:2; */ 
 }
 
 .propertiesBlock {
@@ -78,28 +80,33 @@
 	margin-left: 3px;
 	border: 0px;
 	width: 100%;
+	/* z-index:3; */ 
 }
 
 .propertyLeft {
 	width: 90%;	
 	white-space: nowrap;
+	/* z-index:4; */
 }
 .propertyRight {
 	white-space:nowrap;
 	width:10%;
-	padding-right:5px;	
+	padding-right:5px;
+	/* z-index:4; */
 }
 .property {
 	background-color:orange;
-	z-index: 15;	
+	z-index: 15;
+	/* z-index:5; */ 	
 }
 
 .propertyType {
 	font-size: x-small;	
+	/* z-index:5; */ 
 }
 
 .addProperty {
-	
+	/* z-index:5; */
 }
 
 .ui-selected { 
@@ -112,10 +119,39 @@
 }
 
 .objectLink {
-	border: solid 1px #000000;	
+	border: solid 1px #000000;
 }
 
 .ui-draggable-dragging {
 	z-index:100;	
+}
+
+.minimap {
+	position: fixed;
+	background-color: #E9E9E9;
+	border: 1px solid #808080;
+	z-index: 10;
+}
+
+.redSquare {
+	position: relative;
+	border: 1px solid red;
+	background-color: #FFF6F6;
+	opacity:0.4;
+	filter:alpha(opacity=40);
+	width: 75px;
+	height: 50px;
+	top: 2px;
+	left: 2px;
+	z-index: 60;
+}
+
+.miniObject {
+	position: absolute;
+	z-index: 20;
+	width: 25px;
+	height: 16px;
+	border: 1px solid orange;
+	background-color: #FFCA4C;
 }
 

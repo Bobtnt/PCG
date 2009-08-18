@@ -1,12 +1,21 @@
 
-	
-	newPcgObject = function(){
+	/**
+	 * create new pcg object
+	 * 
+	 * @type pcgObject
+	 * @return new PcgObject
+	 */
+	function newPcgObject(){
 		iPcgContainerGlobalCounter = iPcgContainerGlobalCounter + 1;
 		iPcgId = iPcgContainerGlobalCounter;
 		aOpcgContainer[iPcgId] = new pcgObject();
 		aOpcgContainer[iPcgId].setId(iPcgId);
 		aOpcgContainer[iPcgId].addNewProp('id', 'PRIMARY');
+		aOpcgContainer[iPcgId].placeOnScreen();
 		reloadEventTriggers();
+		
+		map.addObject(aOpcgContainer[iPcgId]);
+		return aOpcgContainer[iPcgId];
 	}
 	
 	
@@ -16,24 +25,15 @@
 		if($(".messageBox").css('top') != window.innerHeight - 30){
 			$(".messageBox").css('top', window.innerHeight - 30);
 		}
-	}
+	};
 	
 	function reloadEventTriggers(){
 		for(var a in aOpcgContainer){ 
-			//aOpcgContainer[a].show();
-			
-			/*
-			aOpcgContainer[a].html.find(".pcgObjectHeader").dblclick(aOpcgContainer[a].rename);
-			aOpcgContainer[a].html.find(".addProperty").click(aOpcgContainer[a].addProperty);
-			aOpcgContainer[a].html.find(".renameProp").click(aOpcgContainer[a].renameProperty);
-			aOpcgContainer[a].html.find(".deleteProp").click(aOpcgContainer[a].deleteProperty);
-			aOpcgContainer[a].html.find(".changeProp").click(aOpcgContainer[a].openChangeTypeDialog);
-			*/
-			$(".pcgObject[pcgid='"+a+"'] .pcgObjectHeader").dblclick(aOpcgContainer[a].rename);
-			$(".pcgObject[pcgid='"+a+"'] .addProperty").click(aOpcgContainer[a].addProperty);
-			$(".pcgObject[pcgid='"+a+"'] .renameProp").click(aOpcgContainer[a].renameProperty);
-			$(".pcgObject[pcgid='"+a+"'] .deleteProp").click(aOpcgContainer[a].deleteProperty);
-			$(".pcgObject[pcgid='"+a+"'] .changeProp").click(aOpcgContainer[a].openChangeTypeDialog);
+			aOpcgContainer[a].html.find(".pcgObjectHeader").dblclick(aOpcgContainer[a].helpers.rename);
+			aOpcgContainer[a].html.find(".addProperty").click(aOpcgContainer[a].helpers.addProperty);
+			aOpcgContainer[a].html.find(".renameProp").click(aOpcgContainer[a].helpers.renameProperty);
+			aOpcgContainer[a].html.find(".deleteProp").click(aOpcgContainer[a].helpers.deleteProperty);
+			aOpcgContainer[a].html.find(".changeProp").click(aOpcgContainer[a].helpers.openChangeTypeDialog);
 		}
 	}
 	
@@ -65,18 +65,32 @@
 			oParent.find("#edited").replaceWith(oHtml);
 			delete aModifiedElements[a];
 		}
-	}
-
+	};
+	/**
+	 * 
+	 * @param {pcgObject} oDom
+	 * @return
+	 */
 	function getPcgInstance(oDom){
 		if(typeof oDom == 'number' || typeof oDom == 'string'){
-			iPcgInstanceId = oDom;
+			var iPcgInstanceId = oDom;
 		}
 		else if (typeof oDom == 'object' ){
-			iPcgInstanceId = $(oDom).parents('div .pcgObject').attr('pcgid');
-			if(iPcgInstanceId == 'undefined'){
-				return false;
+			var rx = new RegExp('pcgObject($| )', 'g');
+			if(oDom instanceof pcgObject){
+				iPcgInstanceId = oDom.id;
+			}			
+			else if(rx.test($(oDom).get(0).className)){
+				var iPcgInstanceId = $(oDom).attr('pcgid');
 			}
+			else{
+				var iPcgInstanceId = $(oDom).parents('div .pcgObject').attr('pcgid');
+			}					
+			
 		}
+		if(iPcgInstanceId == 'undefined'){
+			return false;
+		}		
 		return aOpcgContainer[iPcgInstanceId];
 	}
 	
