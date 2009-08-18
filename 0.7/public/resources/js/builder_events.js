@@ -28,6 +28,7 @@ $(document).ready(function(){
 	
 	//minimap
 	map = new minimap();
+	$(".accordion div:first").append(map.html);
 	map.show();
 	
 	// new relation dialog
