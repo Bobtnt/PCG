@@ -1,8 +1,9 @@
 
  //  $Id $
- 
 
-/**
+// TODO: modifier le tableau en elements DIV
+
+ /**
  * base pcg object 
  * @class pcgObject
  * @constructor
@@ -89,7 +90,9 @@ pcgObject = function(){
 			receive: this.helpers.receiveProp,
 			change: this.executeBinderUI,
 			update: this.executeBinderUI,
-			over: this.executeBinderUI
+			over: this.executeBinderUI,
+			placeholder: 'ui-state-highlight'
+
 			});
 		this.html.find(".propertiesBlock").sortable('option', 'connectWith', '.propertiesBlock');
 		this.html.find(".propertiesBlock").disableSelection();
