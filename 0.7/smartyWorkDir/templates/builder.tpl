@@ -36,6 +36,7 @@
 		<a href="javascript:void(0);" id="buttonDebug">debug</a>
 	</div>
 </div>
+
 <div id="myCanvas" class="canvas"></div>
 
 
@@ -66,12 +67,29 @@
 </div>
 
 
+
+
 <div class="messageBox">
 	<span>Messages:</span>
 </div>
 <div class="svgcontainer" id="svgcontainer">
 </div>
+
+<div class="accordion">
+   <h3><a href="#">Minimap</a></h3>
+   <div>
+      
+   </div>
+   <h3><a href="#">Section 2</a></h3>
+   <div>
+      Section 2 content
+   </div>
+   <h3><a href="#">Section 3</a></h3>
+   <div>
+      Section 3 content
+   </div>
+</div> 
+
+
 </body>
-
-
 </html>

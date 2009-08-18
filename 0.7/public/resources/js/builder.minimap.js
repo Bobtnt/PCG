@@ -8,8 +8,8 @@ minimap = function() {
 			left: 760	
 	};
 	this.size = {
-			height: 400,
-			width: 300
+			height: 200,
+			width: 150
 	};
 	
 	this.mapMaxSize = {
@@ -26,13 +26,17 @@ minimap = function() {
 	 * append minimap on document
 	 */
 	this.show = function(){
-		var space = $(document).width();
-		this.pos.left = space - this.size.width - 17;
-		this.html.css('top', this.pos.top + 'px');
-		this.html.css('left', this.pos.left + 'px');
+		$(".accordion div:first").append(this.html);
+//		var space = window.innerWidth;
+//		this.pos.left = space - this.size.width - 20;
+//		this.html.css('top', this.pos.top + 'px');
+//		this.html.css('left', this.pos.left + 'px');
+		
 		this.html.css('height', this.size.height + 'px');
 		this.html.css('width', this.size.width + 'px');
-		$("body").append(this.html);
+		var minimapPos = this.html.offset();
+		this.pos.top = minimapPos.top;
+		this.pos.left = minimapPos.left;
 		this.reloadUI();
 	};
 	/**
@@ -67,10 +71,11 @@ minimap = function() {
 	 * @param {pcgObject} oPcg
 	 */
 	this.moveObject = function(oPcg){
+		var minimapRelativePos = this.html.position();
 		var oPos = oPcg.html.find(".pcgObject").offset();
 		var relatives = {};
-		relatives.top =  ((oPos.top / this.mapMaxSize.height ) * this.size.height);
-		relatives.left = ((oPos.left / this.mapMaxSize.width) * this.size.width);
+		relatives.top =  ((oPos.top / this.mapMaxSize.height ) * this.size.height) + minimapRelativePos.top;
+		relatives.left = ((oPos.left / this.mapMaxSize.width) * this.size.width) + minimapRelativePos.left;
 		relatives.height = oPcg.html.find(".pcgObject").height() / this.mapMaxSize.height * this.size.height;
 		relatives.width = oPcg.html.find(".pcgObject").width() / this.mapMaxSize.width * this.size.width;
 		this.aMiniObjects[oPcg.id].html.css('top',relatives.top + 'px');
@@ -93,9 +98,13 @@ minimap = function() {
 		 * @return this
 		 */
 		moveScreen: function(event, ui){
+			var realMinimapPos = map.html.offset();
+			map.pos.top = realMinimapPos.top - $(document).scrollTop();
+			map.pos.left = realMinimapPos.left - $(document).scrollLeft();
+			
 			var squarePos = map.html.find('.redSquare').offset();
 			relatives = {};
-			relatives.top = squarePos.top - map.pos.top - 1 - $(document).scrollTop(); 
+			relatives.top = squarePos.top - map.pos.top - 1 - $(document).scrollTop();
 			relatives.left = squarePos.left - map.pos.left - 1 - $(document).scrollLeft();
 			relatives.top = relatives.top / map.size.height * map.mapMaxSize.height;
 			relatives.left = relatives.left / map.size.width * map.mapMaxSize.width;
