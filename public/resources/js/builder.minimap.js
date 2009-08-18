@@ -13,7 +13,8 @@ minimap = function() {
 	};
 	this.size = {
 			height: 250,
-			width: 400
+			width: 400,
+			ratio: 15
 	};
 	
 	this.mapMaxSize = {
@@ -44,8 +45,8 @@ minimap = function() {
 		var ratio = window.screen.availHeight / window.screen.availWidth;
 		this.mapMaxSize.width = window.screen.availWidth * 2.5;
 		this.mapMaxSize.height = this.mapMaxSize.width * ratio;
-		this.size.height = this.mapMaxSize.height / 10;
-		this.size.width = this.mapMaxSize.width / 10;
+		this.size.height = this.mapMaxSize.height / this.size.ratio;
+		this.size.width = this.mapMaxSize.width / this.size.ratio;
 	};
 	
 	/**
