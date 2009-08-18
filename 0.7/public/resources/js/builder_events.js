@@ -9,8 +9,6 @@ $(document).ready(function(){
 	aGrapherContainer = new Array();
 	aGrapherDivContainer = new Array();
 	
-	
-	
 	//daemon
 	setInterval('pcgObjectControl()', 0.4 * 1000);	
 	setInterval('reposMessagebox()', 0.5 * 1000);

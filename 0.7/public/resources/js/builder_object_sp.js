@@ -1,9 +1,8 @@
-
- //  $Id $
-
 // TODO: modifier le tableau en elements DIV
-
- /**
+/**
+ * $Id$
+ * 
+ * 
  * base pcg object 
  * @class pcgObject
  * @constructor

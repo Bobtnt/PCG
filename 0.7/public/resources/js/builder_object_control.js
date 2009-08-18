@@ -11,7 +11,7 @@ pcgObjectControl = function(){
 		//object name
 		var iPcgId = aOpcgContainer[a].id;
 		/**
-		 * @type pcgObject
+		 * @type {pcgObject} oPcgInstance
 		 */
 		var oPcgInstance = aOpcgContainer[a];
 		
@@ -64,5 +64,5 @@ pcgObjectControl = function(){
 		$('#controlerDebug').html( sReturned );
 		//return void(0);
 	}
-}
+};
 
