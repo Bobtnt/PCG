@@ -23,11 +23,14 @@ $(document).ready(function(){
 		$('#dialog').dialog('open');
 	});
 	$("#buttonDebug").click(function(){
-		alert(aOpcgContainer[1].properties.length + ' -- '+ aOpcgContainer[2].properties.length)
+		console.log(aOpcgContainer[1].html.find('.pcgObject').offset());
 	});
 	//Global envents
-	//$(".canvas").selectable({ filter: '.pcgObject' });
 	$(".messageBox").css('top', window.innerHeight - 30 );
+	
+	//minimap
+	map = new minimap();
+	map.show();
 	
 	// new relation dialog
 	$("#dialog").dialog({
