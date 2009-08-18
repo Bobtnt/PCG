@@ -40,7 +40,7 @@ $(document).ready(function(){
 		modal: true,
 		buttons: {
 			'Select': function() {
-				dialogType = $('#dialog #dialogType').val()
+				dialogType = $('#dialog #dialogType').val();
 				
 				if(dialogType == 'relation'){
 					var relationType = $("#dialog #relationType").val();
@@ -71,6 +71,9 @@ $(document).ready(function(){
 		}
 	});
 	
+	$(".accordion").accordion();
+	$(".accordion").css('top', '40px');
+	$(".accordion").css('left', window.innerWidth - $(".accordion").width() - 20 + 'px');
 
 	
 });

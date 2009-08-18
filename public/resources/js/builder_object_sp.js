@@ -14,11 +14,11 @@ pcgObject = function(){
 	//--------------------
 	this.id = 0;
 	this.name = 'New object';
-	this.html = '<div><div class="pcgObject" pcgId="0">'
-				+  '<div class="pcgObjectHeader">'
+	this.html = '<div><div class="pcgObject ui-widget" pcgId="0">'
+				+  '<div class="pcgObjectHeader ui-widget-header">'
 				+  '<span value="New object">New object</span>'
 				+  '</div>'
-				+  '<div class="pcgObjectBody">'
+				+  '<div class="pcgObjectBody ui-widget-content">'
 				+  '<table class="propertiesBlock">'
 				+  '<tr><td class="propertyLeft"><span class="property" value="id" propid="1" type="PRIMARY">id</span></td><td class="propertyRight">PRIMARY</td></tr>'
 				+  '<tr><td colspan="2"><a href="javascript:void(0);" class="addProperty">Add</a></td></tr>'
