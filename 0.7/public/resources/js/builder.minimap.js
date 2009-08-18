@@ -1,5 +1,5 @@
 /**
- * $Id: $
+ * $Id$
  * 
  * minimap object
  * @class minimap
@@ -41,11 +41,11 @@ minimap = function() {
 	};
 	
 	this.resize = function(){
-		var ratio = window.screen.availWidth / window.screen.availHeight;
+		var ratio = window.screen.availHeight / window.screen.availWidth;
 		this.mapMaxSize.width = window.screen.availWidth * 2.5;
-		this.mapMaxSize.height = this.mapMaxSize.width / ratio;
-		this.size.height = this.mapMaxSize.width / 10;
-		this.size.width = this.mapMaxSize.height / 10;
+		this.mapMaxSize.height = this.mapMaxSize.width * ratio;
+		this.size.height = this.mapMaxSize.height / 10;
+		this.size.width = this.mapMaxSize.width / 10;
 	};
 	
 	/**
