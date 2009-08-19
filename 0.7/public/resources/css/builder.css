@@ -83,37 +83,45 @@ body {
 }
 
 .propertiesBlock {
-	float:left;
-	margin-left: 3px;
+	list-style-type: none;
+	/*margin-left: 3px;*/
 	border: 0px;
 	width: 100%;
-	/* z-index:3; */ 
+	margin-left: 5px; 
+	padding: 0;
+	
+}
+
+.propertyBlock {
+	margin-right: 10px;
+	white-space: nowrap;
+	margin-bottom: 4px;
+		
 }
 
 .propertyLeft {
-	width: 90%;	
+	width: 70%;
 	white-space: nowrap;
 	/* z-index:4; */
 }
 .propertyRight {
+	width: 30%;
 	white-space:nowrap;
 	width:10%;
 	padding-right:5px;
 	/* z-index:4; */
 }
 .property {
-	background-color:orange;
+	/*background-color:orange;*/
 	z-index: 15;
-	/* z-index:5; */ 	
+	
 }
 
 .propertyType {
 	font-size: x-small;	
-	/* z-index:5; */ 
 }
 
 .addProperty {
-	/* z-index:5; */
 }
 
 .ui-selected { 
