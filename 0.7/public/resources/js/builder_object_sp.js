@@ -19,7 +19,7 @@ pcgObject = function(){
 				+  '</div>'
 				+  '<div class="pcgObjectBody ui-widget-content">'
 				+  '<ul class="propertiesBlock">'
-				+  '<li class="propertyBlock"><span class="propertyLeft ui-icon ui-icon-carat-2-n-s ui-state-default"><span class="property" value="id" propid="1" type="PRIMARY">id</span></span><span class="propertyRight">PRIMARY</span></li>'
+				+  '<li class="propertyBlock"><span class="ui-icon ui-icon-carat-2-n-s"/><span class="propertyLeft ui-state-default"><span class="property" value="id" propid="1" type="PRIMARY">id</span></span><span class="propertyRight">PRIMARY</span></li>'
 				+  '<li class="propertyBlock"><div><a href="javascript:void(0);" class="addProperty">Add</a></div></li>'
 				+  '</ul>'
 				+  '</div>'
