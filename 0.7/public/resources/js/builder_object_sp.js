@@ -19,7 +19,7 @@ pcgObject = function(){
 				+  '</div>'
 				+  '<div class="pcgObjectBody ui-widget-content">'
 				+  '<ul class="propertiesBlock">'
-				+  '<li class="propertyBlock ui-state-default"><span class="propertyLeft"><span class="property" value="id" propid="1" type="PRIMARY">id</span></span><span class="propertyRight">PRIMARY</span></li>'
+				+  '<li class="propertyBlock"><span class="propertyLeft ui-state-default"><span class="property" value="id" propid="1" type="PRIMARY">id</span></span><span class="propertyRight">PRIMARY</span></li>'
 				+  '<li class="propertyBlock"><div><a href="javascript:void(0);" class="addProperty">Add</a></div></li>'
 				+  '</ul>'
 				+  '</div>'
@@ -174,8 +174,8 @@ pcgObject = function(){
 		thisInstance.properties[thisInstance.length].id = thisInstance.length;
 		var sName = thisInstance.properties[thisInstance.length].name;
 		var sType = thisInstance.properties[thisInstance.length].type;
-		thisInstance.properties[thisInstance.length].html = '<li class="propertyBlock ui-state-default">'
-		+ '<span class="propertyLeft"><span class="property" propId="'+ thisInstance.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></span>'
+		thisInstance.properties[thisInstance.length].html = '<li class="propertyBlock">'
+		+ '<span class="propertyLeft ui-state-default"><span class="property" propId="'+ thisInstance.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></span>'
 		+ '<span class="propertyRight">'
 		+ '<a href="javascript:void(0);" class="changeProp">Chg</a> <a href="javascript:void(0);" class="deleteProp">Del</a> <a href="javascript:void(0);" class="renameProp">Ren</a>'
 		+ '</span></li>';

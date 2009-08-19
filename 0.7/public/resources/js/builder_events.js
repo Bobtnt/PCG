@@ -23,7 +23,7 @@ $(document).ready(function(){
 	$("#buttonDebug").click(function(){
 		console.log(aOpcgContainer[1].html.find('.pcgObject').offset());
 	});
-	//Global envents
+	//Global events
 	$(".messageBox").css('top', window.innerHeight - 30 );
 	
 	//minimap
