@@ -114,6 +114,7 @@ body {
 .property {
 	/*background-color:orange;*/
 	z-index: 15;
+	cursor: pointer;
 	
 }
 
