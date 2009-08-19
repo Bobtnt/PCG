@@ -56,6 +56,7 @@ minimap = function() {
 		this.html.find('.redSquare').width(window.innerWidth / this.mapMaxSize.width * this.size.width);
 		this.html.find('.redSquare').draggable({ 
 			containment: 'parent',
+			drag: this.helpers.moveScreen,
 			stop: this.helpers.moveScreen
 			});
 		$('.canvas').height(this.mapMaxSize.height);

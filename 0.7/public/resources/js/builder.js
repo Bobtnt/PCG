@@ -109,9 +109,9 @@
 		}
 		
 		oProp1 = oSender.addNewProp(oReceiver.name + '_collection', 'collection');
-		oSender.html.find('table').prepend(oProp1.html);
+		oSender.html.find('ul').prepend(oProp1.html);
 		oProp2 = oReceiver.addNewProp(oSender.name + '_collection', 'collection');
-		oReceiver.html.find('table').prepend(oProp2.html);
+		oReceiver.html.find('ul').prepend(oProp2.html);
 		reloadEventTriggers();
 		
 		iGrapherCounter = iGrapherCounter + 1;
