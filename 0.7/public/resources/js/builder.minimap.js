@@ -14,7 +14,7 @@ minimap = function() {
 	this.size = {
 			height: 250,
 			width: 400,
-			ratio: 15
+			ratio: 20
 	};
 	
 	this.mapMaxSize = {

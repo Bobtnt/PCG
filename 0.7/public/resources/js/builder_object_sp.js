@@ -1,4 +1,3 @@
-// TODO: modifier le tableau en elements DIV
 /**
  * $Id$
  * 
@@ -19,10 +18,10 @@ pcgObject = function(){
 				+  '<span value="New object">New object</span>'
 				+  '</div>'
 				+  '<div class="pcgObjectBody ui-widget-content">'
-				+  '<table class="propertiesBlock">'
-				+  '<tr><td class="propertyLeft"><span class="property" value="id" propid="1" type="PRIMARY">id</span></td><td class="propertyRight">PRIMARY</td></tr>'
-				+  '<tr><td colspan="2"><a href="javascript:void(0);" class="addProperty">Add</a></td></tr>'
-				+  '</table>'
+				+  '<ul class="propertiesBlock">'
+				+  '<li class="propertyBlock ui-state-default"><span class="propertyLeft"><span class="property" value="id" propid="1" type="PRIMARY">id</span></span><span class="propertyRight">PRIMARY</span></li>'
+				+  '<li class="propertyBlock"><div><a href="javascript:void(0);" class="addProperty">Add</a></div></li>'
+				+  '</ul>'
 				+  '</div>'
 				+  '</div></div>';
 	this.properties = new Array;
@@ -85,13 +84,13 @@ pcgObject = function(){
 		this.html.find(".pcgObject").bind('drag', this.executeBinderUI);
 		this.html.find(".propertiesBlock").sortable({
 			revert : true, 
-			items: 'tr:not(td a .addProperty)', 
+			items: 'li:has(span.propertyLeft)', 
 			receive: this.helpers.receiveProp,
 			change: this.executeBinderUI,
 			update: this.executeBinderUI,
 			over: this.executeBinderUI,
-			placeholder: 'ui-state-highlight'
-
+			placeholder: 'ui-state-highlight',
+			forcePlaceholderSize: true
 			});
 		this.html.find(".propertiesBlock").sortable('option', 'connectWith', '.propertiesBlock');
 		this.html.find(".propertiesBlock").disableSelection();
@@ -175,9 +174,11 @@ pcgObject = function(){
 		thisInstance.properties[thisInstance.length].id = thisInstance.length;
 		var sName = thisInstance.properties[thisInstance.length].name;
 		var sType = thisInstance.properties[thisInstance.length].type;
-		thisInstance.properties[thisInstance.length].html = '<tr><td class="propertyLeft"><span class="property" propId="'+ thisInstance.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></td><td class="propertyRight">'
+		thisInstance.properties[thisInstance.length].html = '<li class="propertyBlock ui-state-default">'
+		+ '<span class="propertyLeft"><span class="property" propId="'+ thisInstance.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></span>'
+		+ '<span class="propertyRight">'
 		+ '<a href="javascript:void(0);" class="changeProp">Chg</a> <a href="javascript:void(0);" class="deleteProp">Del</a> <a href="javascript:void(0);" class="renameProp">Ren</a>'
-		+ '</td></tr>';
+		+ '</span></li>';
 		thisInstance.properties[thisInstance.length].html = $(oProp.html); 
 		return thisInstance.properties[thisInstance.length];
 	};

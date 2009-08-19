@@ -25,6 +25,9 @@
 		if($(".messageBox").css('top') != window.innerHeight - 45 + $(document).scrollTop() ){
 			$(".messageBox").css('top', window.innerHeight - 45 + $(document).scrollTop());
 		}
+		if($(".messageBox").css('left') != $(document).scrollLeft() + 5){
+			$(".messageBox").css('left', $(document).scrollLeft() + 5);
+		}
 	};
 	
 	function reloadEventTriggers(){
