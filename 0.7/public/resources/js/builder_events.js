@@ -70,7 +70,10 @@ $(document).ready(function(){
 		}
 	});
 	
-	$(".accordion").accordion();
+	$(".accordion").accordion({
+		collapsible: true,
+		animated: false
+	});
 	$(".accordion").css('top', '40px');
 	$(".accordion").css('left', window.innerWidth - $(".accordion").width() - 20 + 'px');
 
