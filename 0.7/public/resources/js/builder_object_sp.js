@@ -10,17 +10,19 @@ pcgObject = function(){
 	
 	//--------------------
 	//    properties
-	//--------------------
+	//--------------------   
 	this.id = 0;
 	this.name = 'New object';
 	this.html = '<div><div class="pcgObject ui-widget" pcgId="0">'
 				+  '<div class="pcgObjectHeader ui-widget-header">'
-				+  '<span value="New object">New object</span>'
+				+  '<span style="width:100%;position:absolute">'
+				+  '<span style="position:absolute;z-index:100;" class="pcgObjectName" value="New object">New object</span>'
+				+  '<span style="position:absolute;margin-left: 100%;left:-2.0em;"><a href="javascript:void(0);" class="addProperty" alt="Add property" title="Add property"><span class="ui-icon ui-icon-circle-plus"></span></a></span>'
+				+  '</span>'
 				+  '</div>'
 				+  '<div class="pcgObjectBody ui-widget-content">'
 				+  '<ul class="propertiesBlock">'
-				+  '<li class="propertyBlock"><span class="propertyLeft ui-state-default"><span class="ui-icon ui-icon-carat-2-n-s"></span><span class="property" value="id" propid="1" type="PRIMARY">id</span></span><span class="propertyRight">PRIMARY</span></li>'
-				+  '<li class="propertyBlock"><div><a href="javascript:void(0);" class="addProperty">Add</a></div></li>'
+				+  '<li class="propertyBlock"><span class="propertyLeft ui-state-default"><span class="ui-icon ui-icon-arrow-2-n-s span-li-icon"></span><span class="property" value="id" propid="1" type="PRIMARY">id</span></span><span class="propertyRight ui-state-default ui-state-disable">Primary key</span></li>'
 				+  '</ul>'
 				+  '</div>'
 				+  '</div></div>';
@@ -175,9 +177,11 @@ pcgObject = function(){
 		var sName = thisInstance.properties[thisInstance.length].name;
 		var sType = thisInstance.properties[thisInstance.length].type;
 		thisInstance.properties[thisInstance.length].html = '<li class="propertyBlock">'
-		+ '<span class="propertyLeft ui-state-default"><span class="ui-icon ui-icon-carat-2-n-s"></span><span class="property" propId="'+ thisInstance.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></span>'
+		+ '<span class="propertyLeft ui-state-default"><span class="ui-icon ui-icon-arrow-2-n-s span-li-icon"></span><span class="property" propId="'+ thisInstance.length +'" value="'+ sName +'" type="'+ sType +'">'+ sName +'</span> <span class="propertyType">'+ sType +'</span></span>'
 		+ '<span class="propertyRight">'
-		+ '<a href="javascript:void(0);" class="changeProp">Chg</a> <a href="javascript:void(0);" class="deleteProp">Del</a> <a href="javascript:void(0);" class="renameProp">Ren</a>'
+		+ '<a href="javascript:void(0);" class="changeProp ui-state-default ui-state-disable" style="float:left"><span class="ui-icon ui-icon-wrench" alt="Change Property" title="Change Property"></a> '
+		+ '<a href="javascript:void(0);" class="renameProp ui-state-default ui-state-disable" style="float:left"><span class="ui-icon ui-icon-transferthick-e-w" alt="Rename Property" title="Rename Property"></a> '
+		+ '<a href="javascript:void(0);" class="deleteProp ui-state-default ui-state-disable" style="float:left"><span class="ui-icon ui-icon-close" alt="Delete Property" title="Delete Property"></span></a> ' 
 		+ '</span></li>';
 		thisInstance.properties[thisInstance.length].html = $(oProp.html); 
 		return thisInstance.properties[thisInstance.length];
@@ -227,7 +231,7 @@ pcgObject = function(){
 		 * Load rename object
 		 */
 		rename: function(){
-			convertIntoInput(this.firstChild);
+			convertIntoInput(this.firstChild.firstChild);
 		},
 		/**
 		 * Add property
@@ -236,7 +240,7 @@ pcgObject = function(){
 			oPcg = getPcgInstance(this);
 			if(oPcg){
 				oProp = oPcg.addNewProp('New prop', 'auto');
-				$(this).parent().parent().before(oProp.html);
+				$(this).parent().parent().parent().parent().find('ul').append(oProp.html);
 				reloadEventTriggers();
 			}
 		},
@@ -244,7 +248,7 @@ pcgObject = function(){
 		 * Load rename property
 		 */
 		renameProperty: function(){
-			var oDom = this.parentNode.previousSibling.firstChild;
+			var oDom = this.parentNode.previousSibling.firstChild.nextSibling;
 			convertIntoInput(oDom);
 		},
 		/**

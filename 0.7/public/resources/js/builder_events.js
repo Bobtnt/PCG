@@ -71,11 +71,11 @@ $(document).ready(function(){
 	});
 	
 	$(".accordion").accordion({
-		collapsible: true,
-		animated: false
+		collapsible: false,
+		animated: 'bounceslide'
 	});
-	$(".accordion").css('top', '40px');
-	$(".accordion").css('left', window.innerWidth - $(".accordion").width() - 20 + 'px');
+	$(".accordion-container").css('top', '40px');
+	$(".accordion-container").css('left', window.innerWidth - $(".accordion-container").width() - 20 + 'px');
 
 	
 });

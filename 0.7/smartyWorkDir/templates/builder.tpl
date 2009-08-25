@@ -16,29 +16,7 @@
 <link rel="stylesheet" href="/resources/css/jquery-ui-1.7.2.custom.css" type="text/css" />
 </head>
 <body>
-<div class="toolsBar">
-	<div class="toolsButton">
-		<a href="javascript:void(0);" id="buttonNewObject">New object</a>
-	</div>
-	<div class="toolsButton">
-		<a href="javascript:void(0);" id="buttonNewObject">Modify Object</a>
-	</div>
-	<div class="toolsButton">
-		<a href="javascript:void(0);" id="buttonDeleteObject">Delete object</a>
-	</div>
-	<div class="toolsButton">
-		<a href="javascript:void(0);" id="buttonNewRelation">New Relation</a>
-	</div>
-	<div class="toolsButton">
-		<span id="controlerDebug"></span>
-	</div>
-	 <div class="toolsButton">
-		<a href="javascript:void(0);" id="buttonDebug">debug</a>
-	</div>
-</div>
-
 <div id="myCanvas" class="canvas"></div>
-
 
 <div id="dialog" title="Select type">
 	<input type="hidden" id="dialogType" value="" />
@@ -75,21 +53,26 @@
 <div class="svgcontainer" id="svgcontainer">
 </div>
 
-<div class="accordion">
-   <h3><a href="#">Minimap</a></h3>
-   <div>
-      
-   </div>
-   <h3><a href="#">Section 2</a></h3>
-   <div>
-      Section 2 content
-   </div>
-   <h3><a href="#">Section 3</a></h3>
-   <div>
-      Section 3 content
-   </div>
-</div> 
-
-
+<div class="accordion-container">
+	<div class="accordion ac-minimap">
+	   <h3><a href="#">Minimap</a></h3>
+	   <div>
+	   </div>
+	</div> 
+	<div class="accordion ac-tools" style="margin-top: 20px;">
+	<h3><a href="#">Tools</a></h3>
+	   <div>
+	      <a style="display: block" href="javascript:void(0);" id="buttonNewObject">New object</a>
+	      <a style="display: block" href="javascript:void(0);" id="buttonNewObject">Modify Object</a>
+	      <a style="display: block" href="javascript:void(0);" id="buttonDeleteObject">Delete object</a>
+	      <a style="display: block" href="javascript:void(0);" id="buttonNewRelation">New Relation</a>
+	   </div>
+	   <h3><a href="#">Debug</a></h3>
+	   <div>
+	   	  <a style="display: block"href="javascript:void(0);" id="buttonDebug">debug</a>
+	      <span style="display: block" id="controlerDebug"></span>
+	   </div>
+	</div>
+</div>
 </body>
 </html>

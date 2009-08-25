@@ -16,7 +16,7 @@ pcgObjectControl = function(){
 		var oPcgInstance = aOpcgContainer[a];
 		
 		if(oPcgInstance.controled){
-			var objectName = oPcgInstance.html.find(".pcgObjectHeader span").attr('value');
+			var objectName = oPcgInstance.html.find(".pcgObjectHeader .pcgObjectName").attr('value');
 			sReturned += objectName + "<br>";
 			oPcgInstance.name = objectName;
 			aNameList.push(objectName);		
