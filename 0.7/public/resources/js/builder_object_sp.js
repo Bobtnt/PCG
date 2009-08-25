@@ -129,7 +129,8 @@ pcgObject = function(){
 			
 			var iConnector = 10;
 			var iBorder = 3;
-		
+			
+					
 			if(pos1.left > pos2.left){
 				arguments.grapher.fillArc(pos2.left + oProp1.html.width() + iBorder - 7
 						, pos2.top + (10/2), 15, 15 , 270, 90);
@@ -147,7 +148,7 @@ pcgObject = function(){
 			else{
 				arguments.grapher.fillArc(pos1.left + oProp1.html.width() + iBorder - 7
 						, pos1.top + (10/2), 15, 15 , 270, 90);
-				var iXSpaceBetweenObj  = pos1.left + oProp2.html.width() - pos2.left;
+				var iXSpaceBetweenObj  = pos1.left + oProp1.html.width() - pos2.left;
 				var aXcoord = [ pos1.left + oProp1.html.width() + iBorder, 
 				                pos1.left + oProp1.html.width() - (iXSpaceBetweenObj / 2),
 				                pos1.left + oProp1.html.width() - (iXSpaceBetweenObj / 2),
