@@ -13,7 +13,7 @@ pcgObject = function(){
 	//--------------------   
 	this.id = 0;
 	this.name = 'New object';
-	this.html = '<div><div class="pcgObject ui-widget" pcgId="0">'
+	this.html = '<div><div class="pcgObject ui-widget ui-corner-all" pcgId="0">'
 				+  '<div class="pcgObjectHeader ui-widget-header">'
 				+  '<span style="width:100%;position:absolute">'
 				+  '<span style="position:absolute;z-index:100;" class="pcgObjectName" value="New object">New object</span>'
@@ -77,7 +77,8 @@ pcgObject = function(){
 			stop: this.helpers.objectResizeStop
 		});
 		this.html.find(".pcgObject").draggable({ 
-			handle: '.pcgObjectHeader', 
+			handle: '.pcgObjectHeader',
+			containment: '.canvas',
 			stack: { group: 'pcg', min: 50 }, 
 			start: this.helpers.objectDragStart,
 			stop: this.helpers.objectDragStop,
@@ -127,38 +128,46 @@ pcgObject = function(){
 			var pos1 = arguments.o1.getProp(arguments.p1).html.offset();
 			var pos2 = arguments.o2.getProp(arguments.p2).html.offset();
 			
-			var iConnector = 10;
-			var iBorder = 3;
+			var prop1H = arguments.o1.getProp(arguments.p1).html.height();
+			var prop2H = arguments.o2.getProp(arguments.p2).html.height();
 			
-					
-			if(pos1.left > pos2.left){
-				arguments.grapher.fillArc(pos2.left + oProp1.html.width() + iBorder - 7
-						, pos2.top + (10/2), 15, 15 , 270, 90);
-				var iXSpaceBetweenObj  = pos2.left + oProp2.html.width() - pos1.left;
-				var aXcoord = [ pos2.left + oProp2.html.width() + iBorder, 
-				                pos2.left + oProp2.html.width() - (iXSpaceBetweenObj / 2),
-				                pos2.left + oProp2.html.width() - (iXSpaceBetweenObj / 2),
-				                pos1.left - iBorder - iConnector ];
-				var aYcoord = [ pos2.top + 10,
-				                pos2.top + 10,
-				                pos1.top + 10,
-				                pos1.top + 10];
-				arguments.grapher.fillArc(pos1.left - iBorder - iConnector, pos1.top + (10/2), 15, 15 , 90, 270);
+			var margin = 3;
+							
+			if(pos1.left < pos2.left){
+				
+				var startPoint = pos1.left + arguments.o1.getProp(arguments.p1).html.width();
+				var endPoint =  pos2.left;
+				var middlePoint = ((endPoint - startPoint) /2) + startPoint; 
+								
+				var aXcoord = [ startPoint + margin,
+				                middlePoint,
+				                middlePoint,
+				                endPoint - (margin*2) ];
+				var aYcoord = [ pos1.top + (prop1H /2),
+				                pos1.top + (prop1H /2),
+				                pos2.top + (prop2H /2),
+				                pos2.top + (prop2H /2)];
+				arguments.grapher.fillArc( startPoint - (15/2) + margin, pos1.top + (prop1H/5), 15, 15 , 270, 90);
+				arguments.grapher.fillArc( endPoint - (15/2) - margin, pos2.top + (prop2H/5), 15, 15 , 90, 270);
+				
 			}
 			else{
-				arguments.grapher.fillArc(pos1.left + oProp1.html.width() + iBorder - 7
-						, pos1.top + (10/2), 15, 15 , 270, 90);
-				var iXSpaceBetweenObj  = pos1.left + oProp1.html.width() - pos2.left;
-				var aXcoord = [ pos1.left + oProp1.html.width() + iBorder, 
-				                pos1.left + oProp1.html.width() - (iXSpaceBetweenObj / 2),
-				                pos1.left + oProp1.html.width() - (iXSpaceBetweenObj / 2),
-				                pos2.left - iBorder - iConnector ];
-				var aYcoord = [ pos1.top + 10,
-				                pos1.top + 10,
-				                pos2.top + 10,
-				                pos2.top + 10];
-				arguments.grapher.fillArc(pos2.left - iBorder - iConnector, pos2.top + (10/2), 15, 15 , 90, 270);
+				var startPoint = pos2.left + arguments.o2.getProp(arguments.p2).html.width();
+				var endPoint =  pos1.left;
+				var middlePoint = ((endPoint - startPoint) /2) + startPoint; 
+								
+				var aXcoord = [ startPoint + margin,
+				                middlePoint,
+				                middlePoint,
+				                endPoint - (margin*2) ];
+				var aYcoord = [ pos2.top + (prop2H /2),
+				                pos2.top + (prop2H /2),
+				                pos1.top + (prop1H /2),
+				                pos1.top + (prop1H /2)];
+				arguments.grapher.fillArc( startPoint - (15/2) + margin, pos2.top + (prop2H/5), 15, 15 , 270, 90);
+				arguments.grapher.fillArc( endPoint - (15/2) - margin, pos1.top + (prop1H/5), 15, 15 , 90, 270);
 			}
+			
 			arguments.grapher.drawPolyline(aXcoord, aYcoord);
 			arguments.grapher.paint();
 			

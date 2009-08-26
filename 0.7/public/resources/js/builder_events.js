@@ -23,6 +23,15 @@ $(document).ready(function(){
 	$("#buttonDebug").click(function(){
 		console.log(aOpcgContainer[1].html.find('.pcgObject').offset());
 	});
+	
+	$("#buttonDisplayGrid").toggle(function(){
+		$('#myCanvas').removeClass('canvas-whitout-grid', 1000);
+		$("#buttonDisplayGrid span").html("Off");
+	},function(){		
+		$('#myCanvas').addClass('canvas-whitout-grid', 1000);
+		$("#buttonDisplayGrid span").html("On");		
+	});
+	
 	//Global events
 	$(".messageBox").css('top', window.innerHeight - 30 );
 	

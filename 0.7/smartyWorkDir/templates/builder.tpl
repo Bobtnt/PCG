@@ -47,7 +47,7 @@
 
 
 
-<div class="messageBox">
+<div class="messageBox ui-state-highlight ui-corner-all">
 	<span>Messages:</span>
 </div>
 <div class="svgcontainer" id="svgcontainer">
@@ -66,6 +66,7 @@
 	      <a style="display: block" href="javascript:void(0);" id="buttonNewObject">Modify Object</a>
 	      <a style="display: block" href="javascript:void(0);" id="buttonDeleteObject">Delete object</a>
 	      <a style="display: block" href="javascript:void(0);" id="buttonNewRelation">New Relation</a>
+	      <a style="display: block" href="javascript:void(0);" id="buttonDisplayGrid">Display Grid:<span>on</span></a>
 	   </div>
 	   <h3><a href="#">Debug</a></h3>
 	   <div>

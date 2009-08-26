@@ -46,7 +46,17 @@ body {
 .canvas {
 	height: 100%;
 	width: 100%;
-	border: solid 0px #FFFFFF;
+	border: solid 1px #000000;
+	background-image: url("images/grid.gif");
+	background-repeat: repeat;
+}
+
+.canvas-whitout-grid {
+	height: 100%;
+	width: 100%;
+	border: solid 1px #000000;
+	background-image: none;
+	background-repeat: no-repeat;
 }
 
 .pcgObject {
