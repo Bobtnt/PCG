@@ -10,7 +10,8 @@
 		iPcgId = iPcgContainerGlobalCounter;
 		aOpcgContainer[iPcgId] = new pcgObject();
 		aOpcgContainer[iPcgId].setId(iPcgId);
-		aOpcgContainer[iPcgId].addNewProp('id', 'PRIMARY');
+		var oProp = aOpcgContainer[iPcgId].addNewProp('id', 'PRIMARY');
+		aOpcgContainer[iPcgId].html.find('ul').prepend(oProp.html);
 		aOpcgContainer[iPcgId].placeOnScreen();
 		reloadEventTriggers();
 		
@@ -99,35 +100,62 @@
 	
 	function newRelation(oSender, oReceiver, oProp, sType){
 		if(sType == 'n:m'){
-			var color = '#4FB47D';
+			var color = '#4FB47D';		
+			oProp1 = oSender.addNewProp(oReceiver.name + '_collection', 'collection');
+			oSender.html.find('ul').prepend(oProp1.html);
+			oProp2 = oReceiver.addNewProp(oSender.name + '_collection', 'collection');
+			oReceiver.html.find('ul').prepend(oProp2.html);
+			reloadEventTriggers();
+			iGrapherCounter = iGrapherCounter + 1;
+			grapherName = 'grapher'+iGrapherCounter;
+			aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
+			aGrapherDivContainer[iGrapherCounter] = $(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherDivContainer[iGrapherCounter].css('z-index','-1');
+			$('#svgcontainer').append(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
+			aGrapherContainer[iGrapherCounter].setColor(color);
+			aGrapherContainer[iGrapherCounter].setStroke(2);
+			oSender.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			oReceiver.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			oReceiver.executeBinderUI();
 		}
 		else if(sType == '1:n'){
 			var color = '#DF5BA7';
+			oProp1 = oReceiver.addNewProp(oSender.name+'_2rename', 'object');
+			oReceiver.html.find('ul').prepend(oProp1.html);
+			oProp2 = oSender.getProp(1); // get primary key
+			reloadEventTriggers();
+			iGrapherCounter = iGrapherCounter + 1;
+			grapherName = 'grapher'+iGrapherCounter;
+			aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
+			aGrapherDivContainer[iGrapherCounter] = $(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherDivContainer[iGrapherCounter].css('z-index','-1');
+			$('#svgcontainer').append(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
+			aGrapherContainer[iGrapherCounter].setColor(color);
+			aGrapherContainer[iGrapherCounter].setStroke(2);
+			oSender.attachDrawUI(oReceiver, oProp1.id, oSender, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			oReceiver.attachDrawUI(oReceiver, oProp1.id, oSender, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			oSender.executeBinderUI();
 		}
 		else if('1:1'){
 			var color = '#F7DD27';
+			oProp1 = oReceiver.addNewProp(oSender.name, 'object');
+			oReceiver.html.find('ul').prepend(oProp1.html);
+			oProp2 = oSender.getProp(1); // get primary key
+			reloadEventTriggers();
+			iGrapherCounter = iGrapherCounter + 1;
+			grapherName = 'grapher'+iGrapherCounter;
+			aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
+			aGrapherDivContainer[iGrapherCounter] = $(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherDivContainer[iGrapherCounter].css('z-index','-1');
+			$('#svgcontainer').append(aGrapherDivContainer[iGrapherCounter]);
+			aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
+			aGrapherContainer[iGrapherCounter].setColor(color);
+			aGrapherContainer[iGrapherCounter].setStroke(2);
+			oSender.attachDrawUI(oReceiver, oProp1.id, oSender, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			oReceiver.attachDrawUI(oReceiver, oProp1.id, oSender, oProp2.id, aGrapherContainer[iGrapherCounter]);
+			oReceiver.executeBinderUI();
 		}
-		
-		oProp1 = oSender.addNewProp(oReceiver.name + '_collection', 'collection');
-		oSender.html.find('ul').prepend(oProp1.html);
-		oProp2 = oReceiver.addNewProp(oSender.name + '_collection', 'collection');
-		oReceiver.html.find('ul').prepend(oProp2.html);
-		reloadEventTriggers();
-		
-		iGrapherCounter = iGrapherCounter + 1;
-		grapherName = 'grapher'+iGrapherCounter;
-		aGrapherDivContainer[iGrapherCounter] = '<div id="'+grapherName+'"></div>';
-		aGrapherDivContainer[iGrapherCounter] = $(aGrapherDivContainer[iGrapherCounter]);
-		aGrapherDivContainer[iGrapherCounter].css('z-index','-1');
-		$('#svgcontainer').append(aGrapherDivContainer[iGrapherCounter]);
-		aGrapherContainer[iGrapherCounter] = new jsGraphics(document.getElementById(grapherName));
-		aGrapherContainer[iGrapherCounter].setColor(color);
-		aGrapherContainer[iGrapherCounter].setStroke(2);
-					
-		oSender.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
-		oReceiver.attachDrawUI(oSender, oProp1.id, oReceiver, oProp2.id, aGrapherContainer[iGrapherCounter]);
-		
-		oReceiver.executeBinderUI();
-		
 	}
 
