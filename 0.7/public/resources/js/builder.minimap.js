@@ -92,6 +92,15 @@ minimap = function() {
 		this.aMiniObjects[oPcg.id].html.width(relatives.width + 'px');
 		this.aMiniObjects[oPcg.id].html.height(relatives.height + 'px');
 	};
+	/**
+	 * 
+	 * @param {pcgObject} oPcg
+	 * @return void(0)
+	 */
+	this.remove = function(oPcg){
+		this.aMiniObjects[oPcg.id].html.remove();
+		delete this.aObjects[oPcg.id];
+	};
 	
 	//--------------------
 	//    helpers

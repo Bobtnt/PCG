@@ -16,7 +16,7 @@ $(document).ready(function(){
 	
 	//Tools bar buttons
 	$("#buttonNewObject").click(newPcgObject);
-	//$("#buttonDeleteObject").click(deleteObject);
+	
 	$("#buttonNewRelation").click(function(){
 		$('#dialog').dialog('open');
 	});

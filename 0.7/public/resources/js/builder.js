@@ -38,6 +38,9 @@
 			aOpcgContainer[a].html.find(".renameProp").click(aOpcgContainer[a].helpers.renameProperty);
 			aOpcgContainer[a].html.find(".deleteProp").click(aOpcgContainer[a].helpers.deleteProperty);
 			aOpcgContainer[a].html.find(".changeProp").click(aOpcgContainer[a].helpers.openChangeTypeDialog);
+			aOpcgContainer[a].html.find(".deleteObject").click(aOpcgContainer[a].helpers.remove);
+			aOpcgContainer[a].html.find(".reduceObject").toggle(aOpcgContainer[a].helpers.colapse, aOpcgContainer[a].helpers.expand);
+			
 		}
 	}
 	
@@ -100,7 +103,12 @@
 	
 	function newRelation(oSender, oReceiver, oProp, sType){
 		if(sType == 'n:m'){
-			var color = '#4FB47D';		
+			
+			if(checkUniqueRelation(oSender, oReceiver, sType)){
+				return false;
+			}
+			
+			var color = '#4FB47D';
 			oProp1 = oSender.addNewProp(oReceiver.name + '_collection', 'collection');
 			oSender.html.find('ul').prepend(oProp1.html);
 			oProp2 = oReceiver.addNewProp(oSender.name + '_collection', 'collection');
@@ -157,5 +165,40 @@
 			oReceiver.attachDrawUI(oReceiver, oProp1.id, oSender, oProp2.id, aGrapherContainer[iGrapherCounter]);
 			oReceiver.executeBinderUI();
 		}
+		
+		if(typeof oProp1.related == 'string'){
+			oProp1.related = new Array;
+		}
+		oProp1.related.push({to:  oProp2, type: sType });
+		if(typeof oProp2.related == 'string'){
+			oProp2.related = new Array;
+		}
+		oProp2.related.push({to:  oProp1, type: sType });
+		
 	}
 
+	
+	function checkUniqueRelation(oPcg1, oPcg2, sType){
+		
+		//they can be only one n:m relationship between two objects
+		if(sType == 'n:m'){
+			for(var a in oPcg1.properties){
+				for(var b in oPcg1.properties[a].related){
+					for(var c in oPcg2.properties){
+						if(oPcg1.properties[a].related[b].to == oPcg2.properties[c]){
+							return true;
+						}
+					}
+				}
+			}
+		}
+		// no restriction on 1:n relation
+		else if(sType == '1:n'){
+		
+		}
+		// no restriction on 1:1 relation
+		else if(sType == '1:1'){
+		
+		}
+		return false;
+	}

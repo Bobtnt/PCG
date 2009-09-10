@@ -21,27 +21,19 @@ pcgObjectControl = function(){
 			oPcgInstance.name = objectName;
 			aNameList.push(objectName);		
 			
-			//object properties
-	//		oPcgInstance.html.find("td .property").each(function(i){
-	//			var sPropName = $(this).attr('value');
-	//			var sPropType = $(this).attr('type');
-	//			var iPropId = $(this).attr('propid');
-	//			var oProp = oPcgInstance.properties[iPropId];
-	//			if(oProp.name != sPropName){
-	//				oProp.name = sPropName
-	//			}
-	//			if(oProp.type != sPropType){
-	//				oProp.type = sPropType
-	//			}
-	//			sReturned += '- '+ sPropName + '<br>';
-	//		});
-			
-	//		for(var b in aOpcgContainer[a].properties){
-	//			var checkedProp = aOpcgContainer[a].properties[b];
-	//			if(iPcgId != checkedProp.parent.id){
-	//				checkedProp.parent = aOpcgContainer[a];
-	//			}
-	//		}
+			//check size
+			oBody = oPcgInstance.html.find(".pcgObjectBody");
+			allLi = 30;
+			oPcgInstance.html.find("li").each(function(i){
+				if($(this).height() > 0){
+					allLi =  allLi + $(this).height() + 3;
+				}
+			});
+				
+			if(oBody.height() < allLi){
+				oPcgInstance.html.find(".pcgObject").height(allLi+10);
+			}
+
 		}	
 		// Check for non unique object name
 		bDoubleName = false;

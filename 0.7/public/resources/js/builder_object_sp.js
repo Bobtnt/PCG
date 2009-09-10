@@ -19,6 +19,7 @@ pcgObject = function(){
 				+  '<span style="position:absolute;z-index:100;" class="pcgObjectName" value="New object">New object</span>'
 				+  '<span style="position:absolute;margin-left: 100%;left:-6.0em;"><a href="javascript:void(0);" class="addProperty" alt="Add property" title="Add property"><span class="ui-icon ui-icon-circle-plus"></span></a></span>'
 				+  '<span style="position:absolute;margin-left: 100%;left:-5.0em;"><a href="javascript:void(0);" class="renameObject" alt="Rename Object" title="Rename Object"><span class="ui-icon ui-icon-transferthick-e-w"></span></a></span>'
+				+  '<span style="position:absolute;margin-left: 100%;left:-3.0em;"><a href="javascript:void(0);" class="reduceObject" alt="Reduce Object" title="Reduce Object"><span class="ui-icon ui-icon-circle-minus"></span></a></span>'
 				+  '<span style="position:absolute;margin-left: 100%;left:-2.0em;"><a href="javascript:void(0);" class="deleteObject" alt="Delete Object" title="Delete Object"><span class="ui-icon ui-icon-circle-close"></span></a></span>'
 				+  '</span>'
 				+  '</div>'
@@ -225,7 +226,7 @@ pcgObject = function(){
 		this.html.css('position', 'absolute');
 		this.html.css('height', '1px');
 		this.html.css('width', '1px');
-		if(this.id != 1 && this.id != 0){
+		if(this.id != 1 && this.id != 0 && aOpcgContainer[ this.id - 1 ]){
 			var previousObject = aOpcgContainer[ this.id - 1 ]; 
 			var pos = previousObject.html.offset();
 			this.html.css('top', pos.top + 30);
@@ -250,11 +251,31 @@ pcgObject = function(){
 		rename: function(){
 			convertIntoInput(this.firstChild.firstChild);
 		},
+		
+		/**
+		 * Load delete object
+		 */
+		remove: function(){
+			var confrm = confirm('Are you sur?');
+			if(confrm){
+				oPcg = getPcgInstance(this);
+				for( var a in oPcg.properties){
+					oPcg.properties[a].remove();
+				}
+				
+				map.remove(oPcg);
+				
+				oId = oPcg.id;
+				delete aOpcgContainer[oId];
+				$(this).parent().parent().parent().parent().parent().remove();
+				reloadEventTriggers();
+			}
+		},
 		/**
 		 * Add property
 		 */
 		addProperty: function(){
-			oPcg = getPcgInstance(this);
+			var oPcg = getPcgInstance(this);
 			if(oPcg){
 				oProp = oPcg.addNewProp('New prop', 'auto');
 				$(this).parent().parent().parent().parent().find('ul').append(oProp.html);
@@ -342,6 +363,15 @@ pcgObject = function(){
 			var oPcg = getPcgInstance(this);
 			oPcg.helpers.setStackDown(oPcg);
 			map.moveObject(oPcg);	
+		},
+		colapse: function(event, ui){
+			$(this).parent().parent().parent().parent().find(".ul").hide();
+			$(this).parent().parent().parent().parent().find(".pcgObjectBody").hide();
+			$(this).parent().parent().parent().parent().height(10);
+		},
+		expand:	function(){
+			$(this).parent().parent().parent().parent().find(".ul").show();
+			$(this).parent().parent().parent().parent().find(".pcgObjectBody").show();
 		}
 	};
 	
@@ -375,6 +405,54 @@ property = function(sName, sType, sRelated, oParent){
 	 * remove prop in parent
 	 */
 	this.remove = function (){
+		//Check for relation
+		if(typeof this.related != 'string'){
+			//delete relation and UI elements
+			for(var a in this.related){
+				var oPcg1 = this.parent;
+				var oProp1 = this;
+				var oPcg2 = this.related[a].to.parent;
+				var oProp2 = this.related[a].to;
+				//search for internalFunctionsArguments id in destination object
+				for( var b in oPcg2.internalFunctionsArguments){
+					var fargs = oPcg2.internalFunctionsArguments[b];
+					if( (fargs.o1 == oPcg1 &&  fargs.p1 == oProp1.id && fargs.o2 == oPcg2 &&  fargs.p2 == oProp2.id ) ||
+					(fargs.o1 == oPcg2 &&  fargs.p1 == oProp2.id && fargs.o2 == oPcg1 &&  fargs.p2 == oProp1.id )){
+						var functionIdentifier = b;
+						//now delete
+						if(fargs.grapher){
+							fargs.grapher.clear();
+						}
+						delete oPcg2.internalFunctions[functionIdentifier];
+						delete oPcg2.internalFunctionsArguments[functionIdentifier];					
+					}					
+				}
+				// delete related entry in destination property
+				for( var b in oProp2.related ){
+					if(oProp2.related[b].to == oProp1){
+						delete oProp2.related[b];
+					}
+				}
+				
+				
+				//search for internalFunctionsArguments id in source object
+				for( var b in oPcg1.internalFunctionsArguments){
+					var fargs = oPcg1.internalFunctionsArguments[b];
+					if( (fargs.o1 == oPcg1 &&  fargs.p1 == oProp1.id && fargs.o2 == oPcg2 &&  fargs.p2 == oProp2.id ) ||
+					(fargs.o1 == oPcg2 &&  fargs.p1 == oProp2.id && fargs.o2 == oPcg1 &&  fargs.p2 == oProp1.id )){
+						var functionIdentifier = b;
+						//now delete
+						if(fargs.grapher){
+							fargs.grapher.clear();
+							delete fargs.grapher;
+						}						
+						delete oPcg1.internalFunctions[functionIdentifier];
+						delete oPcg1.internalFunctionsArguments[functionIdentifier];					
+					}
+				}
+			}
+		}
+		
 		delete this.parent.properties[this.id];
 	};
 	/**
