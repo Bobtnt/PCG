@@ -62,16 +62,30 @@
 	<div class="accordion ac-tools" style="margin-top: 20px;">
 	<h3><a href="#">Tools</a></h3>
 	   <div>
+	      <p>
 	      <a style="display: block" href="javascript:void(0);" id="buttonNewObject">New object</a>
-	      <a style="display: block" href="javascript:void(0);" id="buttonNewObject">Modify Object</a>
-	      <a style="display: block" href="javascript:void(0);" id="buttonDeleteObject">Delete object</a>
-	      <a style="display: block" href="javascript:void(0);" id="buttonNewRelation">New Relation</a>
+	      </p>
+	      <p>
+	      <a style="display: block" href="javascript:void(0);" id="buttonSaveWorkbench">Save Workbench</a>
+	      <a style="display: block" href="javascript:void(0);" id="buttonLoadWorkbench">Load Workbench</a>
+	      <a style="display: block" href="javascript:void(0);" id="buttonGenerate">Generate!</a>
+	      </p>
 	      <a style="display: block" href="javascript:void(0);" id="buttonDisplayGrid">Display Grid:<span>on</span></a>
 	   </div>
-	   <h3><a href="#">Debug</a></h3>
+	   <h3><a href="#">Objects Tree</a></h3>
 	   <div>
 	   	  <a style="display: block"href="javascript:void(0);" id="buttonDebug">debug</a>
 	      <span style="display: block" id="controlerDebug"></span>
+	   </div>
+	   <h3><a href="#">Models</a></h3>
+	   <div>
+	   You can one or more of these models in your workbench
+	   <p>
+	   	  <a style="display: block"href="javascript:void(0);" id="buttonModel1">Object with category</a>
+	   	  <a style="display: block"href="javascript:void(0);" id="buttonModel2">Users and Groups</a>
+	   	  <a style="display: block"href="javascript:void(0);" id="buttonModel3">1:n linked objects</a>
+	   	  <a style="display: block"href="javascript:void(0);" id="buttonModel4">Multi linked object</a>
+	   	</p>
 	   </div>
 	</div>
 </div>

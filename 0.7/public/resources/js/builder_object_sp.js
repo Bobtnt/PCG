@@ -249,7 +249,7 @@ pcgObject = function(){
 		 * Load rename object
 		 */
 		rename: function(){
-			convertIntoInput(this.firstChild.firstChild);
+			convertIntoInput(this.firstChild);
 		},
 		
 		/**
@@ -463,6 +463,12 @@ property = function(sName, sType, sRelated, oParent){
 		this.html.find('.propertyType').html(newType);
 		this.type = newType;
 	};
+	
+	this.setName = function(newName){
+		this.html.find('.property').val(newName);
+		this.html.find('.property').html(newName);
+	};
+	
 	
 	//--------------------
 	//  contructor

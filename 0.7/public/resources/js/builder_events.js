@@ -32,6 +32,74 @@ $(document).ready(function(){
 		$("#buttonDisplayGrid span").html("On");		
 	});
 	
+	// Model: object and category 
+	$("#buttonModel1").click(function(){
+		var o1 = newPcgObject();
+		var o2 = newPcgObject();
+		
+		o1.rename('object');
+		
+		o2.rename('category');
+		
+		var p1 = o2.addNewProp('name', 'varchar');
+		o2.html.find('ul').append(p1.html);
+		reloadEventTriggers();
+		
+		var newpos = o2.html.css('left');
+		newpos = newpos.replace(/px/, '');
+		newpos = parseInt(newpos);
+		newpos = newpos + 400;
+		
+		o2.html.css('left', newpos );
+		newRelation(o2, o1, o2.getProp(1), '1:1');
+	});
+	
+	// Model: users and groups
+	$("#buttonModel2").click(function(){
+		var o1 = newPcgObject();
+		var o2 = newPcgObject();
+		
+		o1.rename('user');
+		o2.rename('group');
+		var p1 = o1.addNewProp('name', 'varchar');
+		var p2 = o2.addNewProp('name', 'varchar');
+		
+		o1.html.find('ul').append(p1.html);
+		o2.html.find('ul').append(p2.html);
+		reloadEventTriggers();
+		
+		var newpos = o2.html.css('left');
+		newpos = newpos.replace(/px/, '');
+		newpos = parseInt(newpos);
+		newpos = newpos + 400;
+		
+		o2.html.css('left', newpos );
+		newRelation(o2, o1, o2.getProp(1), 'n:m');
+	});
+	
+	// Model: single linked 1:n
+	$("#buttonModel3").click(function(){
+		var o1 = newPcgObject();
+		var o2 = newPcgObject();
+		
+		o1.rename('bug');
+		o2.rename('user');
+		var p2 = o2.addNewProp('name', 'varchar');
+		
+		o2.html.find('ul').append(p2.html);
+		reloadEventTriggers();
+		
+		var newpos = o2.html.css('left');
+		newpos = newpos.replace(/px/, '');
+		newpos = parseInt(newpos);
+		newpos = newpos + 400;
+		
+		o2.html.css('left', newpos );
+		newRelation(o2, o1, o2.getProp(1), '1:n');
+		o1.getProp(2).setName('causedBy');
+		
+	});
+	
 	//Global events
 	$(".messageBox").css('top', window.innerHeight - 30 );
 	

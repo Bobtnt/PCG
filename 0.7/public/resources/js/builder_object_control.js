@@ -16,18 +16,29 @@ pcgObjectControl = function(){
 		var oPcgInstance = aOpcgContainer[a];
 		
 		if(oPcgInstance.controled){
-			var objectName = oPcgInstance.html.find(".pcgObjectHeader .pcgObjectName").attr('value');
-			sReturned += objectName + "<br>";
+			var objectName = oPcgInstance.html.find(".pcgObjectHeader span").attr('value');
 			oPcgInstance.name = objectName;
-			aNameList.push(objectName);		
+			aNameList.push(objectName);
+			
+			sReturned += objectName + "<br>";
+							
 			
 			//check size
 			oBody = oPcgInstance.html.find(".pcgObjectBody");
 			allLi = 30;
 			oPcgInstance.html.find("li").each(function(i){
+				
+				//add height of each LI
 				if($(this).height() > 0){
 					allLi =  allLi + $(this).height() + 3;
 				}
+				
+				//control LI name  vs prop name
+				if($(this).find('.property').val() != oPcgInstance.getProp($(this).find('.property').attr('propid')).name){
+					oPcgInstance.getProp($(this).find('.property').attr('propid')).name = $(this).find('.property').val();
+				}
+				
+				
 			});
 				
 			if(oBody.height() < allLi){
