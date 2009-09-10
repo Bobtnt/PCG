@@ -84,17 +84,17 @@ pcgObject = function(){
 			containment: '.canvas',
 			stack: { group: 'pcg', min: 50 }, 
 			start: this.helpers.objectDragStart,
-			stop: this.helpers.objectDragStop,
-			drag: this.helpers.objectDragging
+			drag: this.helpers.objectDragging,
+			stop: this.helpers.objectDragStop			
 		});
 		this.html.find(".pcgObject").bind('drag', this.executeBinderUI);
 		this.html.find(".propertiesBlock").sortable({
 			revert : true, 
 			items: 'li:has(span.propertyLeft)', 
 			receive: this.helpers.receiveProp,
-			change: this.executeBinderUI,
+			//change: this.executeBinderUI,
 			update: this.executeBinderUI,
-			over: this.executeBinderUI,
+			//over: this.executeBinderUI,
 			placeholder: 'ui-state-highlight',
 			forcePlaceholderSize: true
 			});
@@ -346,8 +346,8 @@ pcgObject = function(){
 			oPcg.html.css('z-index', '0');
 		},
 		objectDragStart: function(event, ui){
-			var oPcg = getPcgInstance(this);
-			oPcg.helpers.setStackUp(oPcg);
+			//var oPcg = getPcgInstance(this);
+			//oPcg.helpers.setStackUp(oPcg);
 		},
 		objectDragStop: function(event, ui){
 			var oPcg = getPcgInstance(this);
