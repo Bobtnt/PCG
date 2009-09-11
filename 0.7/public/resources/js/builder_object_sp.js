@@ -87,7 +87,8 @@ pcgObject = function(){
 			drag: this.helpers.objectDragging,
 			stop: this.helpers.objectDragStop			
 		});
-		this.html.find(".pcgObject").bind('drag', this.executeBinderUI);
+		//this.html.find(".pcgObject").bind('drag', this.executeBinderUI);
+		
 		this.html.find(".propertiesBlock").sortable({
 			revert : true, 
 			items: 'li:has(span.propertyLeft)', 
@@ -212,8 +213,8 @@ pcgObject = function(){
 	 */
 	this.rename = function(newName){
 		this.controled = false;
-		this.html.find(".pcgObjectHeader span").attr('value', newName);
-		this.html.find(".pcgObjectHeader span").html(newName);
+		this.html.find(".pcgObjectName").attr('value', newName);
+		this.html.find(".pcgObjectName").html(newName);
 		this.name = newName;
 		this.controled = true;
 		return this;
@@ -249,7 +250,7 @@ pcgObject = function(){
 		 * Load rename object
 		 */
 		rename: function(){
-			convertIntoInput(this.firstChild);
+			convertIntoInput(this.firstChild.firstChild);
 		},
 		
 		/**
@@ -352,6 +353,7 @@ pcgObject = function(){
 		objectDragStop: function(event, ui){
 			var oPcg = getPcgInstance(this);
 			oPcg.helpers.setStackDown(oPcg);
+			oPcg.executeBinderUI();
 			map.moveObject(oPcg);			
 		},
 		objectDragging: function(event, ui){

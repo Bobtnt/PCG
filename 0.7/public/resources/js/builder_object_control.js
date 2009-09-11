@@ -16,12 +16,11 @@ pcgObjectControl = function(){
 		var oPcgInstance = aOpcgContainer[a];
 		
 		if(oPcgInstance.controled){
-			var objectName = oPcgInstance.html.find(".pcgObjectHeader span").attr('value');
+			var objectName = oPcgInstance.html.find(".pcgObjectName").attr('value');
 			oPcgInstance.name = objectName;
 			aNameList.push(objectName);
 			
 			sReturned += objectName + "<br>";
-							
 			
 			//check size
 			oBody = oPcgInstance.html.find(".pcgObjectBody");

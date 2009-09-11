@@ -97,7 +97,34 @@ $(document).ready(function(){
 		o2.html.css('left', newpos );
 		newRelation(o2, o1, o2.getProp(1), '1:n');
 		o1.getProp(2).setName('causedBy');
+	});
+	
+	// Model: multi linked 1:n
+	$("#buttonModel4").click(function(){
+		var o1 = newPcgObject();
+		var o2 = newPcgObject();
 		
+		o1.rename('bug');
+		o2.rename('user');
+		var p2 = o2.addNewProp('name', 'varchar');
+		
+		o2.html.find('ul').append(p2.html);
+		reloadEventTriggers();
+		
+		var newpos = o2.html.css('left');
+		newpos = newpos.replace(/px/, '');
+		newpos = parseInt(newpos);
+		newpos = newpos + 400;
+		
+		o2.html.css('left', newpos );
+		newRelation(o2, o1, o2.getProp(1), '1:n');
+		o1.getProp(2).setName('reportedBy');
+		
+		newRelation(o2, o1, o2.getProp(1), '1:n');
+		o1.getProp(3).setName('verifiedBy');
+		
+		newRelation(o2, o1, o2.getProp(1), '1:n');
+		o1.getProp(4).setName('createdBy');
 	});
 	
 	//Global events
