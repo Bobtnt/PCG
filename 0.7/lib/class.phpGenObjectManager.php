@@ -114,7 +114,7 @@ class phpGenObjectManager extends configObjectAbstract {
 		$_tmp = $this->object->getProperty($primary);
 		$fieldName = $_tmp["fieldName"];
 		$fields = $this->object->getProperties();
-		$this->_append('$ressource = self::$db->query("SELECT * FROM '.$this->tableName.' ');
+		$this->_append('$ressource = self::$db->query("SELECT * FROM `'.$this->tableName.'` ');
 		
 		//add relation in build fonction 
 		$relation = phpClassGenerator::$relatedField;
@@ -139,12 +139,12 @@ class phpGenObjectManager extends configObjectAbstract {
 				if($srcObject->getName() == $this->object->getName()){
 					//now match if the field is the foreign key
 					if(preg_match('#^'.$srcTable.'#',$relation[$a]['toField'])){
-						$this->_append('NATURAL LEFT OUTER JOIN '.$relation[$a]['fromTable'].' ');
+						$this->_append('NATURAL LEFT OUTER JOIN `'.$relation[$a]['fromTable'].'` ');
 					}
 				}
 			}
 		}
-		$this->_append('WHERE '.$fieldName.' = ".$'.$this->baseName.'->'.$this->primaryGetter.'());');
+		$this->_append('WHERE `'.$fieldName.'` = ".$'.$this->baseName.'->'.$this->primaryGetter.'());');
 		//$this->_append('$results = self::$db->fetchArray();');
 		$this->_append('$results = $ressource->fetchAll();');
 		$this->_append('$results = $results[0];');
@@ -228,12 +228,12 @@ class phpGenObjectManager extends configObjectAbstract {
 						
 						$primarygetterName = phpClassGenerator::formatPropertyName('get_'.$srcObject->getPrimaryKeyName());
 						$primaryLinkedGetterName = phpClassGenerator::formatPropertyName('get_'.$linkedObject->getPrimaryKeyName());
-						$SQLemptyingTable = 'DELETE FROM '.$relation[$a]['fromTable'].' WHERE '.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().' = \'.$'.$this->baseName.'->'.$primarygetterName.'()';
+						$SQLemptyingTable = 'DELETE FROM `'.$relation[$a]['fromTable'].'` WHERE `'.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().'` = \'.$'.$this->baseName.'->'.$primarygetterName.'()';
 						$this->_append('self::$db->query(\''.$SQLemptyingTable.');');
 						$relatedNMtables[$srcObject->getName().' '.$this->object->getName()] = true;
 						
 						$NMinsert[] = $this->_append('$i=0;');
-						$NMinsert[] = $this->_append('$insert = \'INSERT INTO '.$relation[$a]['fromTable'].' ('.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().', '.$linkedObject->getTableName().'_'.$linkedObject->getPrimaryKeyName().') VALUES \';');
+						$NMinsert[] = $this->_append('$insert = \'INSERT INTO `'.$relation[$a]['fromTable'].'` (`'.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().'`, `'.$linkedObject->getTableName().'_'.$linkedObject->getPrimaryKeyName().'`) VALUES \';');
 						$NMinsert[] = $this->_append('$collection = self::$'.$this->baseName.'->'.$linkedObject->getName().'_collection;');
 						$NMinsert[] = $this->_append('foreach ($collection as $'.$linkedObject->getName().'){');
 						$NMinsert[] = $this->_append('$insert .= $i !== 0 ? "," : "";');
@@ -248,7 +248,7 @@ class phpGenObjectManager extends configObjectAbstract {
 			}
 		}
 		
-		$this->_append('$update = "UPDATE '.$this->tableName.' ');
+		$this->_append('$update = "UPDATE `'.$this->tableName.'` ');
 		foreach ($related11tables as $tableName => $foreignFields) {
 			$this->_append(','.$tableName);;
 		}
@@ -259,7 +259,7 @@ class phpGenObjectManager extends configObjectAbstract {
 		foreach ($fields as $propertyName => $params){
 			if(!$params['primary']){
 				$this->_append('if($'.$this->baseName.'->getModifier(\''.$propertyName.'\')){');
-				$this->_append('$_update[] = "'.$params['fieldName'].' = \'".$'.$this->baseName.'->'. phpClassGenerator::formatPropertyName('get_'.$propertyName).'()."\'";');
+				$this->_append('$_update[] = "`'.$params['fieldName'].'` = \'".$'.$this->baseName.'->'. phpClassGenerator::formatPropertyName('get_'.$propertyName).'()."\'";');
 				$this->_append('}');
 				$i++;	
 			}
@@ -271,10 +271,10 @@ class phpGenObjectManager extends configObjectAbstract {
 		$this->_append('for($a=0; $a < count($_update);$a++){');
 		$this->_append('$update .= ($a === 0 ? "" : ",").$_update[$a];');
 		$this->_append('}');
-		$this->_append('$update .= " WHERE '.$this->tableName.'.'.$primaryKeyField.' = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'();');
+		$this->_append('$update .= " WHERE `'.$this->tableName.'`.`'.$primaryKeyField.'` = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'();');
 		
 		foreach ($related11tables as $tableName => $foreignFields) {
-			$this->_append('$update .= " AND '.$tableName.'.'.$primaryKeyField.' = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'();');
+			$this->_append('$update .= " AND `'.$tableName.'`.`'.$primaryKeyField.'` = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'();');
 		}
 		
 		$this->_append('self::$db->query($update);');
@@ -287,13 +287,13 @@ class phpGenObjectManager extends configObjectAbstract {
 		$i=0;
 		foreach ($fields as $propertyName => $params){					
 			if(!$params['primary'] && !$params['foreignField']){
-				$listFields .= ($i === 0 ? '' : ',').$params['fieldName'];
+				$listFields .= ($i === 0 ? '' : ',').'`'.$params['fieldName'].'`';
 				$listFieldsValue .= ($i === 0 ? '' : ',');
 				$listFieldsValue .= "'\".$".$this->baseName."->".phpClassGenerator::formatPropertyName('get_'.$propertyName)."().\"'";
 				$i++;
 			}
 		}
-		$this->_append('self::$db->query("INSERT INTO '.$this->tableName.' (');
+		$this->_append('self::$db->query("INSERT INTO `'.$this->tableName.'` (');
 		$this->_append($listFields);
 		$this->_append(') VALUES (');
 		$this->_append($listFieldsValue);
@@ -307,10 +307,10 @@ class phpGenObjectManager extends configObjectAbstract {
 				$listForeignFields = '';
 				$listForeignFieldsValue = '';
 			}
-			$this->_append('self::$db->query("INSERT INTO '.$tableName.' (');
+			$this->_append('self::$db->query("INSERT INTO `'.$tableName.'` (');
 			$nb = count($foreignFields);
 			for ($a = 0 ; $a < $nb ; $a++) {
-				$listForeignFields .= ($a === 0 ? '' : ',').$foreignFields[$a]['toField'];
+				$listForeignFields .= ($a === 0 ? '' : ',').'`'.$foreignFields[$a]['toField'].'`';
 				if($foreignFields[$a]['relatedPropertyName']){
 					$listForeignFieldsValue .= ($a === 0 ? '' : ',')."'\".$".$this->baseName."->".phpClassGenerator::formatPropertyName('get_'.$foreignFields[$a]['toField'])."().\"'";
 				}
