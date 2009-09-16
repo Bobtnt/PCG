@@ -10,7 +10,7 @@
 
 chdir(dirname(realpath(__FILE__)));
 
-ini_set('include_path', '.'.PATH_SEPARATOR.'./lib');
+ini_set('include_path', '.'.PATH_SEPARATOR.'./lib'.PATH_SEPARATOR.'./out' );
 function __autoload($className){
 	if(is_file('lib/class.'.$className.'.php')){
 		require_once 'lib/class.'.$className.'.php';
