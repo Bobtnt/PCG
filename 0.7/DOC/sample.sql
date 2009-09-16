@@ -274,9 +274,9 @@ INSERT INTO `category` (`category_id`, `category_name`) VALUES
 -- Structure de la table `groups`
 --
 
-CREATE TABLE IF NOT EXISTS `groups` (
-  `groups_id` int(1) NOT NULL AUTO_INCREMENT,
-  `groups_name` varchar(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `group` (
+  `group_id` int(1) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(255) NOT NULL,
   PRIMARY KEY (`groups_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=3 ;
 
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
 -- Contenu de la table `groups`
 --
 
-INSERT INTO `groups` (`groups_id`, `groups_name`) VALUES
+INSERT INTO `group` (`group_id`, `group_name`) VALUES
 (1, 'group 1'),
 (2, 'group 2');
 
@@ -294,8 +294,8 @@ INSERT INTO `groups` (`groups_id`, `groups_name`) VALUES
 -- Structure de la table `groups_has_user`
 --
 
-CREATE TABLE IF NOT EXISTS `groups_has_user` (
-  `groups_id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `group_has_user` (
+  `group_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`groups_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED;
