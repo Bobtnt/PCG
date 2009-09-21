@@ -364,6 +364,7 @@ pcgObject = function(){
 		objectResizeStop: function(event, ui){
 			var oPcg = getPcgInstance(this);
 			oPcg.helpers.setStackDown(oPcg);
+			oPcg.executeBinderUI();
 			map.moveObject(oPcg);	
 		},
 		colapse: function(event, ui){
