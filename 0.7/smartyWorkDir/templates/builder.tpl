@@ -5,6 +5,9 @@
 <title>PCG Builder</title>
 <script language="javascript" src="/resources/lib/jquery-1.3.2.min.js"></script>
 <script language="javascript" src="/resources/lib/jquery-ui-1.7.2.custom.min.js"></script>
+<script language="javascript" src="/resources/lib/jquery.ooCookie.js"></script>
+<script language="javascript" src="/resources/lib/jquery.json.js"></script>
+<script language="javascript" src="/resources/lib/jquery.base64.js"></script>
 <script language="javascript" src="/resources/lib/wz_jsgraphics.js"></script>
 <script language="javascript" src="/resources/js/builder_events.js"></script>
 <script language="javascript" src="/resources/js/builder_object_sp.js"></script>
