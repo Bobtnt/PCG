@@ -239,6 +239,28 @@ pcgObject = function(){
 		}
 	};
 	
+	this.prepareSaving = function(){
+		var oStringified = {};
+		oStringified.name = this.name;
+		oStringified.id = this.id;
+		oStringified.properties = [];
+		for( var a in this.properties){
+			var property = this.properties[a];
+			var prop = {};
+			prop.name = property.name;
+			prop.id = property.id;
+			prop.type = property.type;
+			if(property.related && property.related != "none"){
+				prop.related = [];
+				for( var b in property.related){
+					prop.related.push({pcgId: property.related[b].to.parent.id , propId: property.related[b].to.id, type: property.related[b].type });  
+				}
+			}
+			oStringified.properties.push(prop);
+		}
+		return oStringified;
+	};
+	
 	//--------------------
 	//    HELPERS
 	//--------------------

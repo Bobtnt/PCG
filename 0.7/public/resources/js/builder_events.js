@@ -127,6 +127,43 @@ $(document).ready(function(){
 		o1.getProp(4).setName('createdBy');
 	});
 	
+	
+	
+	$("#buttonLoadWorkbench").click(function(){	
+		alert('Loading');
+		
+		var pcgCookie = new $.cookie();
+		pcgCookie.get();
+		var save = pcgCookie.savedWorkbench;		
+		save = $.json.decode($.base64Decode(save));
+		for( var a in save){
+		
+			aOpcgContainer[save[a].id] = new pcgObject();
+			aOpcgContainer[save[a].id].setId(save[a].id);
+			aOpcgContainer[save[a].id].placeOnScreen();
+					
+			reloadEventTriggers();
+			
+			aOpcgContainer[save[a].id].rename(save[a].name);
+			map.addObject(aOpcgContainer[save[a].id]);
+			
+		}
+		
+	});
+	
+	$("#buttonSaveWorkbench").click(function(){
+		alert('Saving');
+		var save = [];
+		for(var a in aOpcgContainer){
+			save.push(aOpcgContainer[a].prepareSaving());
+		}
+		
+		var pcgCookie = new $.cookie();
+		pcgCookie.savedWorkbench = $.base64Encode($.json.encode(save));
+		pcgCookie.set();
+	});
+	
+	
 	//Global events
 	$(".messageBox").css('top', window.innerHeight - 30 );
 	
