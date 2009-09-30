@@ -60,6 +60,30 @@
 	<div class="accordion ac-minimap">
 	   <h3><a href="#">Minimap</a></h3>
 	   <div>
+	   {literal}
+	   <div id="xiti-logo">
+		<script type="text/javascript">
+		<!--
+		document.write('<a href="http://www.xiti.com/xiti.asp?s=424018" title="WebAnalytics">');
+		Xt_param = 's=424018&p=builder';
+		try {Xt_r = top.document.referrer;}
+		catch(e) {Xt_r = document.referrer; }
+		Xt_h = new Date();
+		Xt_i = '<img width="80" height="15" border="0" ';
+		Xt_i += 'src="http://logv10.xiti.com/oco.xiti?'+Xt_param;
+		Xt_i += '&hl='+Xt_h.getHours()+'x'+Xt_h.getMinutes()+'x'+Xt_h.getSeconds();
+		if(parseFloat(navigator.appVersion)>=4)
+		{Xt_s=screen;Xt_i+='&r='+Xt_s.width+'x'+Xt_s.height+'x'+Xt_s.pixelDepth+'x'+Xt_s.colorDepth;}
+		document.write(Xt_i+'&ref='+Xt_r.replace(/[<>"]/g, '').replace(/&/g, '$')+'"></a>');
+		//-->
+		</script>
+		<noscript>
+		<div id="xiti-logo-noscript">
+		<a href="http://www.xiti.com/xiti.asp?s=424018" title="WebAnalytics" >WebAnalytics solution by <img width="80" height="15" src="http://logv10.xiti.com/oco.xiti?s=424018&amp;p=builder&amp;" alt="WebAnalytics" /></a>
+		</div>
+		</noscript>
+		</div>
+		{/literal}
 	   </div>
 	</div> 
 	<div class="accordion ac-tools" style="margin-top: 20px;">
