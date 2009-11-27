@@ -1,14 +1,14 @@
 <?php
 /**
  * This file is a part of php class generator (PCG) apps.
- * 
- * licence: Cecill http://www.cecill.info/licences/Licence_CeCILL_V1.1-US.html 
+ *
+ * licence: Cecill http://www.cecill.info/licences/Licence_CeCILL_V1.1-US.html
  * author: Cyril Janssens
  * $Id: class.phpGenObjectManager.php 20 2009-03-18 14:10:56Z cyriljanssens $
  */
 
 class phpGenObjectCollection extends configObjectAbstract {
-	
+
 	private $object; 		//base object
 	private $name;	 		//manager name (this)
 	private $baseName; 		//base object name
@@ -16,13 +16,13 @@ class phpGenObjectCollection extends configObjectAbstract {
 	private $primary;		//primary key name
 	private $primaryGetter; //getter method for primary value
 	private $primarySetter; //setter method for primary value
-	
+
 	public function __construct($object=null){
 		if(is_object($object)){
 			$this->setObject($object);
 		}
 	}
-	
+
 	/**
 	 * set object to manipulate
 	 *
@@ -39,11 +39,11 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->tableName = $this->object->getTableName();
 		return $this;
 	}
-	
+
 	public function getName(){
 		return $this->name;
 	}
-	
+
 	public function generate(){
 		$this->_header();
 		$this->_call();
@@ -51,10 +51,10 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_getSelectFilter();
 		$this->_save();
 		$this->_privates();
-		$this->_footer();		
+		$this->_footer();
 		return $this->code;
 	}
-	
+
 	private function _header(){
 		$this->_append('<?php');
 		$this->_append('/**');
@@ -76,7 +76,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('private $items = array();');
 		$this->_append('');
 	}
-	
+
 	private function _call(){
 		$this->_append('public function __call($name, $arguments){');
 		$this->_append('switch ($name) {');
@@ -89,7 +89,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('throw new Exception("try to access to an unknown method");');
 		$this->_append('}');
 	}
-	
+
 	private function _addRemoveCount(){
 		$this->_append('/**');
 		$this->_append(' * add '.$this->baseName.' to collection');
@@ -105,7 +105,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$innerVar = phpClassGenerator::formatPropertyName('$inner_'.$this->baseName);
 		$this->_append('foreach ($this as $key => '.$innerVar.'){');
 		$this->_append('//check for existing '.$this->baseName);
-		$this->_append('if('.$innerVar.'->getId() == $'.$this->baseName.'->getId()){');
+		$this->_append('if('.$innerVar.'->'.$this->primaryGetter.'() == $'.$this->baseName.'->'.$this->primaryGetter.'()){');
 		$this->_append('$existFlag = true;');
 		$this->_append('$existKey = $key;');
 		$this->_append('break;');
@@ -153,7 +153,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('$existFlag = false;');
 		$this->_append('foreach ($this as $key => '.$innerVar.'){');
 		$this->_append('//check for existing bugs');
-		$this->_append('if('.$innerVar.'->getId() == $'.$this->baseName.'->getId()){');
+		$this->_append('if('.$innerVar.'->'.$this->primaryGetter.'() == $'.$this->baseName.'->'.$this->primaryGetter.'()){');
 		$this->_append('$existFlag = true;');
 		$this->_append('$existKey = $key;');
 		$this->_append('break;');
@@ -168,7 +168,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('}');
 		$this->_append('}');
 	}
-	
+
 	private function _getSelectFilter(){
 		$this->_append('/**');
 		$this->_append(' * get first object match $pattern selector from collection');
@@ -238,7 +238,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('return $this;');
 		$this->_append('}');
 	}
-	
+
 	private function _save(){
 		$this->_append('/**');
 		$this->_append(' * save all elements in collection');
@@ -251,7 +251,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('}');
 		$this->_append('}');
 	}
-	
+
 	private function _privates(){
 		$this->_append('/**');
 		$this->_append(' * Set '.$this->baseName.' for local collection');
@@ -344,10 +344,10 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('}');
 		$this->_append('return $results;');
 		$this->_append('}');
-		
+
 	}
-	
-	
+
+
 	private function _footer(){
 		$this->_append('/**');
 		$this->_append(' * called by iterator (foreach syntax)');
