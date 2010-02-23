@@ -4,7 +4,7 @@
  *
  * licence: Cecill http://www.cecill.info/licences/Licence_CeCILL_V1.1-US.html
  * author: Cyril Janssens
- * $Id: class.phpGenObjectManager.php 20 2009-03-18 14:10:56Z cyriljanssens $
+ * $Id: class.phpGenObjectCollection.php 72 2009-08-17 15:53:05Z cyriljanssens $
  */
 
 class phpGenObjectCollection extends configObjectAbstract {
@@ -47,6 +47,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 	public function generate(){
 		$this->_header();
 		$this->_call();
+		$this->_magicSetGet();
 		$this->_addRemoveCount();
 		$this->_getSelectFilter();
 		$this->_save();
@@ -68,7 +69,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append(' * $pattern = "description NOT LIKE some words";');
 		$this->_append(' * $pattern = "id LIKE 123" ;');
 		$this->_append(' */');
-		$this->_append('class '.$this->name.' '.(phpClassGenerator::$userZendLoader ? "extends ".$this->name."_custom" : "").' implements IteratorAggregate {');
+		$this->_append('abstract class '.$this->name.'_base '.(phpClassGenerator::$userZendLoader ? "extends ".$this->name."_custom" : "").' implements IteratorAggregate {');
 		$this->_append('');
 		$this->_append('const MODE_APPEND = 1;');
 		$this->_append('const MODE_REPLACE = 2;	');
@@ -86,9 +87,34 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('return $this->select($query, $mode);');
 		$this->_append('break;');
 		$this->_append('}');
-		$this->_append('throw new Exception("try to access to an unknown method");');
+		if(phpClassGenerator::$throwExceptionOnUnkownMagicCall){
+			$this->_append('throw new Exception("try to access to an unknown method");');
+		}
+		else{
+			$this->_append('return $this;');
+		}
 		$this->_append('}');
 	}
+
+	private function _magicSetGet(){
+		$this->_append('public function __get($name){');
+		if(phpClassGenerator::$throwExceptionOnUnkownMagicCall){
+			$this->_append('throw new Exception("try to access to an unknown method");');
+		}
+		else{
+			$this->_append('return $this;');
+		}
+		$this->_append('}');
+		$this->_append('public function __set($name, $param){');
+		if(phpClassGenerator::$throwExceptionOnUnkownMagicCall){
+			$this->_append('throw new Exception("try to access to an unknown method");');
+		}
+		else{
+			$this->_append('return $this;');
+		}
+		$this->_append('}');
+	}
+
 
 	private function _addRemoveCount(){
 		$this->_append('/**');
@@ -105,7 +131,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$innerVar = phpClassGenerator::formatPropertyName('$inner_'.$this->baseName);
 		$this->_append('foreach ($this as $key => '.$innerVar.'){');
 		$this->_append('//check for existing '.$this->baseName);
-		$this->_append('if('.$innerVar.'->'.$this->primaryGetter.'() == $'.$this->baseName.'->'.$this->primaryGetter.'()){');
+		$this->_append('if(!is_null('.$innerVar.'->'.$this->primaryGetter.'()) && '.$innerVar.'->'.$this->primaryGetter.'() == $'.$this->baseName.'->'.$this->primaryGetter.'()){');
 		$this->_append('$existFlag = true;');
 		$this->_append('$existKey = $key;');
 		$this->_append('break;');
@@ -118,7 +144,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('//replace');
 		$this->_append('$this->_set($existKey, $'.$this->baseName.');');
 		$this->_append('}');
-		$this->_append('else if(!$existFlag && ($mode == self::MODE_APPEND || $mode == self::MODE_APPEND)){');
+		$this->_append('else if(!$existFlag && ($mode == self::MODE_APPEND || $mode == self::MODE_REPLACE)){');
 		$this->_append('//simply add');
 		$this->_append('$this->_add($'.$this->baseName.');');
 		$this->_append('}');
