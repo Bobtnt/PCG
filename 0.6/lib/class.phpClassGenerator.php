@@ -262,9 +262,9 @@ class phpClassGenerator extends configObjectAbstract {
 
 			$path = str_replace('_', '/', $objectName);
 
-			@mkdir(self::OUTPUT_FOLDER.'/'.$path , '0777', true);
-			@mkdir(self::OUTPUT_FOLDER.'/'.$path.'/manager' , '0777', true);
-			@mkdir(self::OUTPUT_FOLDER.'/'.$path.'/collection' , '0777', true);
+			@mkdir(self::OUTPUT_FOLDER.'/'.$path , 0777, true);
+			@mkdir(self::OUTPUT_FOLDER.'/'.$path.'/manager' , 0777, true);
+			@mkdir(self::OUTPUT_FOLDER.'/'.$path.'/collection' , 0777, true);
 			if(self::$generateIndexFiles){
 				self::genIndexFiles($objectName);
 			}
