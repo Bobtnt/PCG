@@ -75,6 +75,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('const MODE_REPLACE = 2;	');
 		$this->_append('	');
 		$this->_append('private $items = array();');
+		$this->_append('private $fields = array();');
 		$this->_append('');
 	}
 
@@ -236,12 +237,22 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append(' * @return '.$this->name.'');
 		$this->_append(' */');
 		$this->_append('public function select($query, $mode=1){');
-		$this->_append('$ids = '.$this->baseName.'_manager::select($query);');
+		$this->_append('$fields = array();');
+		$this->_append('foreach ($this->fields as $moreField){');
+		$this->_append('$fields[] = $moreField[0];');
+		$this->_append('}');
+		$this->_append('$ids = '.$this->baseName.'_manager::select($query, $fields);');
 		$this->_append('$nb = count($ids);');
 		$this->_append('for($a = 0 ; $a < $nb; $a++){');
-		$this->_append('$'.$this->baseName.' = new '.$this->baseName.'($ids[$a]);');
+		$this->_append('$'.$this->baseName.' = new '.$this->baseName.'($ids[$a][\'FORPCGUID\']);');
+		$this->_append('foreach ($this->fields as $moreField){');
+		$this->_append('$field = $moreField[0];');
+		$this->_append('$property = $moreField[1];');
+		$this->_append('$cms_element->$property = $ids[$a][$field];');
+		$this->_append('}');
 		$this->_append('$this->add($'.$this->baseName.', $mode);');
 		$this->_append('}');
+		$this->_append('$this->fields = array();');
 		$this->_append('return $this;');
 		$this->_append('}');
 		$this->_append('/**');
@@ -279,6 +290,18 @@ class phpGenObjectCollection extends configObjectAbstract {
 	}
 
 	private function _privates(){
+		$this->_append('/**');
+		$this->_append(' * Define key pair field/property to add in objects for the next select query.');
+		$this->_append(' * Field and prperty must be exists.');
+		$this->_append(' *');
+		$this->_append(' * @param string $field');
+		$this->_append(' * @param string $property');
+		$this->_append(' * @return '.$this->name.'');
+		$this->_append(' */');
+		$this->_append('public function defineField($field, $property){');
+		$this->_append('$this->fields[] = array($field => $property);');
+		$this->_append('return $this;');
+		$this->_append('}');
 		$this->_append('/**');
 		$this->_append(' * Set '.$this->baseName.' for local collection');
 		$this->_append(' *');
