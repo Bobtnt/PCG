@@ -393,7 +393,7 @@ class phpGenObjectManager extends configObjectAbstract {
  	$this->_append('$primarys[$a][\'FORPCGUID\'] = $_tmp[$a][\''.$fieldName.'\'];');
 	$this->_append('if(is_array($moreField)){');
 	$this->_append('foreach ($moreField as $field){');
-	$this->_append('$primarys[$a][$field] = $_tmp[$a][\'$field\'];');
+	$this->_append('$primarys[$a][$field] = $_tmp[$a][$field];');
 	$this->_append('}');
 	$this->_append('}');
     $this->_append('}');
