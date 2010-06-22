@@ -128,10 +128,13 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append(' *******************************/');
 		$this->_append();
 		foreach ($this->properties as $name => $params) {
+//			if($this->name == 'cms_gabarit'){
+//				Zend_Debug::dump($params);
+//			}
 //			Zend_Debug::dump($params);
 			$useStripSlashes = false;
 			$defaultNull = false;
-			if(is_null($params['default'])){
+			if(is_null($params['default']) && $params['nullable']){
 				$defaultNull = true;
 			}
 			if($params['type'] != 'int' && $params['type'] != 'tinyint' &&  $params['type'] != 'timestamp' && $params['type'] != 'date'){
