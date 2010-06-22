@@ -177,7 +177,8 @@ class phpClassGenerator extends configObjectAbstract {
 											'type' => $infos['metadata'][$column]['DATA_TYPE'],
 											'fieldName' => $column,
 											'primary' => ($primary == $column ? true:false),
-											'foreignField' => true
+											'foreignField' => true,
+											'nullable' => $infos['metadata'][$column]['NULLABLE']
 											));
 
 					}
@@ -195,7 +196,8 @@ class phpClassGenerator extends configObjectAbstract {
 															'type' => $infos['metadata'][$column]['DATA_TYPE'],
 															'fieldName' => $column,
 															'primary' => ($primary == $column ? true:false),
-															'foreignField' => false
+															'foreignField' => false,
+															'nullable' => $infos['metadata'][$column]['NULLABLE']
 															));
 		}
 		//Set object wich will be manipulate by the manager

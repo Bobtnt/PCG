@@ -80,7 +80,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append('self::$db = '.self::DB_CALLER.';');
     $this->_append('}');
     $this->_append('if($'.$this->baseName.'){');
-    $this->_append('self::using($'.$this->baseName.');');
+    $this->_append($this->baseName.'_manager::using($'.$this->baseName.');');
     $this->_append('}');
     $this->_append('}');
     $this->_append('/**');
@@ -106,7 +106,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append(' * @return '.$this->baseName);
     $this->_append(' */');
     $this->_append('public static function build('.$this->baseName.' $'.$this->baseName.'=null){');
-    $this->_append('self::factory();');
+    $this->_append($this->baseName.'_manager::factory();');
     $this->_append('if(!$'.$this->baseName.'){');
     $this->_append('$'.$this->baseName.' = self::$'.$this->baseName.';');
     $this->_append('}');
@@ -171,7 +171,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append(' * @return '.$this->baseName);
     $this->_append(' */');
     $this->_append('public static function save('.$this->baseName.' $'.$this->baseName.'=null){');
-    $this->_append('self::factory();');
+    $this->_append($this->baseName.'_manager::factory();');
     $this->_append('if(!$'.$this->baseName.'){');
     $this->_append('$'.$this->baseName.' = self::$'.$this->baseName.';');
     $this->_append('}');
@@ -384,7 +384,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append(' * @return array');
     $this->_append(' */');
     $this->_append('public static function select($sql, $moreField=false){');
-    $this->_append('self::factory();');
+    $this->_append($this->baseName.'_manager::factory();');
     $this->_append('$ressource = self::$db->query($sql);');
     $this->_append('$primarys = array();');
     $this->_append('$_tmp = array();');
