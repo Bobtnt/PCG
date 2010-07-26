@@ -317,7 +317,7 @@ class phpClassGenerator extends configObjectAbstract {
 		abstract class '.$objectName.'_custom {
 			//add your own code here
 		}
-		?>';
+		';
 		$f = fopen(self::OUTPUT_FOLDER.'/'.$path.'/custom.php', "w+");
 		fwrite($f, $str);
 		fclose($f);
@@ -326,7 +326,7 @@ class phpClassGenerator extends configObjectAbstract {
 		abstract class '.$objectName.'_manager_custom {
 			//add your own code here
 		}
-		?>';
+		';
 		$f = fopen(self::OUTPUT_FOLDER.'/'.$path.'/manager/custom.php', "w+");
 		fwrite($f, $str);
 		fclose($f);
@@ -335,7 +335,7 @@ class phpClassGenerator extends configObjectAbstract {
 		abstract class '.$objectName.'_collection_custom {
 			//add your own code here
 		}
-		?>';
+		';
 		$f = fopen(self::OUTPUT_FOLDER.'/'.$path.'/collection/custom.php', "w+");
 		fwrite($f, $str);
 		fclose($f);
