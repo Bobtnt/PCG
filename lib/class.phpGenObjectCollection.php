@@ -407,7 +407,7 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('return new localIterator($this->items);');
 		$this->_append('}');
 		$this->_append('}');
-		$this->_append('?>');
+		$this->_append('');
 	}
 }
 ?>

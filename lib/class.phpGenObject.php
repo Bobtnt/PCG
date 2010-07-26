@@ -85,6 +85,7 @@ class phpGenObject extends configObjectAbstract {
 
 	private function _properties(){
 		$i=0;
+		$PCGPrimaryKeyProperties = 'array(';
 		$modified = 'protected $modified = array(';
 		foreach ($this->properties as $name => $params) {
 			$code = 'private $'.$name;
@@ -103,7 +104,9 @@ class phpGenObject extends configObjectAbstract {
 				$code .= ';';
 			}
 			if($params['primary']){
+
 				$code .= ' //this is the primary key';
+				$PCGPrimaryKeyProperties .= 'array(\''. phpClassGenerator::formatPropertyName('get_'.$name).'\', \''.$params['fieldName'].'\', \''.$name.'\'),';//protected $PCGPrimaryKeyProperties = array(array('getId', 'cms_cache_id', 'id'),);
 			}
 			$this->_append($code);
 			$modified .= ($i === 0 ? '' : ',')."'".$name."' => false";
@@ -112,6 +115,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append($modified.');');
 		$this->_append();
 		$this->_append('protected $context; //context object, generaly collection object');
+		$this->_append('protected $PCGPrimaryKeyProperties = ' .$PCGPrimaryKeyProperties.'); //primary keys list');
 		$this->_append();
 	}
 
@@ -126,6 +130,10 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('/******************************');
 		$this->_append(' * GETTER AND SETTER');
 		$this->_append(' *******************************/');
+		$this->_append();
+		$this->_append('public function getPCGPrimaryKeyProperties(){');
+		$this->_append('return $this->PCGPrimaryKeyProperties;');
+		$this->_append('}');
 		$this->_append();
 		foreach ($this->properties as $name => $params) {
 //			if($this->name == 'cms_gabarit'){
@@ -298,7 +306,7 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('$this->context = $context;');
 		$this->_append('}');
 		$this->_append('}');
-		$this->_append('?>');
+		$this->_append('');
 	}
 
 

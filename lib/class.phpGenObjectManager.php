@@ -110,6 +110,11 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append('if(!$'.$this->baseName.'){');
     $this->_append('$'.$this->baseName.' = self::$'.$this->baseName.';');
     $this->_append('}');
+	$this->_append('if($previouslyGenerated = database_optimizer::get($'.$this->baseName.')){');
+    $this->_append('$'.$this->baseName.' = $previouslyGenerated;');
+	$this->_append('self::$'.$this->baseName.' = $'.$this->baseName.';');
+	$this->_append('return $'.$this->baseName.';');
+	$this->_append('}');
     $primary = $this->primary;
     $_tmp = $this->object->getProperty($primary);
     $fieldName = $_tmp["fieldName"];
@@ -160,6 +165,7 @@ class phpGenObjectManager extends configObjectAbstract {
       }
     }
     $this->_append('->check();');
+    $this->_append('database_optimizer::register($'.$this->baseName.');');
     $this->_append('return $'.$this->baseName.';');
     $this->_append('}');
   }
@@ -175,6 +181,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append('if(!$'.$this->baseName.'){');
     $this->_append('$'.$this->baseName.' = self::$'.$this->baseName.';');
     $this->_append('}');
+    $this->_append('database_optimizer::unregister($'.$this->baseName.');');
     $fields = $this->object->getProperties();
     //$primary = $this->primary;
     $getPrimaryKeyFunction = $this->primaryGetter;
@@ -368,6 +375,7 @@ class phpGenObjectManager extends configObjectAbstract {
 
 
     $this->_append('}');
+    $this->_append('database_optimizer::register($'.$this->baseName.');');
     $this->_append('}');
   }
 
@@ -403,7 +411,7 @@ class phpGenObjectManager extends configObjectAbstract {
 
   private function _footer(){
     $this->_append('}');
-    $this->_append('?>');
+    $this->_append('');
   }
 
 }
