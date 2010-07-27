@@ -118,7 +118,7 @@ class phpGenObjectManager extends configObjectAbstract {
     foreach ($fields as $propertyName => $params){
       if(!$params['primary']){
         $this->_append(
-        ($i === 0 ? '$'.$this->baseName : '').'->'.phpClassGenerator::formatPropertyName('set_'.$propertyName).'($previouslyGenerated->'.phpClassGenerator::formatPropertyName('get_'.$propertyName).')'
+        ($i === 0 ? '$'.$this->baseName : '').'->'.phpClassGenerator::formatPropertyName('set_'.$propertyName).'($previouslyGenerated->'.phpClassGenerator::formatPropertyName('get_'.$propertyName).'())'
         );
         $i++;
       }
