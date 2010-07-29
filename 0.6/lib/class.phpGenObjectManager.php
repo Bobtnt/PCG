@@ -412,8 +412,9 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append('$primarys = array();');
     $this->_append('$_tmp = array();');
     $this->_append('$_tmp = $ressource->fetchAll();');
+    $this->_append('$primaryKey = (!is_object('.$this->baseName.'_manager::$'.$this->baseName.')) ? '.$this->baseName.'::getPCGFirstPrimaryKey() : '.$this->baseName.'_manager::$'.$this->baseName.'->getPCGPropertyMapping(\''.$this->primary.'\');');
     $this->_append('for ($a = 0 ; $a < count($_tmp) ; $a++) {');
- 	$this->_append('$primarys[$a][\'FORPCGUID\'] = $_tmp[$a][$'.$this->baseName.'->getPCGPropertyMapping(\''.$this->primary.'\')];');
+ 	$this->_append('$primarys[$a][\'FORPCGUID\'] = $_tmp[$a][$primaryKey];');
 	$this->_append('if(is_array($moreField)){');
 	$this->_append('foreach ($moreField as $field){');
 	$this->_append('$primarys[$a][$field] = $_tmp[$a][$field];');

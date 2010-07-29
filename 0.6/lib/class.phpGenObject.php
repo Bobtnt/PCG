@@ -87,7 +87,7 @@ class phpGenObject extends configObjectAbstract {
 
 	private function _properties(){
 		$i=0;
-		$PCGProppertiesMap = 'protected $PCGProppertiesMap = array ('.configObjectAbstract::NL;
+		$PCGProppertiesMap = 'protected $PCGPropertiesMap = array ('.configObjectAbstract::NL;
 		$PCGPrimaryKeyProperties = 'array(';
 		$modified = 'protected $modified = array(';
 		foreach ($this->properties as $name => $params) {
@@ -323,10 +323,17 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append(' * @param string $property');
 		$this->_append(' */');
 		$this->_append('public function getPCGPropertyMapping($property){');
-		$this->_append('if(array_key_exists($property, $this->PCGProppertiesMap)){');
-		$this->_append('return $this->PCGProppertiesMap($property);');
+		$this->_append('if(array_key_exists($property, $this->PCGPropertiesMap)){');
+		$this->_append('return $this->PCGPropertiesMap[$property];');
 		$this->_append('}');
 		$this->_append('return false;');
+		$this->_append('}');
+		$this->_append('/**');
+		$this->_append('* @return string');
+		$this->_append(' */');
+		$this->_append('static public function getPCGFirstPrimaryKey(){');
+		$this->_append('$t = new '.$this->getName().'();');
+		$this->_append('return $t->PCGPrimaryKeyProperties[0][1];');
 		$this->_append('}');
 		$this->_append('}');
 		$this->_append('');
@@ -451,7 +458,7 @@ class phpGenObject extends configObjectAbstract {
 
 						#Get structure
 						$linker = phpClassGenerator::getObjectByName($relation[$a]['fromTable']);
-						$linkerStructureCode = 'protected $'.$relation[$a]['fromTable'].' = array(';
+						$linkerStructureCode = 'public $'.$relation[$a]['fromTable'].' = array(';
 						foreach ($linker->properties as $linkerInfos){
 							$linkerStructureCode .= "'".$linkerInfos['fieldName']."',";
 						}
@@ -460,6 +467,7 @@ class phpGenObject extends configObjectAbstract {
 						$this->_append('/**');
 						$this->_append(' * relationship with '.$linkedObjectName);
 						$this->_append(' * @var '.$linkedObjectName.'_collection');
+						$this->_append(' * @property '.$linkedObjectName.'_collection');
 						$this->_append(' */');
 						$this->_append('private $'.$propertyName.';');
 						$this->_append($linkerStructureCode);
@@ -479,7 +487,7 @@ class phpGenObject extends configObjectAbstract {
 
 						#Get structure
 						$linker = phpClassGenerator::getObjectByName($relation[$a]['fromTable']);
-						$linkerStructureCode = 'protected $'.$relation[$a]['fromTable'].' = array(';
+						$linkerStructureCode = 'public $'.$relation[$a]['fromTable'].' = array(';
 						foreach ($linker->properties as $linkerInfos){
 							$linkerStructureCode .= "'".$linkerInfos['fieldName']."',";
 						}
@@ -488,6 +496,7 @@ class phpGenObject extends configObjectAbstract {
 						$this->_append('/**');
 						$this->_append(' * relationship with '.$linkedObjectName);
 						$this->_append(' * @var '.$linkedObjectName.'_collection');
+						$this->_append(' * @property '.$linkedObjectName.'_collection');
 						$this->_append(' */');
 						$this->_append('private $'.$propertyName.';');
 						$this->_append($linkerStructureCode);
