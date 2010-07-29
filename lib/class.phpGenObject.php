@@ -87,9 +87,11 @@ class phpGenObject extends configObjectAbstract {
 
 	private function _properties(){
 		$i=0;
+		$PCGProppertiesMap = 'protected $PCGProppertiesMap = array ('.configObjectAbstract::NL;
 		$PCGPrimaryKeyProperties = 'array(';
 		$modified = 'protected $modified = array(';
 		foreach ($this->properties as $name => $params) {
+			$PCGProppertiesMap .= str_repeat(configObjectAbstract::TAB, 3)."'$name' => '{$params['fieldName']}',".configObjectAbstract::NL;
 			$code = 'private $'.$name;
 			if($params['default']){
 				if($params['type'] == 'int'){
@@ -114,10 +116,13 @@ class phpGenObject extends configObjectAbstract {
 			$modified .= ($i === 0 ? '' : ',')."'".$name."' => false";
 			$i++;
 		}
+		$PCGProppertiesMap .= str_repeat(configObjectAbstract::TAB, 2).');';
 		$this->_append($modified.');');
 		$this->_append();
 		$this->_append('protected $context; //context object, generaly collection object');
 		$this->_append('protected $PCGPrimaryKeyProperties = ' .$PCGPrimaryKeyProperties.'); //primary keys list');
+		$this->_append("protected \$PCGTableMap = '".$this->tableName."';");
+		$this->_append($PCGProppertiesMap);
 		$this->_append();
 	}
 
@@ -307,6 +312,22 @@ class phpGenObject extends configObjectAbstract {
 		$this->_append('public function setContextObject($context){');
 		$this->_append('$this->context = $context;');
 		$this->_append('}');
+		$this->_append('/**');
+		$this->_append(' * get real table name');
+		$this->_append(' */');
+		$this->_append('public function getPCGTableMapping(){');
+		$this->_append('return $this->PCGTableMap;');
+		$this->_append('}');
+		$this->_append('/**');
+		$this->_append(' * Convert property into real field name');
+		$this->_append(' * @param string $property');
+		$this->_append(' */');
+		$this->_append('public function getPCGPropertyMapping($property){');
+		$this->_append('if(array_key_exists($property, $this->PCGProppertiesMap)){');
+		$this->_append('return $this->PCGProppertiesMap($property);');
+		$this->_append('}');
+		$this->_append('return false;');
+		$this->_append('}');
 		$this->_append('}');
 		$this->_append('');
 	}
@@ -428,12 +449,20 @@ class phpGenObject extends configObjectAbstract {
 						phpClassGenerator::$relatedField[$a]['relatedPropertyName'] = $propertyName;
 						phpClassGenerator::$relatedField[$a]['relationType'] = 'n:m';
 
+						#Get structure
+						$linker = phpClassGenerator::getObjectByName($relation[$a]['fromTable']);
+						$linkerStructureCode = 'protected $'.$relation[$a]['fromTable'].' = array(';
+						foreach ($linker->properties as $linkerInfos){
+							$linkerStructureCode .= "'".$linkerInfos['fieldName']."',";
+						}
+						$linkerStructureCode .= ');';
+
 						$this->_append('/**');
 						$this->_append(' * relationship with '.$linkedObjectName);
 						$this->_append(' * @var '.$linkedObjectName.'_collection');
 						$this->_append(' */');
 						$this->_append('private $'.$propertyName.';');
-
+						$this->_append($linkerStructureCode);
 //						Zend_Debug::Dump($a);
 //						Zend_Debug::Dump(phpClassGenerator::$relatedField[$a]);
 					}
@@ -448,11 +477,20 @@ class phpGenObject extends configObjectAbstract {
 						phpClassGenerator::$relatedField[$a]['relatedPropertyName'] = $propertyName;
 						phpClassGenerator::$relatedField[$a]['relationType'] = 'n:m';
 
+						#Get structure
+						$linker = phpClassGenerator::getObjectByName($relation[$a]['fromTable']);
+						$linkerStructureCode = 'protected $'.$relation[$a]['fromTable'].' = array(';
+						foreach ($linker->properties as $linkerInfos){
+							$linkerStructureCode .= "'".$linkerInfos['fieldName']."',";
+						}
+						$linkerStructureCode .= ');';
+
 						$this->_append('/**');
 						$this->_append(' * relationship with '.$linkedObjectName);
 						$this->_append(' * @var '.$linkedObjectName.'_collection');
 						$this->_append(' */');
 						$this->_append('private $'.$propertyName.';');
+						$this->_append($linkerStructureCode);
 
 //						Zend_Debug::Dump($a);
 //						Zend_Debug::Dump(phpClassGenerator::$relatedField[$a]);
@@ -539,13 +577,16 @@ class phpGenObject extends configObjectAbstract {
 						$relatedObject = phpClassGenerator::getObjectByName($relatedObjectName);
 						$relatedPropertyGetterName = phpClassGenerator::formatPropertyName('get_'.$relatedObject->getPrimaryKeyName());
 
+						$key = ($relation[$a]['fromTable'] == $relation[$a]['srcObject'].'_has_'.$relation[$a]['relatedObject']) ? 0 : 1;
+						$revertedKey = ($key === 0) ? 1 : 0;
+
 						$this->_append('if($name == \''.$calledPropertyName.'\' || $name == \''.$relatedObjectName.'s\'){');
 						$this->_append('if(!$this->'.$propertyName.'){');
 						$this->_append('#n:m mode');
 						$this->_append('$'.$relatedObject->getPrimaryKeyName().' = $this->'.$relatedPropertyGetterName.'();');
 						$this->_append('$this->'.$propertyName.' = new '.$calledPropertyName.'();');
 						$this->_append('if($'.$relatedObject->getPrimaryKeyName().'){');
-						$this->_append('$this->'.$propertyName.'->select("SELECT * FROM '.$relation[$a]['fromTable'].' WHERE '.$relation[$a]['srcObject'].'_'.$relatedObject->getPrimaryKeyName().' = ".$'.$relatedObject->getPrimaryKeyName().');');
+						$this->_append('$this->'.$propertyName.'->select("SELECT ".$this->'.$relation[$a]['fromTable'].'['.$revertedKey.']." FROM '.$relation[$a]['fromTable'].' WHERE ".$this->'.$relation[$a]['fromTable'].'['.$key.']." = ".$'.$relatedObject->getPrimaryKeyName().');');
 						$this->_append('}');
 						$this->_append('}');
 						$this->_append('return $this->'.$propertyName.';');

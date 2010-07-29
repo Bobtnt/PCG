@@ -130,7 +130,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $_tmp = $this->object->getProperty($primary);
     $fieldName = $_tmp["fieldName"];
     $fields = $this->object->getProperties();
-    $this->_append('$ressource = self::$db->query("SELECT * FROM '.$this->tableName.' ');
+    $this->_append('$ressource = self::$db->query("SELECT * FROM ".$'.$this->baseName.'->getPCGTableMapping()." ');
 
     //add relation in build fonction
     $relation = phpClassGenerator::$relatedField;
@@ -160,7 +160,7 @@ class phpGenObjectManager extends configObjectAbstract {
         }
       }
     }
-    $this->_append('WHERE '.$fieldName.' = ".$'.$this->baseName.'->'.$this->primaryGetter.'());');
+    $this->_append('WHERE ".$'.$this->baseName.'->getPCGPropertyMapping(\''.$primary.'\')." = ".$'.$this->baseName.'->'.$this->primaryGetter.'(true));');
     //$this->_append('$results = self::$db->fetchArray();');
     $this->_append('$results = $ressource->fetchAll();');
     $this->_append('if(count($results) <= 0){');
@@ -171,7 +171,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $i=0;
     foreach ($fields as $propertyName => $params){
       if(!$params['primary']){
-        $this->_append(($i === 0 ? '$'.$this->baseName : '').'->'.phpClassGenerator::formatPropertyName('set_'.$propertyName).'($results["'.$params['fieldName'].'"])');
+        $this->_append(($i === 0 ? '$'.$this->baseName : '').'->'.phpClassGenerator::formatPropertyName('set_'.$propertyName).'($results[$'.$this->baseName.'->getPCGPropertyMapping("'.$propertyName.'")])');
         $i++;
       }
     }
@@ -278,15 +278,19 @@ class phpGenObjectManager extends configObjectAbstract {
             //							Zend_Debug::dump($relatedNMtables);
             //							echo '</span>';
             //						}
+
             $primarygetterName = phpClassGenerator::formatPropertyName('get_'.$srcObject->getPrimaryKeyName());
             $primaryLinkedGetterName = phpClassGenerator::formatPropertyName('get_'.$linkedObject->getPrimaryKeyName());
-            $SQLemptyingTable = 'DELETE FROM '.$relation[$a]['fromTable'].' WHERE '.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().' = \'.$'.$this->baseName.'->'.$primarygetterName.'(true)';
+
+            $keyForComparison = ($relation[$a]['fromTable'] == $srcObject->getTableName().'_has_'.$linkedObject->getTableName()) ? 0 : 1;
+
+            $SQLemptyingTable = 'DELETE FROM '.$relation[$a]['fromTable'].' WHERE \'.$'.$this->baseName.'->'.$relation[$a]['fromTable'].'['.$keyForComparison.'].\' = \'.$'.$this->baseName.'->'.$primarygetterName.'(true)';
             $NMinsert[] = $this->_append('$collection = self::$'.$this->baseName.'->'.$linkedObject->getName().'_collection;');
             $this->_append('self::$db->query(\''.$SQLemptyingTable.');');
             $relatedNMtables[phpClassGenerator::$relatedField[$a]["object"]] = true;
 
             $NMinsert[] = $this->_append('$i=0;');
-            $NMinsert[] = $this->_append('$insert = \'INSERT INTO '.$relation[$a]['fromTable'].' ('.$srcObject->getTableName().'_'.$srcObject->getPrimaryKeyName().', '.$linkedObject->getTableName().'_'.$linkedObject->getPrimaryKeyName().') VALUES \';');
+            $NMinsert[] = $this->_append('$insert = \'INSERT INTO '.$relation[$a]['fromTable'].' (\'.$'.$this->baseName.'->'.$relation[$a]['fromTable'].'[0].\', \'.$'.$this->baseName.'->'.$relation[$a]['fromTable'].'[1].\') VALUES \';');
 
             $NMinsert[] = $this->_append('foreach ($collection as $'.$linkedObject->getName().'){');
             $NMinsert[] = $this->_append('$insert .= $i !== 0 ? "," : "";');
@@ -301,7 +305,7 @@ class phpGenObjectManager extends configObjectAbstract {
       }
     }
 
-    $this->_append('$update = "UPDATE '.$this->tableName.' ');
+    $this->_append('$update = "UPDATE ".$'.$this->baseName.'->getPCGTableMapping()." ');
     foreach ($related11tables as $tableName => $foreignFields) {
       $this->_append(','.$tableName);;
     }
@@ -312,19 +316,20 @@ class phpGenObjectManager extends configObjectAbstract {
     foreach ($fields as $propertyName => $params){
       if(!$params['primary']){
         $this->_append('if($'.$this->baseName.'->getModifier(\''.$propertyName.'\')){');
-        $this->_append('$_update[] = "'.$params['fieldName'].' = ".$'.$this->baseName.'->'. phpClassGenerator::formatPropertyName('get_'.$propertyName).'(true);');
+        $this->_append('$_update[] = $'.$this->baseName.'->getPCGPropertyMapping("'.$propertyName.'")." = ".$'.$this->baseName.'->'. phpClassGenerator::formatPropertyName('get_'.$propertyName).'(true);');
         $this->_append('}');
         $i++;
       }
       else{
         $primaryKeyField = $params['fieldName'];
+        $dbPrimaryKeyField = $propertyName;
       }
     }
     $this->_append('if(count($_update) > 0){');
     $this->_append('for($a=0; $a < count($_update);$a++){');
     $this->_append('$update .= ($a === 0 ? "" : ",").$_update[$a];');
     $this->_append('}');
-    $this->_append('$update .= " WHERE '.$this->tableName.'.'.$primaryKeyField.' = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'(true);');
+    $this->_append('$update .= " WHERE ".$'.$this->baseName.'->getPCGTableMapping().".".$'.$this->baseName.'->getPCGPropertyMapping("'.$dbPrimaryKeyField.'")." = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'(true);');
 
     foreach ($related11tables as $tableName => $foreignFields) {
       $this->_append('$update .= " AND '.$tableName.'.'.$primaryKeyField.' = ".$'.$this->baseName.'->'.$getPrimaryKeyFunction.'(true);');
@@ -340,13 +345,13 @@ class phpGenObjectManager extends configObjectAbstract {
     $i=0;
     foreach ($fields as $propertyName => $params){
       if(!$params['primary'] && !$params['foreignField']){
-        $listFields .= ($i === 0 ? '' : ',').$params['fieldName'];
+        $listFields .= ($i === 0 ? '' : ',').'".$'.$this->baseName.'->getPCGPropertyMapping("'.$propertyName.'")."'.configObjectAbstract::NL.str_repeat(configObjectAbstract::TAB, 4);
         $listFieldsValue .= ($i === 0 ? '' : ',');
         $listFieldsValue .= "\".$".$this->baseName."->".phpClassGenerator::formatPropertyName('get_'.$propertyName)."(true).\"";
         $i++;
       }
     }
-    $this->_append('self::$db->query("INSERT INTO '.$this->tableName.' (');
+    $this->_append('self::$db->query("INSERT INTO ".$'.$this->baseName.'->getPCGTableMapping()." (');
     $this->_append($listFields);
     $this->_append(') VALUES (');
     $this->_append($listFieldsValue);
@@ -392,8 +397,7 @@ class phpGenObjectManager extends configObjectAbstract {
 
   private function _select(){
 
-    $_tmp = $this->object->getProperty($this->primary);
-    $fieldName = $_tmp["fieldName"];
+    $fieldName = $this->primary;
     $this->_append('/**');
     $this->_append(' * Select '.$fieldName.' $sql');
     $this->_append(' * '.$fieldName.' field must be in selected fields');
@@ -409,7 +413,7 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append('$_tmp = array();');
     $this->_append('$_tmp = $ressource->fetchAll();');
     $this->_append('for ($a = 0 ; $a < count($_tmp) ; $a++) {');
- 	$this->_append('$primarys[$a][\'FORPCGUID\'] = $_tmp[$a][\''.$fieldName.'\'];');
+ 	$this->_append('$primarys[$a][\'FORPCGUID\'] = $_tmp[$a][$'.$this->baseName.'->getPCGPropertyMapping(\''.$this->primary.'\')];');
 	$this->_append('if(is_array($moreField)){');
 	$this->_append('foreach ($moreField as $field){');
 	$this->_append('$primarys[$a][$field] = $_tmp[$a][$field];');
