@@ -26,7 +26,7 @@ class phpClassGenerator extends configObjectAbstract {
 	static $generateIndexFiles = false;
 	static $throwExceptionOnUnkownMagicCall = false;
 
-	const PCG_VERSION = '0.6.5';
+	const PCG_VERSION = '0.6.6';
 
 	/**
 	 * initialize database connection
