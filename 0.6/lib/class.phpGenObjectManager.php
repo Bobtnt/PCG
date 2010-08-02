@@ -64,9 +64,13 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append(' **/');
     $this->_append('abstract class '.$this->name.'_base '.(phpClassGenerator::$userZendLoader ? 'extends '.$this->name.'_custom' : '').' {');
     $this->_append();
-    $this->_append('protected static $db; //DATABASE CONNECTOR');
+    $this->_append('/**');
+    $this->_append(' * @var '.$this->baseName);
+    $this->_append(' **/');
     $this->_append('protected static $'.$this->baseName.'; //USED OBJECT');
+    $this->_append('protected static $db; //DATABASE CONNECTOR');
     $this->_append('protected static $context; //context of object');
+    $this->_append('public static $fastMode = false;');
     $this->_append();
   }
 
@@ -409,23 +413,33 @@ class phpGenObjectManager extends configObjectAbstract {
     $this->_append('public static function select($sql, $moreField=false){');
     $this->_append($this->baseName.'_manager::factory();');
     $this->_append('$ressource = self::$db->query($sql);');
-    $this->_append('$primarys = array();');
+    $this->_append('$_return = array();');
     $this->_append('$_tmp = array();');
     $this->_append('$_tmp = $ressource->fetchAll();');
     $this->_append('$primaryKey = (!is_object('.$this->baseName.'_manager::$'.$this->baseName.')) ? '.$this->baseName.'::getPCGFirstPrimaryKey() : '.$this->baseName.'_manager::$'.$this->baseName.'->getPCGPropertyMapping(\''.$this->primary.'\');');
+    $this->_append('if('.$this->baseName.'_manager::$fastMode){');
+    $this->_append('$_return = $_tmp;');
+    $this->_append('}');
     $this->_append('for ($a = 0 ; $a < count($_tmp) ; $a++) {');
- 	$this->_append('$primarys[$a][\'FORPCGUID\'] = $_tmp[$a][$primaryKey];');
+ 	$this->_append('$_return[$a][\'FORPCGUID\'] = $_tmp[$a][$primaryKey];');
 	$this->_append('if(is_array($moreField)){');
 	$this->_append('foreach ($moreField as $field){');
-	$this->_append('$primarys[$a][$field] = $_tmp[$a][$field];');
+	$this->_append('$_return[$a][$field] = $_tmp[$a][$field];');
 	$this->_append('}');
 	$this->_append('}');
     $this->_append('}');
-    $this->_append('return $primarys;');
+    $this->_append('return $_return;');
     $this->_append('}');
   }
 
   private function _footer(){
+ 	$this->_append('/**');
+	$this->_append(' * Toggle fast mode (useful for batch or strong query)');
+	$this->_append(' * @param bool $fast');
+	$this->_append(' */');
+	$this->_append('public static function fastMode($fast = true){');
+	$this->_append($this->baseName.'_manager::$fastMode = (bool) $fast;');
+	$this->_append('}');
     $this->_append('}');
     $this->_append('');
   }

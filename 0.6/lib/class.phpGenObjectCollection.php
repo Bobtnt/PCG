@@ -247,6 +247,15 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('$nb = count($ids);');
 		$this->_append('for($a = 0 ; $a < $nb; $a++){');
 		$this->_append('$'.$this->baseName.' = new '.$this->baseName.'($ids[$a][\'FORPCGUID\']);');
+		$this->_append('if('.$this->baseName.'_manager::$fastMode){');
+		$this->_append('foreach($ids[$a] as $key => $value){');
+		$this->_append('if($_property = $'.$this->baseName.'->getPCGFieldMapping($key)){');
+		$this->_append('$_property = \'set_\'.$_property;');
+		$this->_append('$setter = preg_replace("#(_(.))#e" , "strtoupper(\'\\\\2\')" , $_property);');
+		$this->_append('$'.$this->baseName.'->$setter($value);');
+		$this->_append('}');
+		$this->_append('}');
+		$this->_append('}');
 		$this->_append('foreach ($this->fields as $key => $array){');
 		$this->_append('foreach($array as $field => $property){');
 		$this->_append('$'.$this->baseName.'->$property = $ids[$a][$field];');
