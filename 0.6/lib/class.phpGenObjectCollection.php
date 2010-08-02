@@ -251,7 +251,12 @@ class phpGenObjectCollection extends configObjectAbstract {
 		$this->_append('foreach($ids[$a] as $key => $value){');
 		$this->_append('if($_property = $'.$this->baseName.'->getPCGFieldMapping($key)){');
 		$this->_append('$_property = \'set_\'.$_property;');
-		$this->_append('$setter = preg_replace("#(_(.))#e" , "strtoupper(\'\\\\2\')" , $_property);');
+		$this->_append('if(!array_key_exists(\'dyn_pcg_format_prop_func\', $GLOBALS)){');
+		$this->_append('$GLOBALS[\'dyn_pcg_format_prop_func\'] = create_function(\'&$s\', \'if ($p = strpos($s, \\\'_\\\')){$m=strtoupper($s[($p+1)]);$s=substr_replace($s,$m,($p+1),1);$s=substr_replace($s,\\\'\\\',$p,1);return true;}return false;\');');
+		$this->_append('}');
+		$this->_append('$f = $GLOBALS[\'dyn_pcg_format_prop_func\'];');
+		$this->_append('while($f($_property));');
+		$this->_append('$setter = $_property;');
 		$this->_append('$'.$this->baseName.'->$setter($value);');
 		$this->_append('}');
 		$this->_append('}');
