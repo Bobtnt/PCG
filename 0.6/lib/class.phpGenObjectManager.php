@@ -395,7 +395,9 @@ class phpGenObjectManager extends configObjectAbstract {
 
 
     $this->_append('}');
+    $this->_append('if(!'.$this->name.'::$fastMode){');
     $this->_append('database_optimizer::register($'.$this->baseName.');');
+    $this->_append('}');
     $this->_append('}');
   }
 
